@@ -3,1519 +3,1047 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Waheguru Digital Mala</title>
+<title>Waheguru Voice Counter</title>
 
 <style>
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    background:
-        radial-gradient(circle at center, #351010 0%, #120606 45%, #050202 100%);
-    color: white;
-    text-align: center;
+  margin: 0;
+  min-height: 100vh;
+  background: #050505;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
 }
 
 .app {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px 15px 40px;
+  width: 100%;
+  max-width: 500px;
+  padding: 18px 15px 35px;
+  text-align: center;
 }
 
 h1 {
-    margin: 5px 0;
-    font-size: 27px;
+  margin: 5px 0 2px;
+  font-size: 28px;
+  color: #ff2b2b;
+  text-shadow: 0 0 15px rgba(255,0,0,.7);
 }
 
 .subtitle {
-    color: #aaa;
-    margin-bottom: 10px;
+  color: #999;
+  font-size: 13px;
+  margin-bottom: 15px;
 }
 
-/* -------------------------
-   DIGITAL MALA
-------------------------- */
+/* STATUS */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #111;
+  border: 1px solid #333;
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #555;
+}
+
+.status.active {
+  color: #ff4b4b;
+  border-color: #8b0000;
+}
+
+.status.active .dot {
+  background: #ff1717;
+  box-shadow: 0 0 12px red;
+}
+
+/* MALA */
+
+.mala-wrapper {
+  position: relative;
+  width: min(90vw, 390px);
+  height: min(90vw, 390px);
+  margin: 8px auto 20px;
+}
 
 .mala {
-    position: relative;
-    width: min(92vw, 440px);
-    height: min(92vw, 440px);
-    margin: 15px auto;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .bead {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            #777,
-            #292929 60%,
-            #111
-        );
-
-    transform: translate(-50%, -50%);
-
-    transition:
-        background .25s,
-        box-shadow .25s,
-        transform .25s;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #161616;
+  border: 1px solid #444;
+  box-shadow:
+    inset 0 0 5px #000,
+    0 0 2px #000;
+  transform: translate(-50%, -50%);
+  transition: .15s;
 }
 
 .bead.active {
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            #ffaaaa,
-            #ff2222 45%,
-            #8b0000 100%
-        );
-
-    box-shadow:
-        0 0 7px #ff2222,
-        0 0 16px rgba(255, 0, 0, .75);
-
-    transform:
-        translate(-50%, -50%)
-        scale(1.15);
+  background: #ff2020;
+  border-color: #ff6969;
+  box-shadow:
+    0 0 7px #ff0000,
+    0 0 18px rgba(255,0,0,.8);
 }
 
-.bead.guru {
-    width: 29px;
-    height: 29px;
-
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            #ffdddd,
-            #ff3030 45%,
-            #8b0000
-        );
-
-    box-shadow:
-        0 0 12px #ff2222,
-        0 0 25px rgba(255,0,0,.7);
+.bead.current {
+  transform: translate(-50%, -50%) scale(1.35);
+  box-shadow:
+    0 0 10px #fff,
+    0 0 22px red;
 }
 
-/* -------------------------
-   CENTER
-------------------------- */
+/* CENTER */
 
 .center {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
-    width: 180px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #250000 0%, #0b0b0b 65%);
+  border: 2px solid #8d0000;
+  box-shadow:
+    0 0 20px rgba(255,0,0,.35),
+    inset 0 0 25px #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.om {
-    font-size: 35px;
-    margin-bottom: 3px;
+.center-count {
+  font-size: 40px;
+  font-weight: bold;
+  color: #ff2929;
+  text-shadow: 0 0 15px red;
 }
 
-.progress {
-    font-size: 38px;
-    font-weight: bold;
-}
-
-.progress-label {
-    color: #aaa;
-    font-size: 14px;
+.center-label {
+  color: #aaa;
+  font-size: 12px;
+  margin-top: -3px;
 }
 
 .mala-number {
-    margin-top: 8px;
-    font-size: 22px;
-    font-weight: bold;
-
-    color: #ff4a4a;
+  color: #777;
+  font-size: 11px;
+  margin-top: 6px;
 }
 
-/* -------------------------
-   VOICE
-------------------------- */
+/* CONTROLS */
 
-.voice {
-    margin: 5px auto 15px;
-}
-
-.voice-status {
-    font-size: 17px;
-    color: #ff5555;
-    min-height: 25px;
-}
-
-.heard {
-    color: #999;
-    min-height: 24px;
-    margin-top: 4px;
-}
-
-/* -------------------------
-   BUTTONS
-------------------------- */
-
-button,
-select {
-    border: 1px solid #444;
-    border-radius: 12px;
-    padding: 12px 17px;
-    margin: 5px;
-
-    background: #1b1b1b;
-    color: white;
-
-    font-size: 15px;
+.controls {
+  display: flex;
+  gap: 9px;
+  justify-content: center;
+  margin: 12px 0;
 }
 
 button {
-    cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 17px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #444;
+}
+
+button:hover {
+  background: #262626;
 }
 
 .start {
-    background: #a90000;
-    border-color: #ff3333;
+  background: #b30000;
+  border-color: #ff3030;
 }
 
 .start:hover {
-    background: #d00000;
+  background: #d00000;
 }
 
-.pause {
-    background: #333;
+button:disabled {
+  opacity: .45;
 }
 
-.reset {
-    background: #601010;
+/* TIMEOUT */
+
+.timeout-box {
+  margin: 10px auto 15px;
+  padding: 10px;
+  max-width: 330px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  color: #aaa;
+  font-size: 13px;
 }
 
-/* -------------------------
-   STATS
-------------------------- */
+.timeout-value {
+  color: #ff3b3b;
+  font-weight: bold;
+}
+
+.timer {
+  margin-top: 5px;
+  color: #777;
+  font-size: 12px;
+}
+
+/* STATS */
 
 .stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 10px;
-
-    margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 18px 0;
 }
 
 .stat {
-    background: rgba(255,255,255,.06);
-
-    border: 1px solid #333;
-
-    border-radius: 15px;
-
-    padding: 14px;
-}
-
-.stat-title {
-    color: #999;
-    font-size: 13px;
+  background: #101010;
+  border: 1px solid #282828;
+  border-radius: 12px;
+  padding: 13px;
 }
 
 .stat-number {
-    font-size: 25px;
-    font-weight: bold;
-
-    margin-top: 5px;
-
-    color: #ff4545;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff3030;
 }
 
-/* -------------------------
-   COMPLETION
-------------------------- */
-
-.complete {
-    animation: completeAnimation 1s ease-in-out 2;
+.stat-label {
+  color: #777;
+  font-size: 11px;
+  margin-top: 4px;
 }
 
-@keyframes completeAnimation {
+/* LANGUAGE */
 
-    50% {
-        filter:
-            drop-shadow(0 0 25px red);
-
-        transform: scale(1.04);
-    }
-
+.language {
+  margin: 15px 0;
 }
 
-/* -------------------------
-   CALENDAR
-------------------------- */
-
-.calendar {
-    margin-top: 25px;
-
-    padding: 15px;
-
-    background: rgba(255,255,255,.05);
-
-    border: 1px solid #333;
-
-    border-radius: 16px;
+select {
+  background: #111;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 9px 12px;
 }
 
-.calendar h2 {
-    margin-top: 0;
+/* CALENDAR */
+
+.records {
+  margin-top: 18px;
+  text-align: left;
 }
 
-.month {
-    color: #aaa;
+.records h2 {
+  text-align: center;
+  font-size: 18px;
+  color: #ddd;
 }
 
-.calendar-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(7, 1fr);
-
-    gap: 5px;
-
-    margin-top: 12px;
+.record {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #101010;
+  border-bottom: 1px solid #222;
+  border-radius: 7px;
+  margin-bottom: 5px;
 }
 
-.day {
-    min-height: 40px;
-
-    padding: 7px 2px;
-
-    border-radius: 8px;
-
-    font-size: 12px;
+.record-date {
+  color: #aaa;
 }
 
-.day.has-jaap {
-    background: #8b0000;
-
-    box-shadow:
-        0 0 7px rgba(255,0,0,.35);
+.record-count {
+  color: #ff3030;
+  font-weight: bold;
 }
 
-.small {
-    color: #777;
-
-    margin-top: 18px;
-
-    font-size: 12px;
+.note {
+  margin-top: 18px;
+  color: #555;
+  font-size: 11px;
+  line-height: 1.5;
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-<h1>🙏 Waheguru</h1>
+  <h1>Waheguru Voice Counter</h1>
+  <div class="subtitle">Digital 108-Bead Mala</div>
 
-<div class="subtitle">
-    Digital 108 Mala
-</div>
+  <div id="status" class="status">
+    <span class="dot"></span>
+    <span id="statusText">Mic paused</span>
+  </div>
 
-
-<!-- MALA -->
-
-<div class="mala" id="mala">
+  <!-- MALA -->
+  <div class="mala-wrapper">
+    <div id="mala" class="mala"></div>
 
     <div class="center">
+      <div id="count" class="center-count">0</div>
+      <div class="center-label">/ 108</div>
+      <div id="malaNumber" class="mala-number">Mala #1</div>
+    </div>
+  </div>
 
-        <div class="om">☬</div>
+  <!-- TIMEOUT -->
+  <div class="timeout-box">
+    Auto mic-off after:
+    <span class="timeout-value">30 seconds</span>
+    <div id="timerText" class="timer">
+      Timer starts when listening begins.
+    </div>
+  </div>
 
-        <div
-            class="progress"
-            id="progress">
-            0 / 108
-        </div>
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="startBtn" class="start">🎙️ Start</button>
+    <button id="pauseBtn">⏸ Pause</button>
+    <button id="resetBtn">↺ Reset</button>
+  </div>
 
-        <div class="progress-label">
-            Current Mala
-        </div>
+  <!-- LANGUAGE -->
+  <div class="language">
+    <select id="language">
+      <option value="en-IN">English</option>
+      <option value="pa-IN">Punjabi</option>
+      <option value="hi-IN">Hindi</option>
+    </select>
+  </div>
 
-        <div
-            class="mala-number"
-            id="malaNumber">
-            Mala 1
-        </div>
+  <!-- STATS -->
+  <div class="stats">
 
+    <div class="stat">
+      <div id="completedMalas" class="stat-number">0</div>
+      <div class="stat-label">COMPLETED MALAS</div>
     </div>
 
-</div>
-
-
-<!-- VOICE -->
-
-<div class="voice">
-
-    <div
-        class="voice-status"
-        id="status">
-        🎙️ Press Start
+    <div class="stat">
+      <div id="total" class="stat-number">0</div>
+      <div class="stat-label">TOTAL COUNT</div>
     </div>
 
-    <div
-        class="heard"
-        id="heard">
-        Heard: —
+    <div class="stat">
+      <div id="today" class="stat-number">0</div>
+      <div class="stat-label">TODAY</div>
     </div>
 
-</div>
+    <div class="stat">
+      <div id="current" class="stat-number">0</div>
+      <div class="stat-label">CURRENT MALA</div>
+    </div>
 
+  </div>
 
-<!-- CONTROLS -->
+  <!-- RECORDS -->
+  <div class="records">
+    <h2>📅 Daily Records</h2>
+    <div id="recordsList"></div>
+  </div>
 
-<div>
-
-<button
-    class="start"
-    onclick="startListening()">
-    🎙️ Start
-</button>
-
-<button
-    class="pause"
-    onclick="pauseListening()">
-    ⏸ Pause
-</button>
-
-<button
-    class="reset"
-    onclick="resetMala()">
-    ↻ Reset
-</button>
+  <div class="note">
+    Say “Waheguru” naturally. The counter uses your browser's
+    speech recognition. If no speech is recognized for 30 seconds,
+    listening automatically pauses.
+  </div>
 
 </div>
-
-
-<div>
-
-<select id="language">
-
-<option value="en-US">
-English
-</option>
-
-<option value="pa-IN">
-Punjabi
-</option>
-
-<option value="hi-IN">
-Hindi
-</option>
-
-</select>
-
-</div>
-
-
-<!-- STATS -->
-
-<div class="stats">
-
-<div class="stat">
-
-<div class="stat-title">
-Completed Malas
-</div>
-
-<div
-    class="stat-number"
-    id="malas">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-title">
-Total Jaap
-</div>
-
-<div
-    class="stat-number"
-    id="total">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-title">
-Today
-</div>
-
-<div
-    class="stat-number"
-    id="today">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-title">
-Current
-</div>
-
-<div
-    class="stat-number"
-    id="current">
-0
-</div>
-
-</div>
-
-</div>
-
-
-<!-- CALENDAR -->
-
-<div class="calendar">
-
-<h2>📅 Daily Records</h2>
-
-<div
-    class="month"
-    id="month">
-</div>
-
-<div
-    class="calendar-grid"
-    id="calendar">
-</div>
-
-</div>
-
-
-<div class="small">
-Your records are saved on this device.
-</div>
-
-</div>
-
 
 <script>
 
-/* =================================
+/* =========================
    DATA
-================================= */
+========================= */
 
-const MAX = 108;
+let count = Number(localStorage.getItem("wg_count") || 0);
+let total = Number(localStorage.getItem("wg_total") || 0);
+let completedMalas = Number(localStorage.getItem("wg_malas") || 0);
 
-let count =
-    Number(
-        localStorage.getItem("wg_count") || 0
-    );
+let records;
 
-let total =
-    Number(
-        localStorage.getItem("wg_total") || 0
-    );
-
-let malas =
-    Number(
-        localStorage.getItem("wg_malas") || 0
-    );
-
-let records =
-    JSON.parse(
-        localStorage.getItem("wg_records") || "{}"
-    );
-
-let recognition = null;
+try {
+  records = JSON.parse(localStorage.getItem("wg_records") || "{}");
+} catch {
+  records = {};
+}
 
 let listening = false;
+let recognition = null;
+
+let inactivityTimer = null;
+let countdownTimer = null;
+
+let lastSpeechTime = null;
+
+const INACTIVITY_SECONDS = 30;
 
 
-/*
-   Version focused on repeated
-   continuous Waheguru detection.
-*/
+/* =========================
+   ELEMENTS
+========================= */
 
-let lastProcessedText = "";
+const mala = document.getElementById("mala");
 
-let lastProcessedTime = 0;
+const countEl = document.getElementById("count");
+const totalEl = document.getElementById("total");
+const todayEl = document.getElementById("today");
+const currentEl = document.getElementById("current");
+const completedEl = document.getElementById("completedMalas");
+const malaNumberEl = document.getElementById("malaNumber");
 
+const status = document.getElementById("status");
+const statusText = document.getElementById("statusText");
 
-/* =================================
-   CREATE MALA
-================================= */
+const timerText = document.getElementById("timerText");
 
-function createMala() {
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const resetBtn = document.getElementById("resetBtn");
 
-    const mala =
-        document.getElementById("mala");
+const languageSelect = document.getElementById("language");
 
-    /*
-       Remove old beads.
-    */
-
-    document
-        .querySelectorAll(".bead")
-        .forEach(b => b.remove());
-
-
-    const size =
-        mala.clientWidth;
-
-    const center =
-        size / 2;
-
-    const radius =
-        size * .41;
+const recordsList = document.getElementById("recordsList");
 
 
-    for (
-        let i = 0;
-        i < MAX;
-        i++
-    ) {
+/* =========================
+   CREATE 108 BEADS
+========================= */
 
-        const bead =
-            document.createElement("div");
+for (let i = 0; i < 108; i++) {
 
-        bead.className =
-            "bead";
+  const bead = document.createElement("div");
 
+  bead.className = "bead";
 
-        if (i === 0) {
+  const angle = (i / 108) * Math.PI * 2 - Math.PI / 2;
 
-            bead.classList.add(
-                "guru"
-            );
+  const radius = 45;
 
-        }
+  const x = 50 + Math.cos(angle) * radius;
+  const y = 50 + Math.sin(angle) * radius;
 
+  bead.style.left = x + "%";
+  bead.style.top = y + "%";
 
-        const angle =
-            (i / MAX) *
-            Math.PI * 2 -
-            Math.PI / 2;
-
-
-        const x =
-            center +
-            Math.cos(angle) *
-            radius;
-
-
-        const y =
-            center +
-            Math.sin(angle) *
-            radius;
-
-
-        bead.style.left =
-            x + "px";
-
-        bead.style.top =
-            y + "px";
-
-
-        bead.id =
-            "bead-" + i;
-
-
-        mala.appendChild(
-            bead
-        );
-    }
-
-
-    updateMala();
+  mala.appendChild(bead);
 }
 
 
-/* =================================
-   UPDATE MALA
-================================= */
-
-function updateMala() {
-
-    for (
-        let i = 0;
-        i < MAX;
-        i++
-    ) {
-
-        const bead =
-            document.getElementById(
-                "bead-" + i
-            );
-
-        if (!bead) continue;
-
-        bead.classList.toggle(
-            "active",
-            i < count
-        );
-    }
-
-
-    document.getElementById(
-        "progress"
-    ).textContent =
-        count + " / 108";
-
-
-    document.getElementById(
-        "malaNumber"
-    ).textContent =
-        "Mala " +
-        (malas + 1);
-
-
-    document.getElementById(
-        "malas"
-    ).textContent =
-        malas;
-
-
-    document.getElementById(
-        "total"
-    ).textContent =
-        total;
-
-
-    document.getElementById(
-        "current"
-    ).textContent =
-        count;
-
-
-    updateToday();
-
-    save();
-
-}
-
-
-/* =================================
-   TODAY
-================================= */
+/* =========================
+   DATE
+========================= */
 
 function todayKey() {
 
-    const d =
-        new Date();
+  const d = new Date();
 
-    return (
-        d.getFullYear() +
-        "-" +
-        String(
-            d.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
-        String(
-            d.getDate()
-        ).padStart(2, "0")
-    );
+  return d.getFullYear() + "-" +
+         String(d.getMonth() + 1).padStart(2, "0") + "-" +
+         String(d.getDate()).padStart(2, "0");
 }
 
 
-/* =================================
+/* =========================
+   UPDATE DISPLAY
+========================= */
+
+function updateDisplay() {
+
+  countEl.textContent = count;
+  totalEl.textContent = total;
+  completedEl.textContent = completedMalas;
+
+  const current = count % 108;
+
+  currentEl.textContent = current;
+
+  malaNumberEl.textContent =
+    "Mala #" + (completedMalas + 1);
+
+  todayEl.textContent =
+    records[todayKey()] || 0;
+
+  const beads = document.querySelectorAll(".bead");
+
+  beads.forEach((bead, i) => {
+
+    bead.classList.remove("active");
+    bead.classList.remove("current");
+
+    if (i < current) {
+      bead.classList.add("active");
+    }
+
+    if (i === current && current < 108) {
+      bead.classList.add("current");
+    }
+  });
+
+  localStorage.setItem("wg_count", count);
+  localStorage.setItem("wg_total", total);
+  localStorage.setItem("wg_malas", completedMalas);
+  localStorage.setItem("wg_records", JSON.stringify(records));
+
+  updateRecords();
+}
+
+
+/* =========================
    ADD COUNT
-================================= */
+========================= */
 
-function addCount(amount) {
+function addCount(amount = 1) {
 
-    if (amount <= 0)
-        return;
+  count += amount;
+  total += amount;
 
+  const day = todayKey();
 
-    const today =
-        todayKey();
+  records[day] = (records[day] || 0) + amount;
 
+  while (count >= 108) {
 
-    if (!records[today]) {
+    count -= 108;
+    completedMalas++;
 
-        records[today] = 0;
+    speakMalaComplete();
+  }
 
-    }
-
-
-    /*
-       Add each Jaap separately.
-
-       This allows:
-
-       107 + 2
-
-       to complete the mala
-       and put 1 into the next mala.
-    */
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
-    ) {
-
-        count++;
-
-        total++;
-
-        records[today]++;
-
-
-        if (count >= MAX) {
-
-            count = 0;
-
-            malas++;
-
-            malaComplete();
-
-        }
-
-    }
-
-
-    updateMala();
-
-    drawCalendar();
+  updateDisplay();
 }
 
 
-/* =================================
-   MALA COMPLETE
-================================= */
+/* =========================
+   MALА COMPLETE
+========================= */
 
-function malaComplete() {
+function speakMalaComplete() {
 
-    const mala =
-        document.getElementById(
-            "mala"
-        );
+  if (!("speechSynthesis" in window)) return;
 
+  const message =
+    "Mala " + completedMalas + " complete";
 
-    mala.classList.add(
-        "complete"
-    );
+  const speech = new SpeechSynthesisUtterance(message);
 
+  speech.rate = 0.85;
 
-    setTimeout(
-        () => {
-            mala.classList.remove(
-                "complete"
-            );
-        },
-        1800
-    );
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        "🔴 Mala " +
-        malas +
-        " Complete";
-
-
-    /*
-       Say it only once.
-    */
-
-    if (
-        "speechSynthesis"
-        in window
-    ) {
-
-        speechSynthesis.cancel();
-
-
-        const voice =
-            new SpeechSynthesisUtterance(
-                "Mala " +
-                malas +
-                " complete"
-            );
-
-
-        voice.rate = .85;
-
-        speechSynthesis.speak(
-            voice
-        );
-    }
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
 }
 
 
-/* =================================
-   NORMALIZE WORDS
-================================= */
+/* =========================
+   NORMALIZE SPEECH
+========================= */
 
-function normalize(text) {
+function normalizeText(text) {
 
-    let s =
-        text.toLowerCase();
-
-
-    /*
-       Punjabi.
-    */
-
-    s =
-        s.replace(
-            /ਵਾਹਿਗੁਰੂ|ਵਾਹੇਗੁਰੂ|ਵਾਹੇ ਗੁਰੂ|ਵਾਹਿਗੁਰੁ/g,
-            " waheguru "
-        );
-
-
-    /*
-       English variations.
-    */
-
-    s =
-        s.replace(
-            /wahe\s+guroo|wahe\s+guro|waheguroo|waheguro|wahe\s+guru/g,
-            " waheguru "
-        );
-
-
-    s =
-        s.replace(
-            /[^a-z\u0A00-\u0A7F\s]/g,
-            " "
-        );
-
-
-    s =
-        s.replace(
-            /\s+/g,
-            " "
-        )
-        .trim();
-
-
-    return s;
+  return text
+    .toLowerCase()
+    .replace(/[.,!?;:]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 
-/* =================================
+/* =========================
    COUNT WORDS
-================================= */
+========================= */
 
 function countWaheguru(text) {
 
-    const s =
-        normalize(text);
+  const normalized = normalizeText(text);
+
+  /*
+    Different forms that speech recognition
+    may return.
+  */
+
+  const pattern =
+    /\bwaheguru\b|\bwahe guru\b|\bwaheguroo\b|\bwahegooroo\b/g;
+
+  const matches = normalized.match(pattern);
+
+  if (matches) {
+    addCount(matches.length);
+  }
+}
 
 
-    if (!s)
-        return 0;
+/* =========================
+   INACTIVITY TIMER
+========================= */
 
+function clearInactivityTimers() {
+
+  if (inactivityTimer) {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = null;
+  }
+
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+}
+
+
+function startInactivityTimer() {
+
+  clearInactivityTimers();
+
+  if (!listening) return;
+
+  lastSpeechTime = Date.now();
+
+  let remaining = INACTIVITY_SECONDS;
+
+  timerText.textContent =
+    "Auto pause in " + remaining + " seconds";
+
+  countdownTimer = setInterval(() => {
+
+    if (!listening) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      return;
+    }
+
+    const elapsed =
+      Math.floor((Date.now() - lastSpeechTime) / 1000);
+
+    remaining =
+      Math.max(0, INACTIVITY_SECONDS - elapsed);
+
+    timerText.textContent =
+      "Auto pause in " + remaining + " seconds";
+
+  }, 1000);
+
+  inactivityTimer = setTimeout(() => {
 
     /*
-       Every occurrence counts.
-
-       Example:
-
-       waheguru
-       = 1
-
-       waheguru waheguru
-       = 2
-
-       waheguru waheguru waheguru
-       = 3
+      IMPORTANT:
+      Set listening to false BEFORE stopping recognition.
+      Otherwise onend could automatically restart it.
     */
-
-    const matches =
-        s.match(/waheguru/g);
-
-
-    return matches
-        ? matches.length
-        : 0;
-}
-
-
-/* =================================
-   SPEECH RECOGNITION
-================================= */
-
-function setupRecognition() {
-
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-
-    if (!SpeechRecognition) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "Speech recognition is not supported.";
-
-        return null;
-    }
-
-
-    const r =
-        new SpeechRecognition();
-
-
-    r.continuous = true;
-
-    r.interimResults = false;
-
-    r.maxAlternatives = 3;
-
-
-    r.lang =
-        document.getElementById(
-            "language"
-        ).value;
-
-
-    /* -----------------------------
-       START
-    ----------------------------- */
-
-    r.onstart = function() {
-
-        listening = true;
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "🔴 Listening…";
-    };
-
-
-    /* -----------------------------
-       RESULTS
-    ----------------------------- */
-
-    r.onresult =
-        function(event) {
-
-        for (
-            let i =
-                event.resultIndex;
-
-            i <
-                event.results.length;
-
-            i++
-        ) {
-
-            const result =
-                event.results[i];
-
-
-            if (
-                !result.isFinal
-            )
-                continue;
-
-
-            const text =
-                result[0]
-                    .transcript
-                    .trim();
-
-
-            const normalized =
-                normalize(text);
-
-
-            const now =
-                Date.now();
-
-
-            /*
-               Only ignore an EXACT
-               duplicate result that
-               arrives immediately.
-
-               We do NOT ignore another
-               "Waheguru" result.
-            */
-
-            if (
-                normalized ===
-                    lastProcessedText
-                &&
-                now -
-                    lastProcessedTime
-                    < 1000
-            ) {
-
-                continue;
-
-            }
-
-
-            lastProcessedText =
-                normalized;
-
-            lastProcessedTime =
-                now;
-
-
-            const amount =
-                countWaheguru(text);
-
-
-            document.getElementById(
-                "heard"
-            ).textContent =
-                "Heard: " +
-                text +
-                (
-                    amount
-                    ? "  (+" +
-                      amount +
-                      ")"
-                    : ""
-                );
-
-
-            if (amount > 0) {
-
-                addCount(amount);
-
-            }
-
-        }
-
-    };
-
-
-    /* -----------------------------
-       ERROR
-    ----------------------------- */
-
-    r.onerror =
-        function(event) {
-
-        if (
-            event.error ===
-            "not-allowed"
-        ) {
-
-            listening = false;
-
-            document.getElementById(
-                "status"
-            ).textContent =
-                "Microphone permission required.";
-
-            return;
-        }
-
-
-        if (listening) {
-
-            document.getElementById(
-                "status"
-            ).textContent =
-                "🔴 Listening…";
-        }
-
-    };
-
-
-    /* -----------------------------
-       AUTO RESTART
-    ----------------------------- */
-
-    r.onend =
-        function() {
-
-        if (!listening)
-            return;
-
-
-        setTimeout(
-            function() {
-
-                try {
-
-                    r.start();
-
-                } catch(e) {}
-
-            },
-            250
-        );
-
-    };
-
-
-    return r;
-}
-
-
-/* =================================
-   START
-================================= */
-
-function startListening() {
-
-    if (!recognition) {
-
-        recognition =
-            setupRecognition();
-
-        if (!recognition)
-            return;
-    }
-
-
-    recognition.lang =
-        document.getElementById(
-            "language"
-        ).value;
-
-
-    listening = true;
-
-
-    try {
-
-        recognition.start();
-
-    } catch(e) {}
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        "🔴 Listening…";
-}
-
-
-/* =================================
-   PAUSE
-================================= */
-
-function pauseListening() {
 
     listening = false;
 
+    clearInactivityTimers();
 
     if (recognition) {
-
-        try {
-
-            recognition.stop();
-
-        } catch(e) {}
+      try {
+        recognition.stop();
+      } catch (e) {}
     }
 
+    setPausedStatus(
+      "Mic paused — no speech for 30 seconds"
+    );
 
-    lastProcessedText = "";
-
-    lastProcessedTime = 0;
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        "⏸ Paused";
+  }, INACTIVITY_SECONDS * 1000);
 }
 
 
-/* =================================
-   RESET
-================================= */
+/* =========================
+   SPEECH DETECTED
+========================= */
 
-function resetMala() {
+function speechDetected() {
+
+  if (!listening) return;
+
+  lastSpeechTime = Date.now();
+
+  startInactivityTimer();
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function setListeningStatus() {
+
+  status.classList.add("active");
+
+  statusText.textContent =
+    "Listening… Say Waheguru";
+
+  startBtn.textContent = "🎙️ Listening";
+}
+
+
+function setPausedStatus(message = "Mic paused") {
+
+  status.classList.remove("active");
+
+  statusText.textContent = message;
+
+  startBtn.textContent = "🎙️ Start";
+
+  timerText.textContent =
+    "Timer starts when listening begins.";
+}
+
+
+/* =========================
+   SPEECH RECOGNITION
+========================= */
+
+function setupRecognition() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Speech recognition is not supported in this browser. " +
+      "Try Safari or Chrome on a supported device."
+    );
+
+    return null;
+  }
+
+  const r = new SpeechRecognition();
+
+  /*
+    Continuous keeps the session alive.
+
+    Final results are used so the same word
+    isn't counted repeatedly from interim results.
+  */
+
+  r.continuous = true;
+  r.interimResults = false;
+
+  r.lang = languageSelect.value;
+
+  r.onstart = () => {
+
+    if (!listening) return;
+
+    setListeningStatus();
+
+    startInactivityTimer();
+  };
+
+
+  r.onresult = (event) => {
+
+    if (!listening) return;
+
+    let combined = "";
+
+    /*
+      Process only NEW final results.
+    */
+
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+
+      const result = event.results[i];
+
+      if (!result.isFinal) continue;
+
+      const text =
+        result[0].transcript;
+
+      combined += " " + text;
+    }
+
+    if (combined.trim()) {
+
+      speechDetected();
+
+      countWaheguru(combined);
+    }
+  };
+
+
+  r.onerror = (event) => {
+
+    console.log(
+      "Speech recognition error:",
+      event.error
+    );
+
+    /*
+      Don't restart for permission or
+      microphone errors.
+    */
 
     if (
-        !confirm(
-            "Reset current mala?"
-        )
+      event.error === "not-allowed" ||
+      event.error === "service-not-allowed"
+    ) {
+
+      listening = false;
+
+      clearInactivityTimers();
+
+      setPausedStatus(
+        "Microphone permission needed"
+      );
+    }
+  };
+
+
+  r.onend = () => {
+
+    /*
+      Some browsers automatically end recognition.
+      Restart only if the user still wants listening.
+    */
+
+    if (listening) {
+
+      setTimeout(() => {
+
+        if (!listening) return;
+
+        try {
+          r.start();
+        } catch (e) {}
+
+      }, 300);
+    }
+  };
+
+
+  return r;
+}
+
+
+/* =========================
+   START
+========================= */
+
+function startListening() {
+
+  if (!recognition) {
+
+    recognition = setupRecognition();
+
+    if (!recognition) return;
+  }
+
+  /*
+    Update language every time we start.
+  */
+
+  recognition.lang =
+    languageSelect.value;
+
+  listening = true;
+
+  setListeningStatus();
+
+  startInactivityTimer();
+
+  try {
+
+    recognition.start();
+
+  } catch (e) {
+
+    /*
+      Recognition may already be running.
+    */
+
+    console.log(e);
+  }
+}
+
+
+/* =========================
+   PAUSE
+========================= */
+
+function pauseListening() {
+
+  listening = false;
+
+  clearInactivityTimers();
+
+  if (recognition) {
+
+    try {
+      recognition.stop();
+    } catch (e) {}
+  }
+
+  setPausedStatus();
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetCounter() {
+
+  if (
+    !confirm(
+      "Reset the current mala count to 0?"
     )
-        return;
+  ) {
+    return;
+  }
 
+  count = 0;
 
-    count = 0;
-
-    updateMala();
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        "Current mala reset.";
+  updateDisplay();
 }
 
 
-/* =================================
-   SAVE
-================================= */
+/* =========================
+   RECORDS
+========================= */
 
-function save() {
+function updateRecords() {
 
-    localStorage.setItem(
-        "wg_count",
-        count
-    );
+  recordsList.innerHTML = "";
 
-    localStorage.setItem(
-        "wg_total",
-        total
-    );
+  const dates =
+    Object.keys(records)
+      .sort()
+      .reverse();
 
-    localStorage.setItem(
-        "wg_malas",
-        malas
-    );
+  if (!dates.length) {
 
-    localStorage.setItem(
-        "wg_records",
-        JSON.stringify(records)
-    );
+    recordsList.innerHTML =
+      '<div class="record">' +
+      '<span class="record-date">No records yet</span>' +
+      '</div>';
+
+    return;
+  }
+
+  dates.slice(0, 30).forEach(date => {
+
+    const row =
+      document.createElement("div");
+
+    row.className = "record";
+
+    const d =
+      document.createElement("span");
+
+    d.className = "record-date";
+
+    d.textContent = date;
+
+    const c =
+      document.createElement("span");
+
+    c.className = "record-count";
+
+    c.textContent =
+      records[date] + "";
+
+    row.appendChild(d);
+    row.appendChild(c);
+
+    recordsList.appendChild(row);
+  });
 }
 
 
-/* =================================
-   TODAY
-================================= */
+/* =========================
+   BUTTONS
+========================= */
 
-function updateToday() {
+startBtn.addEventListener(
+  "click",
+  startListening
+);
 
-    const key =
-        todayKey();
+pauseBtn.addEventListener(
+  "click",
+  pauseListening
+);
 
-
-    document.getElementById(
-        "today"
-    ).textContent =
-        records[key] || 0;
-}
-
-
-/* =================================
-   CALENDAR
-================================= */
-
-function drawCalendar() {
-
-    const calendar =
-        document.getElementById(
-            "calendar"
-        );
+resetBtn.addEventListener(
+  "click",
+  resetCounter
+);
 
 
-    calendar.innerHTML = "";
-
-
-    const now =
-        new Date();
-
-
-    const year =
-        now.getFullYear();
-
-
-    const month =
-        now.getMonth();
-
-
-    document.getElementById(
-        "month"
-    ).textContent =
-        now.toLocaleString(
-            "default",
-            {
-                month: "long",
-                year: "numeric"
-            }
-        );
-
-
-    const names =
-        ["S","M","T","W","T","F","S"];
-
-
-    names.forEach(
-        name => {
-
-            const d =
-                document.createElement(
-                    "div"
-                );
-
-            d.className =
-                "day";
-
-            d.textContent =
-                name;
-
-            calendar.appendChild(d);
-
-        }
-    );
-
-
-    const first =
-        new Date(
-            year,
-            month,
-            1
-        ).getDay();
-
-
-    const days =
-        new Date(
-            year,
-            month + 1,
-            0
-        ).getDate();
-
-
-    for (
-        let i = 0;
-        i < first;
-        i++
-    ) {
-
-        const blank =
-            document.createElement(
-                "div"
-            );
-
-        blank.className =
-            "day";
-
-        calendar.appendChild(
-            blank
-        );
-    }
-
-
-    for (
-        let day = 1;
-        day <= days;
-        day++
-    ) {
-
-        const d =
-            document.createElement(
-                "div"
-            );
-
-
-        d.className =
-            "day";
-
-
-        const key =
-            year +
-            "-" +
-            String(
-                month + 1
-            ).padStart(2,"0") +
-            "-" +
-            String(day)
-                .padStart(2,"0");
-
-
-        const value =
-            records[key] || 0;
-
-
-        d.innerHTML =
-            "<strong>" +
-            day +
-            "</strong>" +
-            (
-                value
-                ? "<br>" + value
-                : ""
-            );
-
-
-        if (value) {
-
-            d.classList.add(
-                "has-jaap"
-            );
-
-        }
-
-
-        calendar.appendChild(d);
-
-    }
-
-}
-
-
-/* =================================
+/* =========================
    LANGUAGE
-================================= */
+========================= */
 
-document
-    .getElementById("language")
-    .addEventListener(
-        "change",
-        function() {
+languageSelect.addEventListener(
+  "change",
+  () => {
 
-            if (recognition) {
+    if (listening) {
 
-                recognition.lang =
-                    this.value;
+      pauseListening();
 
-            }
-
-        }
-    );
-
-
-/* =================================
-   STARTUP
-================================= */
-
-window.addEventListener(
-    "load",
-    function() {
-
-        createMala();
-
-        updateMala();
-
-        drawCalendar();
+      setTimeout(() => {
+        startListening();
+      }, 300);
 
     }
+  }
 );
 
 
-window.addEventListener(
-    "resize",
-    createMala
-);
+/* =========================
+   INITIAL DISPLAY
+========================= */
+
+updateDisplay();
+
+setPausedStatus();
 
 </script>
 
