@@ -7,1403 +7,940 @@
 
 <style>
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f5f5f5;
-    color: #222;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f1e8;
+  color: #222;
+  text-align: center;
 }
 
 body.dark {
-    background: #121212;
-    color: #eee;
+  background: #111;
+  color: #eee;
 }
 
-.app {
-    max-width: 520px;
-    margin: auto;
-    padding: 18px;
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 18px;
 }
 
 h1 {
-    text-align: center;
-    margin: 8px 0 4px;
-    font-size: 30px;
+  margin: 5px 0;
+  font-size: 28px;
 }
 
-.sub {
-    text-align: center;
-    color: #777;
-    margin-bottom: 18px;
+.subtitle {
+  margin-bottom: 15px;
+  opacity: .7;
 }
 
-.dark .sub {
-    color: #aaa;
+.mala-box {
+  position: relative;
+  width: min(90vw, 430px);
+  height: min(90vw, 430px);
+  margin: 10px auto;
 }
 
-.card {
-    background: white;
-    border-radius: 22px;
-    padding: 18px;
-    margin: 12px 0;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+.bead {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #c9c0ae;
+  transform: translate(-50%, -50%);
+  transition: .2s;
 }
 
-.dark .card {
-    background: #1e1e1e;
+.bead.active {
+  background: #8b5e34;
+  box-shadow: 0 0 8px rgba(139,94,52,.5);
 }
 
-.counter {
-    font-size: 86px;
-    font-weight: 800;
-    text-align: center;
-    margin: 10px 0;
+.bead.guru {
+  width: 28px;
+  height: 28px;
+  background: #b8860b;
 }
 
-.mala-title {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.mala-progress {
-    text-align: center;
-    font-size: 17px;
-    color: #777;
-    margin: 8px 0 12px;
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .progress {
-    height: 14px;
-    background: #ddd;
-    border-radius: 20px;
-    overflow: hidden;
+  font-size: 42px;
+  font-weight: bold;
 }
 
-.bar {
-    height: 100%;
-    width: 0%;
-    background: #555;
-    transition: width 0.25s;
+.mala-number {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.status {
+  min-height: 30px;
+  margin: 10px;
+  font-size: 17px;
 }
 
 .heard {
-    text-align: center;
-    min-height: 25px;
-    margin-top: 12px;
-    color: #777;
+  min-height: 24px;
+  font-size: 15px;
+  opacity: .7;
 }
 
-select,
-button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border: 0;
-    border-radius: 14px;
-    font-size: 17px;
-    background: #222;
-    color: white;
+button, select {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-button.secondary {
-    background: #777;
+.start {
+  background: #315c3b;
+  color: white;
 }
 
-button.danger {
-    background: #b33;
+.pause {
+  background: #777;
+  color: white;
 }
 
-.dark select,
-.dark button {
-    background: #eee;
-    color: #111;
-}
-
-.controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+.reset {
+  background: #9b3d35;
+  color: white;
 }
 
 .stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    text-align: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 18px 0;
 }
 
 .stat {
-    padding: 12px 5px;
-    border-radius: 16px;
-    background: #eee;
+  background: rgba(255,255,255,.65);
+  padding: 14px;
+  border-radius: 15px;
 }
 
 .dark .stat {
-    background: #292929;
+  background: #222;
 }
 
-.stat span {
-    font-size: 13px;
+.stat-number {
+  font-size: 25px;
+  font-weight: bold;
 }
 
-.stat b {
-    display: block;
-    font-size: 25px;
-    margin-top: 4px;
+.calendar {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(255,255,255,.65);
 }
 
-.complete {
-    display: none;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 14px;
-    background: #eee;
-    margin-top: 12px;
+.dark .calendar {
+  background: #222;
 }
 
-.dark .complete {
-    background: #292929;
-}
-
-.calendar-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.calendar-head button {
-    width: auto;
-    padding: 8px 14px;
-    margin: 0;
-}
-
-#monthTitle {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.week,
-.days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    margin-top: 8px;
-}
-
-.week div {
-    text-align: center;
-    font-size: 12px;
-    color: #888;
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 10px;
 }
 
 .day {
-    min-height: 48px;
-    border-radius: 10px;
-    background: #eee;
-    padding: 5px;
-    text-align: center;
-    font-size: 13px;
-    cursor: pointer;
+  padding: 8px 2px;
+  border-radius: 8px;
+  font-size: 13px;
+  min-height: 40px;
 }
 
-.dark .day {
-    background: #292929;
+.day.has-jaap {
+  background: #d8c49b;
+  font-weight: bold;
 }
 
-.day.has-count {
-    font-weight: 700;
+.dark .day.has-jaap {
+  background: #66552e;
 }
 
-.day.today {
-    outline: 2px solid #555;
+.controls {
+  margin-top: 10px;
 }
 
-.day small {
-    display: block;
-    color: #777;
-    font-size: 10px;
-    margin-top: 3px;
+.small {
+  font-size: 13px;
+  opacity: .65;
+  margin-top: 15px;
 }
 
-.record-title {
-    text-align: center;
-    margin: 4px 0 12px;
+.complete {
+  animation: pulse .7s ease-in-out 2;
 }
 
-.record {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.dark .record {
-    border-bottom: 1px solid #444;
-}
-
-.empty {
-    text-align: center;
-    color: #888;
-    padding: 10px;
-}
-
-.note {
-    font-size: 13px;
-    color: #777;
-    line-height: 1.4;
+@keyframes pulse {
+  50% {
+    transform: scale(1.05);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
-<h1>🙏 Waheguru Counter</h1>
+<h1>🙏 Waheguru Voice Counter</h1>
+<div class="subtitle">108-Bead Digital Mala</div>
 
-<div class="sub">
-Voice Jaap • Jaap Mala • Daily Records
+<div class="mala-box" id="mala"></div>
+
+<div class="center">
+  <div class="progress" id="progress">0 / 108</div>
+  <div class="mala-number" id="malaNumber">Mala 0</div>
 </div>
 
-
-<!-- MAIN COUNTER -->
-
-<div class="card">
-
-<div class="counter" id="count">0</div>
-
-<div class="mala-title">
-📿 Jaap Mala
-</div>
-
-<div class="mala-progress">
-<span id="malaCount">0</span> / 108
-</div>
-
-<div class="progress">
-<div class="bar" id="bar"></div>
-</div>
-
-<div class="complete" id="complete">
-🙏 Mala Complete!
-</div>
-
-<div class="heard" id="heard">
-Press Start Listening
-</div>
-
-
-<select id="language">
-
-<option value="en-US">
-English recognition
-</option>
-
-<option value="pa-IN">
-Punjabi recognition
-</option>
-
-</select>
-
+<div class="status" id="status">Press Start and say “Waheguru”</div>
+<div class="heard" id="heard">Heard: —</div>
 
 <div class="controls">
+  <button class="start" onclick="startListening()">🎙️ Start</button>
+  <button class="pause" onclick="pauseListening()">⏸ Pause</button>
+  <button class="reset" onclick="resetCurrentMala()">↻ Reset Mala</button>
+</div>
 
-<button id="start">
-🎙️ Start
-</button>
+<div>
+  <select id="language">
+    <option value="en-US">English</option>
+    <option value="pa-IN">Punjabi</option>
+    <option value="hi-IN">Hindi</option>
+  </select>
 
-<button id="pause" class="secondary">
-⏸ Pause
-</button>
+  <button onclick="toggleDark()">🌙 Dark Mode</button>
+</div>
+
+<div class="stats">
+
+  <div class="stat">
+    <div>Completed Malas</div>
+    <div class="stat-number" id="completedMalas">0</div>
+  </div>
+
+  <div class="stat">
+    <div>Total Jaap</div>
+    <div class="stat-number" id="total">0</div>
+  </div>
+
+  <div class="stat">
+    <div>Today</div>
+    <div class="stat-number" id="today">0</div>
+  </div>
+
+  <div class="stat">
+    <div>Current Mala</div>
+    <div class="stat-number" id="current">0</div>
+  </div>
 
 </div>
 
-
-<button id="reset" class="danger">
-Reset Current Mala
-</button>
-
-
-<button id="dark" class="secondary">
-🌙 Dark Mode
-</button>
-
+<div class="calendar">
+  <h2>📅 Daily Records</h2>
+  <div id="monthTitle"></div>
+  <div class="calendar-grid" id="calendar"></div>
 </div>
 
-
-
-<!-- STATISTICS -->
-
-<div class="card stats">
-
-<div class="stat">
-<span>Today</span>
-<b id="today">0</b>
-</div>
-
-<div class="stat">
-<span>Total Jaap</span>
-<b id="total">0</b>
-</div>
-
-<div class="stat">
-<span>Malas</span>
-<b id="malas">0</b>
+<div class="small">
+  Your records are saved on this device.
 </div>
 
 </div>
-
-
-
-<!-- CALENDAR -->
-
-<div class="card">
-
-<div class="calendar-head">
-
-<button onclick="changeMonth(-1)">
-‹
-</button>
-
-<div id="monthTitle"></div>
-
-<button onclick="changeMonth(1)">
-›
-</button>
-
-</div>
-
-
-<div class="week">
-
-<div>Sun</div>
-<div>Mon</div>
-<div>Tue</div>
-<div>Wed</div>
-<div>Thu</div>
-<div>Fri</div>
-<div>Sat</div>
-
-</div>
-
-
-<div class="days" id="days"></div>
-
-</div>
-
-
-
-<!-- DAILY RECORDS -->
-
-<div class="card">
-
-<h3 class="record-title" id="recordTitle">
-Recent Daily Records
-</h3>
-
-<div id="records"></div>
-
-<p class="note">
-🙏 Your daily Jaap records are saved on this device.
-Tap any calendar date to see its count.
-</p>
-
-</div>
-
-</div>
-
-
 
 <script>
 
-/* =========================================
-   SAVED DATA
-========================================= */
+const TOTAL_BEADS = 108;
 
-let count =
-    Number(localStorage.getItem("wg_count") || 0);
+let currentCount =
+  Number(localStorage.getItem("wg_count") || 0);
 
 let total =
-    Number(localStorage.getItem("wg_total") || 0);
+  Number(localStorage.getItem("wg_total") || 0);
 
 let completedMalas =
-    Number(localStorage.getItem("wg_malas") || 0);
+  Number(localStorage.getItem("wg_malas") || 0);
 
 let records =
-    JSON.parse(
-        localStorage.getItem("wg_records") || "{}"
-    );
-
-
-/* =========================================
-   SPEECH VARIABLES
-========================================= */
+  JSON.parse(localStorage.getItem("wg_records") || "{}");
 
 let listening = false;
 
 let recognition = null;
 
-let lastAcceptedText = "";
+let lastCanonical = "";
 
-let lastAcceptedTime = 0;
+let lastRecognitionTime = 0;
 
 
-/*
-   Prevent accidental duplicate recognition.
+/* =========================
+   CREATE 108 BEADS
+========================= */
 
-   A repeated identical recognition inside
-   4 seconds will be ignored.
-*/
+function createMala() {
 
-const DUPLICATE_TIME = 4000;
+  const mala = document.getElementById("mala");
 
+  mala.innerHTML = "";
 
-/* Calendar */
-let viewDate = new Date();
+  const size = mala.clientWidth;
+  const center = size / 2;
+  const radius = size * 0.40;
 
+  for (let i = 0; i < TOTAL_BEADS; i++) {
 
-/* =========================================
-   ELEMENT SHORTCUT
-========================================= */
+    const bead = document.createElement("div");
 
-const $ = id =>
-    document.getElementById(id);
+    bead.className = "bead";
 
+    const angle =
+      (i / TOTAL_BEADS) * Math.PI * 2 - Math.PI / 2;
 
+    const x =
+      center + Math.cos(angle) * radius;
 
-/* =========================================
-   DATE KEY
-========================================= */
+    const y =
+      center + Math.sin(angle) * radius;
 
-function dateKey(date = new Date()) {
+    bead.style.left = x + "px";
+    bead.style.top = y + "px";
 
-    return (
-        date.getFullYear() +
-        "-" +
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
-        String(
-            date.getDate()
-        ).padStart(2, "0")
-    );
-
-}
-
-
-
-/* =========================================
-   SAVE DATA
-========================================= */
-
-function save() {
-
-    localStorage.setItem(
-        "wg_count",
-        count
-    );
-
-
-    localStorage.setItem(
-        "wg_total",
-        total
-    );
-
-
-    localStorage.setItem(
-        "wg_malas",
-        completedMalas
-    );
-
-
-    localStorage.setItem(
-        "wg_records",
-        JSON.stringify(records)
-    );
-
-}
-
-
-
-/* =========================================
-   UPDATE SCREEN
-========================================= */
-
-function update() {
-
-    const today =
-        dateKey();
-
-
-    $("count").textContent =
-        count;
-
-
-    $("today").textContent =
-        records[today] || 0;
-
-
-    $("total").textContent =
-        total;
-
-
-    $("malas").textContent =
-        completedMalas;
-
-
-    /*
-       Current mala progress
-    */
-
-    const malaPosition =
-        count % 108;
-
-
-    $("malaCount").textContent =
-        malaPosition;
-
-
-    /*
-       Progress bar
-    */
-
-    const progress =
-        (malaPosition / 108) * 100;
-
-
-    $("bar").style.width =
-        progress + "%";
-
-
-    renderCalendar();
-
-    renderRecords();
-
-}
-
-
-
-/* =========================================
-   CLEAN SPEECH
-========================================= */
-
-function cleanText(text) {
-
-    return text
-        .toLowerCase()
-        .replace(
-            /[^a-z\u0a00-\u0a7f ]/g,
-            " "
-        )
-        .replace(
-            /\s+/g,
-            " "
-        )
-        .trim();
-
-}
-
-
-
-/* =========================================
-   DETECT WAHEGURU
-========================================= */
-
-function containsWaheguru(text) {
-
-    const s =
-        cleanText(text);
-
-
-    return (
-
-        s.includes("waheguru") ||
-
-        s.includes("wahe guru") ||
-
-        s.includes("waheguroo") ||
-
-        s.includes("wahe guro") ||
-
-        s.includes("ਵਾਹਿਗੁਰੂ") ||
-
-        s.includes("ਵਾਹੇਗੁਰੂ") ||
-
-        s.includes("ਵਾਹੇ ਗੁਰੂ")
-
-    );
-
-}
-
-
-
-/* =========================================
-   ADD ONE JAAP
-========================================= */
-
-function addOne(text) {
-
-    const now =
-        Date.now();
-
-
-    const cleaned =
-        cleanText(text);
-
-
-    /*
-       DUPLICATE PROTECTION
-
-       If exactly the same speech result
-       comes again within 4 seconds,
-       ignore it.
-    */
-
-    if (
-
-        cleaned === lastAcceptedText &&
-
-        now - lastAcceptedTime <
-        DUPLICATE_TIME
-
-    ) {
-
-        return;
-
+    if (i === 0) {
+      bead.classList.add("guru");
     }
 
+    bead.id = "bead-" + i;
 
-    lastAcceptedText =
-        cleaned;
+    mala.appendChild(bead);
+  }
+
+  updateBeads();
+}
 
 
-    lastAcceptedTime =
-        now;
+/* =========================
+   UPDATE BEADS
+========================= */
+
+function updateBeads() {
+
+  for (let i = 0; i < TOTAL_BEADS; i++) {
+
+    const bead =
+      document.getElementById("bead-" + i);
+
+    if (!bead) continue;
+
+    bead.classList.toggle(
+      "active",
+      i < currentCount
+    );
+  }
+
+  document.getElementById("progress").textContent =
+    currentCount + " / 108";
+
+  document.getElementById("malaNumber").textContent =
+    "Mala " + (completedMalas + 1);
+
+  document.getElementById("completedMalas").textContent =
+    completedMalas;
+
+  document.getElementById("total").textContent =
+    total;
+
+  document.getElementById("current").textContent =
+    currentCount;
+
+  updateToday();
+
+  saveData();
+}
 
 
-    /*
-       ONE speech result = ONE JAAP
-    */
+/* =========================
+   DATE
+========================= */
 
-    count++;
+function getTodayKey() {
 
+  const d = new Date();
+
+  return d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0");
+}
+
+
+/* =========================
+   ADD JAAP
+========================= */
+
+function addJaap(amount) {
+
+  if (!amount || amount < 1) return;
+
+  const today = getTodayKey();
+
+  if (!records[today]) {
+    records[today] = 0;
+  }
+
+  for (let i = 0; i < amount; i++) {
+
+    currentCount++;
     total++;
-
-
-    /*
-       Save today's count
-    */
-
-    const today =
-        dateKey();
-
-
-    if (!records[today]) {
-
-        records[today] = 0;
-
-    }
-
-
     records[today]++;
 
+    if (currentCount >= TOTAL_BEADS) {
 
-    /*
-       Check for complete mala
-    */
+      currentCount = 0;
 
-    if (count >= 108) {
+      completedMalas++;
 
-        completedMalas++;
+      speakCompletion();
 
-
-        /*
-           Start a new mala.
-        */
-
-        count = 0;
-
-
-        $("complete").style.display =
-            "block";
-
-
-        setTimeout(
-            function() {
-
-                $("complete").style.display =
-                    "none";
-
-            },
-            2500
-        );
-
+      showCompletion();
     }
+  }
 
+  updateBeads();
 
-    save();
-
-    update();
-
-
-    $("heard").textContent =
-        "✓ Waheguru counted once";
-
-
-    /*
-       Small confirmation sound
-    */
-
-    try {
-
-        const AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-
-        const ctx =
-            new AudioContext();
-
-
-        const oscillator =
-            ctx.createOscillator();
-
-
-        const gain =
-            ctx.createGain();
-
-
-        oscillator.frequency.value =
-            880;
-
-
-        gain.gain.value =
-            0.04;
-
-
-        oscillator.connect(gain);
-
-        gain.connect(
-            ctx.destination
-        );
-
-
-        oscillator.start();
-
-
-        oscillator.stop(
-            ctx.currentTime + 0.08
-        );
-
-    }
-
-    catch (e) {}
-
+  renderCalendar();
 }
 
 
+/* =========================
+   MALA COMPLETE
+========================= */
 
-/* =========================================
+function speakCompletion() {
+
+  if (!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const message =
+    "Mala " + completedMalas + " complete";
+
+  const speech =
+    new SpeechSynthesisUtterance(message);
+
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  window.speechSynthesis.speak(speech);
+}
+
+
+function showCompletion() {
+
+  const box =
+    document.querySelector(".mala-box");
+
+  box.classList.add("complete");
+
+  setTimeout(() => {
+    box.classList.remove("complete");
+  }, 1500);
+
+  document.getElementById("status").textContent =
+    "🙏 Mala " + completedMalas + " complete";
+}
+
+
+/* =========================
+   NORMALIZE SPEECH
+========================= */
+
+function canonicalize(text) {
+
+  let s = text.toLowerCase();
+
+  s = s.replace(/[.,!?;:]/g, " ");
+
+  /*
+     Punjabi spellings
+  */
+
+  s = s.replace(
+    /ਵਾਹਿਗੁਰੂ|ਵਾਹੇਗੁਰੂ|ਵਾਹੇ ਗੁਰੂ|ਵਾਹਿਗੁਰੁ/g,
+    " waheguru "
+  );
+
+  /*
+     English variations
+  */
+
+  s = s.replace(
+    /wahe\s+guroo|wahe\s+guro|waheguroo|waheguro|wahe\s+guru/g,
+    " waheguru "
+  );
+
+  /*
+     Remove everything except letters,
+     spaces and the Punjabi characters
+  */
+
+  s = s.replace(/[^a-z\u0A00-\u0A7F\s]/g, " ");
+
+  s = s.replace(/\s+/g, " ").trim();
+
+  return s;
+}
+
+
+/* =========================
+   COUNT WAHEGURU WORDS
+========================= */
+
+function countWaheguru(text) {
+
+  const canonical = canonicalize(text);
+
+  if (!canonical) return 0;
+
+  const matches =
+    canonical.match(/waheguru/g);
+
+  return matches ? matches.length : 0;
+}
+
+
+/* =========================
    SPEECH RECOGNITION
-========================================= */
+========================= */
 
 function setupRecognition() {
 
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    document.getElementById("status").textContent =
+      "Speech recognition is not supported in this browser.";
+
+    return null;
+  }
+
+  const r = new SpeechRecognition();
+
+  r.continuous = true;
+
+  r.interimResults = false;
+
+  r.maxAlternatives = 1;
+
+  r.lang =
+    document.getElementById("language").value;
+
+  r.onstart = function() {
+
+    listening = true;
+
+    document.getElementById("status").textContent =
+      "🎙️ Listening… Say Waheguru";
+  };
 
 
-    if (!SpeechRecognition) {
+  r.onresult = function(event) {
 
-        $("heard").textContent =
-            "Speech recognition is not supported in this browser.";
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
 
-        return null;
+      if (!event.results[i].isFinal) continue;
 
+      const text =
+        event.results[i][0].transcript.trim();
+
+      const canonical =
+        canonicalize(text);
+
+      const now = Date.now();
+
+      /*
+         Ignore the exact same recognition
+         result repeated immediately by browser.
+      */
+
+      if (
+        canonical === lastCanonical &&
+        now - lastRecognitionTime < 2500
+      ) {
+        continue;
+      }
+
+      lastCanonical = canonical;
+      lastRecognitionTime = now;
+
+      const amount =
+        countWaheguru(text);
+
+      document.getElementById("heard").textContent =
+        "Heard: " + text +
+        (amount ? "  (+" + amount + ")" : "");
+
+      if (amount > 0) {
+
+        addJaap(amount);
+
+      } else {
+
+        document.getElementById("status").textContent =
+          "Listening… I didn't hear Waheguru.";
+      }
+    }
+  };
+
+
+  r.onerror = function(event) {
+
+    if (event.error === "not-allowed") {
+
+      document.getElementById("status").textContent =
+        "Microphone permission is required.";
+
+      listening = false;
+
+      return;
     }
 
+    if (listening) {
 
-    const r =
-        new SpeechRecognition();
+      document.getElementById("status").textContent =
+        "Listening…";
 
-
-    r.continuous =
-        true;
-
-
-    /*
-       IMPORTANT:
-
-       Do NOT process interim speech.
-       This helps prevent duplicate counts.
-    */
-
-    r.interimResults =
-        false;
+    }
+  };
 
 
-    r.lang =
-        $("language").value;
+  r.onend = function() {
+
+    if (listening) {
+
+      setTimeout(() => {
+
+        try {
+          r.start();
+        } catch(e) {}
+
+      }, 300);
+    }
+  };
 
 
-    r.onresult =
-        function(event) {
-
-
-            for (
-
-                let i =
-                    event.resultIndex;
-
-                i <
-                    event.results.length;
-
-                i++
-
-            ) {
-
-
-                const result =
-                    event.results[i];
-
-
-                /*
-                   Only final speech.
-                */
-
-                if (!result.isFinal) {
-
-                    continue;
-
-                }
-
-
-                const text =
-                    result[0].transcript;
-
-
-                $("heard").textContent =
-                    "Heard: " + text;
-
-
-                /*
-                   Detect Waheguru.
-                */
-
-                if (
-                    containsWaheguru(text)
-                ) {
-
-                    addOne(text);
-
-                }
-
-            }
-
-        };
-
-
-    r.onerror =
-        function(event) {
-
-            $("heard").textContent =
-                "Recognition: " +
-                event.error;
-
-        };
-
-
-    /*
-       Restart recognition if it stops.
-    */
-
-    r.onend =
-        function() {
-
-            if (listening) {
-
-                setTimeout(
-                    function() {
-
-                        try {
-
-                            recognition =
-                                setupRecognition();
-
-                            recognition.start();
-
-                        }
-
-                        catch (e) {}
-
-                    },
-                    500
-                );
-
-            }
-
-        };
-
-
-    return r;
-
+  return r;
 }
 
 
+/* =========================
+   START
+========================= */
 
-/* =========================================
-   START LISTENING
-========================================= */
+function startListening() {
 
-$("start").onclick =
-function() {
+  if (!recognition) {
 
-    if (!recognition) {
+    recognition = setupRecognition();
 
-        recognition =
-            setupRecognition();
+    if (!recognition) return;
+  }
 
-    }
+  recognition.lang =
+    document.getElementById("language").value;
+
+  listening = true;
+
+  try {
+    recognition.start();
+  } catch(e) {}
+
+  document.getElementById("status").textContent =
+    "🎙️ Listening… Say Waheguru";
+}
 
 
-    if (!recognition) {
+/* =========================
+   PAUSE
+========================= */
 
-        return;
+function pauseListening() {
 
-    }
+  listening = false;
 
-
-    listening =
-        true;
-
+  if (recognition) {
 
     try {
+      recognition.stop();
+    } catch(e) {}
+  }
 
-        recognition.start();
-
-
-        $("heard").textContent =
-            "🎙️ Listening... Say Waheguru";
-
-    }
-
-    catch (e) {}
-
-};
-
-
-
-/* =========================================
-   PAUSE
-========================================= */
-
-$("pause").onclick =
-function() {
-
-    listening =
-        false;
-
-
-    if (recognition) {
-
-        try {
-
-            recognition.stop();
-
-        }
-
-        catch (e) {}
-
-    }
-
-
-    $("heard").textContent =
-        "⏸ Paused";
-
-};
-
-
-
-/* =========================================
-   RESET CURRENT MALA
-========================================= */
-
-$("reset").onclick =
-function() {
-
-    count =
-        0;
-
-
-    save();
-
-    update();
-
-
-    $("heard").textContent =
-        "Current mala reset";
-
-};
-
-
-
-/* =========================================
-   LANGUAGE
-========================================= */
-
-$("language").onchange =
-function() {
-
-    listening =
-        false;
-
-
-    if (recognition) {
-
-        try {
-
-            recognition.stop();
-
-        }
-
-        catch (e) {}
-
-    }
-
-
-    recognition =
-        null;
-
-
-    $("heard").textContent =
-        "Language changed. Press Start.";
-
-};
-
-
-
-/* =========================================
-   DARK MODE
-========================================= */
-
-$("dark").onclick =
-function() {
-
-    document.body.classList.toggle(
-        "dark"
-    );
-
-
-    localStorage.setItem(
-        "wg_dark",
-        document.body.classList.contains(
-            "dark"
-        )
-    );
-
-};
-
-
-if (
-    localStorage.getItem(
-        "wg_dark"
-    ) === "true"
-) {
-
-    document.body.classList.add(
-        "dark"
-    );
-
+  document.getElementById("status").textContent =
+    "⏸ Paused";
 }
 
 
+/* =========================
+   RESET CURRENT MALA
+========================= */
 
-/* =========================================
+function resetCurrentMala() {
+
+  if (
+    !confirm(
+      "Reset the current mala progress?"
+    )
+  ) return;
+
+  currentCount = 0;
+
+  updateBeads();
+
+  document.getElementById("status").textContent =
+    "Current mala reset.";
+}
+
+
+/* =========================
+   TODAY
+========================= */
+
+function updateToday() {
+
+  const today =
+    getTodayKey();
+
+  document.getElementById("today").textContent =
+    records[today] || 0;
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveData() {
+
+  localStorage.setItem(
+    "wg_count",
+    currentCount
+  );
+
+  localStorage.setItem(
+    "wg_total",
+    total
+  );
+
+  localStorage.setItem(
+    "wg_malas",
+    completedMalas
+  );
+
+  localStorage.setItem(
+    "wg_records",
+    JSON.stringify(records)
+  );
+}
+
+
+/* =========================
    CALENDAR
-========================================= */
+========================= */
 
 function renderCalendar() {
 
-    const year =
-        viewDate.getFullYear();
+  const calendar =
+    document.getElementById("calendar");
 
+  calendar.innerHTML = "";
 
-    const month =
-        viewDate.getMonth();
+  const now = new Date();
 
+  const year =
+    now.getFullYear();
 
-    $("monthTitle").textContent =
-        viewDate.toLocaleString(
-            "en",
-            {
-                month: "long",
-                year: "numeric"
-            }
-        );
+  const month =
+    now.getMonth();
 
-
-    const firstDay =
-        new Date(
-            year,
-            month,
-            1
-        ).getDay();
-
-
-    const daysInMonth =
-        new Date(
-            year,
-            month + 1,
-            0
-        ).getDate();
-
-
-    const box =
-        $("days");
-
-
-    box.innerHTML =
-        "";
-
-
-    /*
-       Empty spaces before first day.
-    */
-
-    for (
-        let i = 0;
-        i < firstDay;
-        i++
-    ) {
-
-        box.appendChild(
-            document.createElement(
-                "div"
-            )
-        );
-
-    }
-
-
-    /*
-       Calendar days.
-    */
-
-    for (
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ) {
-
-
-        const element =
-            document.createElement(
-                "div"
-            );
-
-
-        element.className =
-            "day";
-
-
-        const date =
-            new Date(
-                year,
-                month,
-                day
-            );
-
-
-        const key =
-            dateKey(date);
-
-
-        const dailyCount =
-            records[key] || 0;
-
-
-        if (dailyCount > 0) {
-
-            element.classList.add(
-                "has-count"
-            );
-
-        }
-
-
-        if (key === dateKey()) {
-
-            element.classList.add(
-                "today"
-            );
-
-        }
-
-
-        element.innerHTML =
-            day +
-            (
-                dailyCount
-                ? "<small>" +
-                  dailyCount +
-                  "</small>"
-                : ""
-            );
-
-
-        element.onclick =
-            function() {
-
-                showRecord(key);
-
-            };
-
-
-        box.appendChild(
-            element
-        );
-
-    }
-
-}
-
-
-
-/* =========================================
-   CHANGE MONTH
-========================================= */
-
-function changeMonth(amount) {
-
-    viewDate.setMonth(
-        viewDate.getMonth() +
-        amount
+  const monthName =
+    now.toLocaleString(
+      "default",
+      {
+        month: "long",
+        year: "numeric"
+      }
     );
 
+  document.getElementById("monthTitle").textContent =
+    monthName;
 
-    renderCalendar();
+  const firstDay =
+    new Date(year, month, 1).getDay();
 
+  const daysInMonth =
+    new Date(year, month + 1, 0).getDate();
+
+  const names =
+    ["S","M","T","W","T","F","S"];
+
+  names.forEach(name => {
+
+    const d =
+      document.createElement("div");
+
+    d.className = "day";
+
+    d.textContent = name;
+
+    calendar.appendChild(d);
+  });
+
+  for (let i = 0; i < firstDay; i++) {
+
+    const blank =
+      document.createElement("div");
+
+    blank.className = "day";
+
+    calendar.appendChild(blank);
+  }
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const d =
+      document.createElement("div");
+
+    d.className = "day";
+
+    const key =
+      year + "-" +
+      String(month + 1).padStart(2, "0") +
+      "-" +
+      String(day).padStart(2, "0");
+
+    const amount =
+      records[key] || 0;
+
+    d.innerHTML =
+      "<strong>" + day + "</strong>" +
+      (amount ? "<br>" + amount : "");
+
+    if (amount) {
+
+      d.classList.add("has-jaap");
+
+      d.title =
+        amount + " Waheguru";
+    }
+
+    calendar.appendChild(d);
+  }
 }
 
 
+/* =========================
+   DARK MODE
+========================= */
 
-/* =========================================
-   SHOW DAILY RECORD
-========================================= */
+function toggleDark() {
 
-function showRecord(key) {
+  document.body.classList.toggle("dark");
 
-    const daily =
-        records[key] || 0;
-
-
-    $("recordTitle").textContent =
-        "Record: " + key;
-
-
-    if (daily > 0) {
-
-        $("records").innerHTML =
-            `
-            <div class="empty">
-                🙏 ${daily} Jaap
-            </div>
-            `;
-
-    }
-
-    else {
-
-        $("records").innerHTML =
-            `
-            <div class="empty">
-                No Jaap recorded for this day.
-            </div>
-            `;
-
-    }
-
+  localStorage.setItem(
+    "wg_dark",
+    document.body.classList.contains("dark")
+  );
 }
 
 
+/* =========================
+   KEEP SCREEN AWAKE
+========================= */
 
-/* =========================================
-   RECENT RECORDS
-========================================= */
+let wakeLock = null;
 
-function renderRecords() {
+async function keepScreenAwake() {
 
-    if (
-        $("recordTitle")
-        .textContent
-        .startsWith("Record:")
-    ) {
+  if (!("wakeLock" in navigator)) return;
 
-        return;
+  try {
 
-    }
+    wakeLock =
+      await navigator.wakeLock.request("screen");
 
-
-    $("recordTitle").textContent =
-        "Recent Daily Records";
-
-
-    const keys =
-        Object.keys(records)
-        .sort()
-        .reverse()
-        .slice(0, 10);
-
-
-    if (keys.length === 0) {
-
-        $("records").innerHTML =
-            `
-            <div class="empty">
-                No daily records yet.
-            </div>
-            `;
-
-        return;
-
-    }
-
-
-    $("records").innerHTML =
-        keys.map(
-            key =>
-            `
-            <div class="record">
-
-                <span>
-                    📅 ${key}
-                </span>
-
-                <b>
-                    🙏 ${records[key]}
-                </b>
-
-            </div>
-            `
-        ).join("");
-
+  } catch(e) {}
 }
 
 
+/* =========================
+   LANGUAGE CHANGE
+========================= */
 
-/* =========================================
-   START APP
-========================================= */
+document
+  .getElementById("language")
+  .addEventListener("change", function() {
 
-update();
+    if (recognition) {
+
+      recognition.lang = this.value;
+    }
+  });
+
+
+/* =========================
+   STARTUP
+========================= */
+
+window.addEventListener("load", function() {
+
+  if (
+    localStorage.getItem("wg_dark") === "true"
+  ) {
+    document.body.classList.add("dark");
+  }
+
+  createMala();
+
+  updateBeads();
+
+  renderCalendar();
+
+  keepScreenAwake();
+});
+
+
+window.addEventListener(
+  "resize",
+  createMala
+);
 
 </script>
 
