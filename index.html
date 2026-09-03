@@ -2,1106 +2,1323 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0,
-maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Waheguru Voice Counter</title>
 
 <style>
-
 * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont,
-               "Segoe UI", sans-serif;
-
-  background: #f4f4f4;
-  color: #222;
-
-  transition: 0.3s;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f5f5;
+    color: #222;
 }
 
 body.dark {
-  background: #111;
-  color: white;
+    background: #121212;
+    color: #eee;
 }
 
 .app {
-  width: 100%;
-  max-width: 500px;
-  min-height: 100vh;
-
-  margin: auto;
-
-  padding: 30px 20px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
+    max-width: 520px;
+    margin: auto;
+    padding: 18px;
 }
 
 h1 {
-  font-size: 32px;
-  margin: 0;
-  text-align: center;
+    text-align: center;
+    margin: 8px 0 4px;
+    font-size: 30px;
 }
 
-.subtitle {
-  margin-top: 8px;
-  margin-bottom: 30px;
-
-  color: #777;
-
-  text-align: center;
+.sub {
+    text-align: center;
+    color: #777;
+    margin-bottom: 18px;
 }
 
-.dark .subtitle {
-  color: #aaa;
+.dark .sub {
+    color: #aaa;
 }
 
+.card {
+    background: white;
+    border-radius: 22px;
+    padding: 18px;
+    margin: 12px 0;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+}
 
-/* COUNTER */
+.dark .card {
+    background: #1e1e1e;
+}
 
 .counter {
-
-  width: 270px;
-  height: 270px;
-
-  border-radius: 50%;
-
-  background: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 70px;
-  font-weight: 700;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,0.15);
-
-  margin-bottom: 25px;
-
-  transition: 0.2s;
+    font-size: 86px;
+    font-weight: 800;
+    text-align: center;
+    margin: 10px 0;
 }
 
-.dark .counter {
-  background: #222;
+.target {
+    text-align: center;
+    color: #777;
+    margin-bottom: 12px;
 }
 
-
-/* LISTENING ANIMATION */
-
-.counter.listening {
-
-  animation: pulse 1.5s infinite;
+.progress {
+    height: 12px;
+    background: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-@keyframes pulse {
-
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.04);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-
+.bar {
+    height: 100%;
+    width: 0%;
+    background: #555;
+    transition: 0.25s;
 }
 
-
-/* STATUS */
-
-.status {
-
-  min-height: 25px;
-
-  text-align: center;
-
-  margin-bottom: 18px;
-
-  font-size: 16px;
+button,
+select {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: 0;
+    border-radius: 14px;
+    font-size: 17px;
+    background: #222;
+    color: white;
 }
 
-
-/* BUTTONS */
-
-.buttons {
-
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 10px;
+button.secondary {
+    background: #777;
 }
 
-button {
-
-  width: 100%;
-
-  min-height: 55px;
-
-  border: none;
-
-  border-radius: 15px;
-
-  font-size: 19px;
-
-  font-weight: 600;
-
-  cursor: pointer;
+button.danger {
+    background: #b33;
 }
 
-.start {
-
-  background: #222;
-  color: white;
+.dark button,
+.dark select {
+    background: #eee;
+    color: #111;
 }
 
-.pause {
-
-  background: #ddd;
-  color: #222;
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
-.reset {
-
-  background: #eee;
-  color: #555;
+.controls button {
+    margin-top: 10px;
 }
-
-.dark .pause {
-
-  background: #444;
-  color: white;
-}
-
-.dark .reset {
-
-  background: #333;
-  color: white;
-}
-
-
-/* STATS */
 
 .stats {
-
-  width: 100%;
-
-  display: flex;
-
-  gap: 10px;
-
-  margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    text-align: center;
 }
 
 .stat {
-
-  flex: 1;
-
-  background: white;
-
-  border-radius: 14px;
-
-  padding: 15px;
-
-  text-align: center;
+    padding: 12px;
+    border-radius: 16px;
+    background: #eee;
 }
 
 .dark .stat {
-
-  background: #222;
+    background: #292929;
 }
 
-.stat-number {
-
-  font-size: 25px;
-
-  font-weight: 700;
+.stat b {
+    display: block;
+    font-size: 28px;
 }
-
-.stat-label {
-
-  font-size: 13px;
-
-  color: #777;
-
-  margin-top: 4px;
-}
-
-.dark .stat-label {
-
-  color: #aaa;
-}
-
-
-/* HEARD TEXT */
 
 .heard {
-
-  width: 100%;
-
-  background: white;
-
-  border-radius: 12px;
-
-  padding: 12px;
-
-  margin-top: 15px;
-
-  text-align: center;
-
-  color: #777;
-
-  min-height: 45px;
+    text-align: center;
+    min-height: 25px;
+    margin-top: 12px;
+    color: #777;
 }
 
-.dark .heard {
-
-  background: #222;
-  color: #aaa;
+.calendar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-
-/* DARK MODE */
-
-.dark-button {
-
-  margin-top: 15px;
-
-  background: transparent;
-
-  border: 1px solid #aaa;
-
-  color: inherit;
-
-  min-height: 45px;
-
-  font-size: 16px;
+.calendar-head button {
+    width: auto;
+    padding: 8px 14px;
+    margin: 0;
 }
 
-
-/* FOOTER */
-
-.info {
-
-  margin-top: 15px;
-
-  text-align: center;
-
-  font-size: 13px;
-
-  color: #888;
-
-  line-height: 1.5;
+#monthTitle {
+    font-size: 20px;
+    font-weight: 700;
 }
 
+.week,
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.week div {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+}
+
+.day {
+    min-height: 48px;
+    border-radius: 10px;
+    background: #eee;
+    padding: 5px;
+    text-align: center;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.dark .day {
+    background: #292929;
+}
+
+.day.has-count {
+    font-weight: 700;
+}
+
+.day.today {
+    outline: 2px solid #555;
+}
+
+.day small {
+    display: block;
+    color: #777;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.record-title {
+    text-align: center;
+    margin: 4px 0 12px;
+}
+
+.record {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dark .record {
+    border-bottom: 1px solid #444;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 10px;
+}
+
+.note {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.4;
+}
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-  <h1>🙏 Waheguru Counter</h1>
+<h1>🙏 Waheguru Counter</h1>
 
-  <div class="subtitle">
-    Speak Waheguru to count
-  </div>
-
-
-  <!-- COUNTER -->
-
-  <div id="counter" class="counter">
-    0
-  </div>
+<div class="sub">
+Voice • Automatic Counting • Daily Records
+</div>
 
 
-  <!-- STATUS -->
+<!-- COUNTER -->
+<div class="card">
 
-  <div id="status" class="status">
-    Press Start Listening
-  </div>
+<div class="counter" id="count">0</div>
 
+<div class="target">
+Mala progress:
+<span id="mala">0</span> / 108
+</div>
 
-  <!-- BUTTONS -->
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
 
-  <div class="buttons">
-
-    <button
-      id="startBtn"
-      class="start">
-
-      ▶️ Start Listening
-
-    </button>
-
-
-    <button
-      id="pauseBtn"
-      class="pause">
-
-      ⏸ Pause
-
-    </button>
+<div class="heard" id="heard">
+Press Start Listening
+</div>
 
 
-    <button
-      id="resetBtn"
-      class="reset">
-
-      🔄 Reset
-
-    </button>
-
-  </div>
+<select id="language">
+<option value="en-US">English recognition</option>
+<option value="pa-IN">Punjabi recognition</option>
+</select>
 
 
-  <!-- STATS -->
+<div class="controls">
 
-  <div class="stats">
+<button id="start">
+🎙️ Start
+</button>
 
-    <div class="stat">
+<button id="pause" class="secondary">
+⏸ Pause
+</button>
 
-      <div
-        id="todayCount"
-        class="stat-number">
-
-        0
-
-      </div>
-
-      <div class="stat-label">
-        Today
-      </div>
-
-    </div>
+</div>
 
 
-    <div class="stat">
-
-      <div
-        id="totalCount"
-        class="stat-number">
-
-        0
-
-      </div>
-
-      <div class="stat-label">
-        Total
-      </div>
-
-    </div>
-
-  </div>
+<button id="reset" class="danger">
+Reset Current Count
+</button>
 
 
-  <!-- WHAT PHONE HEARD -->
+<button id="dark" class="secondary">
+🌙 Dark Mode
+</button>
 
-  <div
-    id="heard"
-    class="heard">
-
-    Heard: —
-
-  </div>
+</div>
 
 
-  <!-- DARK MODE -->
 
-  <button
-    id="darkBtn"
-    class="dark-button">
+<!-- TODAY / TOTAL -->
+<div class="card stats">
 
-    🌙 Dark Mode
+<div class="stat">
+<span>Today</span>
+<b id="today">0</b>
+</div>
 
-  </button>
+<div class="stat">
+<span>Total</span>
+<b id="total">0</b>
+</div>
+
+</div>
 
 
-  <div class="info">
 
-    Keep Safari open while chanting.
-    <br>
-    Your count is saved automatically.
+<!-- CALENDAR -->
+<div class="card">
 
-  </div>
+<div class="calendar-head">
+
+<button onclick="changeMonth(-1)">
+‹
+</button>
+
+<div id="monthTitle"></div>
+
+<button onclick="changeMonth(1)">
+›
+</button>
+
+</div>
+
+
+<div class="week">
+
+<div>Sun</div>
+<div>Mon</div>
+<div>Tue</div>
+<div>Wed</div>
+<div>Thu</div>
+<div>Fri</div>
+<div>Sat</div>
+
+</div>
+
+
+<div class="days" id="days"></div>
+
+</div>
+
+
+
+<!-- RECORDS -->
+<div class="card">
+
+<h3 class="record-title" id="recordTitle">
+Recent Daily Records
+</h3>
+
+<div id="records"></div>
+
+<p class="note">
+🙏 Your daily counts are saved on this device.
+Tap any calendar date to see its record.
+</p>
+
+</div>
 
 </div>
 
 
 <script>
 
+/* =========================================
+   SAVED DATA
+========================================= */
 
-/* =====================================
-   WAHEGURU COUNTER VERSION 2
-   ===================================== */
+let count =
+    Number(localStorage.getItem("wg_count") || 0);
 
+let total =
+    Number(localStorage.getItem("wg_total") || 0);
 
-/* -------------------------------------
-   STORAGE
-------------------------------------- */
-
-let totalCount =
-  Number(localStorage.getItem("waheguruTotal")) || 0;
-
-
-let savedDate =
-  localStorage.getItem("waheguruDate");
+let records =
+    JSON.parse(
+        localStorage.getItem("wg_records") || "{}"
+    );
 
 
-let todayCount =
-  Number(localStorage.getItem("waheguruToday")) || 0;
-
-
-const today =
-  new Date().toISOString().split("T")[0];
-
-
-/* New day */
-
-if (savedDate !== today) {
-
-  todayCount = 0;
-
-  localStorage.setItem(
-    "waheguruDate",
-    today
-  );
-
-  localStorage.setItem(
-    "waheguruToday",
-    "0"
-  );
-}
-
-
-/* -------------------------------------
-   VARIABLES
-------------------------------------- */
-
-let recognition = null;
+/* =========================================
+   SPEECH VARIABLES
+========================================= */
 
 let listening = false;
 
-let lastCountTime = 0;
-
+let recognition = null;
 
 /*
- Prevent the same word from being
- counted repeatedly.
+IMPORTANT:
+This prevents the same speech recognition
+result from being counted more than once.
 */
+let processedResults = new Set();
 
-const COOLDOWN = 1000;
+/*
+Longer cooldown prevents one spoken word
+from being counted twice.
+*/
+let lastCountTime = 0;
 
-
-/* -------------------------------------
-   DISPLAY
-------------------------------------- */
-
-function updateDisplay() {
-
-  document.getElementById(
-    "counter"
-  ).textContent = totalCount;
+const COOLDOWN = 1500;
 
 
-  document.getElementById(
-    "totalCount"
-  ).textContent = totalCount;
+/* Calendar month */
+let viewDate = new Date();
 
 
-  document.getElementById(
-    "todayCount"
-  ).textContent = todayCount;
+
+/* =========================================
+   ELEMENT SHORTCUT
+========================================= */
+
+const $ = id => document.getElementById(id);
 
 
-  localStorage.setItem(
-    "waheguruTotal",
-    totalCount
-  );
 
+/* =========================================
+   DATE KEY
+========================================= */
 
-  localStorage.setItem(
-    "waheguruToday",
-    todayCount
-  );
+function dateKey(date = new Date()) {
 
-}
-
-
-updateDisplay();
-
-
-/* -------------------------------------
-   SPEECH RECOGNITION
-------------------------------------- */
-
-const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
-
-if (!SpeechRecognition) {
-
-  document.getElementById(
-    "status"
-  ).textContent =
-    "Voice recognition is not supported.";
-
-  document.getElementById(
-    "startBtn"
-  ).disabled = true;
+    return (
+        date.getFullYear() +
+        "-" +
+        String(date.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(date.getDate()).padStart(2, "0")
+    );
 
 }
 
 
-else {
 
-  recognition =
-    new SpeechRecognition();
+/* =========================================
+   SAVE EVERYTHING
+========================================= */
 
+function save() {
 
-  recognition.continuous = true;
+    localStorage.setItem(
+        "wg_count",
+        count
+    );
 
+    localStorage.setItem(
+        "wg_total",
+        total
+    );
 
-  recognition.interimResults = true;
+    localStorage.setItem(
+        "wg_records",
+        JSON.stringify(records)
+    );
 
-
-  /*
-   English is used because Safari's
-   speech recognition works well with
-   English words.
-  */
-
-  recognition.lang = "en-US";
-
-
-  recognition.maxAlternatives = 5;
-
-
-  /* ----------------------------------
-     RESULT
-  ---------------------------------- */
-
-  recognition.onresult =
-  function(event) {
-
-    let text = "";
+}
 
 
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
 
-      text +=
-        event.results[i][0].transcript
-        + " ";
+/* =========================================
+   UPDATE SCREEN
+========================================= */
 
-    }
+function update() {
 
+    const todayKey = dateKey();
 
-    text = text.trim();
+    const todayCount =
+        records[todayKey] || 0;
 
 
-    document.getElementById(
-      "heard"
-    ).textContent =
-      "Heard: " + text;
+    $("count").textContent = count;
+
+    $("today").textContent =
+        todayCount;
+
+    $("total").textContent =
+        total;
 
 
     /*
-     Check for Waheguru.
+    Show progress toward 108
+    */
+    const malaCount =
+        count % 108;
+
+    $("mala").textContent =
+        malaCount;
+
+
+    const progress =
+        (malaCount / 108) * 100;
+
+    $("bar").style.width =
+        progress + "%";
+
+
+    renderCalendar();
+
+    renderRecords();
+
+}
+
+
+
+/* =========================================
+   RECOGNIZE WAHEGURU
+========================================= */
+
+function isWaheguru(text) {
+
+    const s =
+        text
+        .toLowerCase()
+        .replace(
+            /[^a-z\u0a00-\u0a7f ]/g,
+            " "
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+
+
+    return (
+
+        s.includes("waheguru") ||
+
+        s.includes("wahe guru") ||
+
+        s.includes("waheguroo") ||
+
+        s.includes("wahe guro") ||
+
+        s.includes("ਵਾਹਿਗੁਰੂ") ||
+
+        s.includes("ਵਾਹੇਗੁਰੂ") ||
+
+        s.includes("ਵਾਹੇ ਗੁਰੂ")
+
+    );
+
+}
+
+
+
+/* =========================================
+   ADD ONE COUNT
+========================================= */
+
+function addCount() {
+
+    const now = Date.now();
+
+
+    /*
+    VERY IMPORTANT:
+
+    Don't count again if the browser
+    sends another result immediately.
     */
 
-    if (containsWaheguru(text)) {
+    if (
+        now - lastCountTime <
+        COOLDOWN
+    ) {
 
-      const now = Date.now();
-
-
-      if (
-        now - lastCountTime
-        > COOLDOWN
-      ) {
-
-        addCount();
-
-        lastCountTime = now;
-
-      }
+        return;
 
     }
 
-  };
+
+    lastCountTime = now;
 
 
-  /* ----------------------------------
-     START
-  ---------------------------------- */
+    /* Increase current count */
+    count++;
 
-  recognition.onstart =
-  function() {
+
+    /* Increase lifetime total */
+    total++;
+
+
+    /* Save today's record */
+    const key =
+        dateKey();
+
+
+    if (!records[key]) {
+
+        records[key] = 0;
+
+    }
+
+
+    records[key]++;
+
+
+    save();
+
+    update();
+
+
+    $("heard").textContent =
+        "✓ Waheguru counted once";
+
+
+    /*
+    Small confirmation sound
+    */
+
+    try {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+
+        const ctx =
+            new AudioContext();
+
+
+        const oscillator =
+            ctx.createOscillator();
+
+
+        const gain =
+            ctx.createGain();
+
+
+        oscillator.frequency.value =
+            880;
+
+
+        gain.gain.value =
+            0.04;
+
+
+        oscillator.connect(gain);
+
+        gain.connect(ctx.destination);
+
+
+        oscillator.start();
+
+
+        oscillator.stop(
+            ctx.currentTime + 0.08
+        );
+
+    }
+
+    catch (e) {}
+
+}
+
+
+
+/* =========================================
+   SPEECH RECOGNITION
+========================================= */
+
+function setupRecognition() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if (!SpeechRecognition) {
+
+        $("heard").textContent =
+            "Speech recognition is not supported in this browser.";
+
+        return null;
+
+    }
+
+
+    const r =
+        new SpeechRecognition();
+
+
+    r.continuous = true;
+
+    r.interimResults = true;
+
+    r.lang =
+        $("language").value;
+
+
+    /*
+    Keeps track of final results
+    */
+
+    r.onresult = function(event) {
+
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+
+            const result =
+                event.results[i];
+
+
+            const text =
+                result[0].transcript;
+
+
+            $("heard").textContent =
+                "Heard: " + text;
+
+
+            /*
+            KEY FIX:
+
+            Only process FINAL speech.
+
+            Interim speech is ignored.
+
+            This stops the browser from counting
+            the same word once during interim
+            recognition and again when finalized.
+            */
+
+            if (!result.isFinal) {
+
+                continue;
+
+            }
+
+
+            /*
+            Create a unique ID for this result.
+
+            Prevents the exact same result from
+            being processed twice.
+            */
+
+            const resultID =
+                event.timeStamp +
+                "-" +
+                i +
+                "-" +
+                text;
+
+
+            if (
+                processedResults.has(
+                    resultID
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            processedResults.add(
+                resultID
+            );
+
+
+            /*
+            Keep memory small.
+            */
+
+            if (
+                processedResults.size >
+                100
+            ) {
+
+                const first =
+                    processedResults.values()
+                    .next()
+                    .value;
+
+                processedResults.delete(
+                    first
+                );
+
+            }
+
+
+            /*
+            Now check Waheguru.
+            */
+
+            if (
+                isWaheguru(text)
+            ) {
+
+                addCount();
+
+            }
+
+        }
+
+    };
+
+
+    r.onerror = function(event) {
+
+        $("heard").textContent =
+            "Recognition: " +
+            event.error;
+
+    };
+
+
+    /*
+    Automatically restart if recognition
+    stops while Start mode is active.
+    */
+
+    r.onend = function() {
+
+        if (listening) {
+
+            setTimeout(
+                function() {
+
+                    try {
+
+                        recognition =
+                            setupRecognition();
+
+                        recognition.start();
+
+                    }
+
+                    catch (e) {}
+
+                },
+                300
+            );
+
+        }
+
+    };
+
+
+    return r;
+
+}
+
+
+
+/* =========================================
+   START
+========================================= */
+
+$("start").onclick =
+function() {
+
+    if (!recognition) {
+
+        recognition =
+            setupRecognition();
+
+    }
+
+
+    if (!recognition) {
+
+        return;
+
+    }
+
 
     listening = true;
 
 
-    document.getElementById(
-      "status"
-    ).textContent =
-      "🎙️ Listening... Speak Waheguru";
-
-
-    document.getElementById(
-      "counter"
-    ).classList.add(
-      "listening"
-    );
-
-  };
-
-
-  /* ----------------------------------
-     END
-  ---------------------------------- */
-
-  recognition.onend =
-  function() {
-
-    document.getElementById(
-      "counter"
-    ).classList.remove(
-      "listening"
-    );
-
-
-    /*
-     Safari sometimes stops speech
-     recognition automatically.
-
-     Restart if user has not paused.
-    */
-
-    if (listening) {
-
-      setTimeout(
-        function() {
-
-          try {
-
-            recognition.start();
-
-          }
-
-          catch(error) {
-
-            console.log(error);
-
-          }
-
-        },
-        300
-      );
-
-    }
-
-  };
-
-
-  /* ----------------------------------
-     ERROR
-  ---------------------------------- */
-
-  recognition.onerror =
-  function(event) {
-
-    console.log(
-      "Speech error:",
-      event.error
-    );
-
-
-    if (
-      event.error ===
-      "not-allowed"
-    ) {
-
-      listening = false;
-
-
-      document.getElementById(
-        "status"
-      ).textContent =
-        "Please allow microphone access.";
-
-    }
-
-
-    else if (
-      event.error ===
-      "no-speech"
-    ) {
-
-      if (listening) {
-
-        document.getElementById(
-          "status"
-        ).textContent =
-          "🎙️ Listening...";
-
-      }
-
-    }
-
-  };
-
-}
-
-
-/* -------------------------------------
-   DETECT WAHEGURU
-------------------------------------- */
-
-function containsWaheguru(text) {
-
-  text =
-    text.toLowerCase();
-
-
-  /*
-   Remove punctuation.
-  */
-
-  text =
-    text.replace(
-      /[.,!?;:'"]/g,
-      ""
-    );
-
-
-  /*
-   Common recognition variations.
-  */
-
-  const words = [
-
-    "waheguru",
-
-    "wahe guru",
-
-    "wahegooru",
-
-    "wahe goru",
-
-    "waheguroo",
-
-    "wahe guro",
-
-    "waheguru ji",
-
-    "wahe guru ji",
-
-    "waheguro ji",
-
-    "wahegooru ji"
-
-  ];
-
-
-  for (
-    let word of words
-  ) {
-
-    if (
-      text.includes(word)
-    ) {
-
-      return true;
-
-    }
-
-  }
-
-
-  return false;
-
-}
-
-
-/* -------------------------------------
-   ADD COUNT
-------------------------------------- */
-
-function addCount() {
-
-  totalCount++;
-
-  todayCount++;
-
-
-  updateDisplay();
-
-
-  document.getElementById(
-    "status"
-  ).textContent =
-    "🙏 Waheguru counted";
-
-
-  /*
-   Confirmation sound.
-  */
-
-  playSound();
-
-}
-
-
-/* -------------------------------------
-   SOUND
-------------------------------------- */
-
-function playSound() {
-
-  try {
-
-    const audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-
-    const oscillator =
-      audioContext.createOscillator();
-
-
-    const gain =
-      audioContext.createGain();
-
-
-    oscillator.frequency.value =
-      880;
-
-
-    oscillator.connect(gain);
-
-
-    gain.connect(
-      audioContext.destination
-    );
-
-
-    gain.gain.value =
-      0.08;
-
-
-    oscillator.start();
-
-
-    oscillator.stop(
-      audioContext.currentTime
-      + 0.08
-    );
-
-  }
-
-  catch(error) {
-
-    console.log(error);
-
-  }
-
-}
-
-
-/* -------------------------------------
-   START BUTTON
-------------------------------------- */
-
-document
-  .getElementById("startBtn")
-  .addEventListener(
-    "click",
-    function() {
-
-      if (!recognition) {
-        return;
-      }
-
-
-      listening = true;
-
-
-      try {
+    try {
 
         recognition.start();
 
-      }
-
-      catch(error) {
-
-        console.log(error);
-
-      }
+        $("heard").textContent =
+            "🎙️ Listening... Say Waheguru";
 
     }
-  );
+
+    catch (e) {}
+
+};
 
 
-/* -------------------------------------
-   PAUSE BUTTON
-------------------------------------- */
 
-document
-  .getElementById("pauseBtn")
-  .addEventListener(
-    "click",
-    function() {
+/* =========================================
+   PAUSE
+========================================= */
 
-      listening = false;
+$("pause").onclick =
+function() {
+
+    listening = false;
 
 
-      if (recognition) {
+    if (recognition) {
 
         try {
 
-          recognition.stop();
+            recognition.stop();
 
         }
 
-        catch(error) {
+        catch (e) {}
 
-          console.log(error);
-
-        }
-
-      }
+    }
 
 
-      document.getElementById(
-        "status"
-      ).textContent =
+    $("heard").textContent =
         "⏸ Paused";
 
+};
 
-      document.getElementById(
-        "counter"
-      ).classList.remove(
-        "listening"
-      );
+
+
+/* =========================================
+   RESET CURRENT COUNT
+========================================= */
+
+$("reset").onclick =
+function() {
+
+    count = 0;
+
+    save();
+
+    update();
+
+    $("heard").textContent =
+        "Current count reset";
+
+};
+
+
+
+/* =========================================
+   CHANGE LANGUAGE
+========================================= */
+
+$("language").onchange =
+function() {
+
+    listening = false;
+
+
+    if (recognition) {
+
+        try {
+
+            recognition.stop();
+
+        }
+
+        catch (e) {}
 
     }
-  );
 
 
-/* -------------------------------------
-   RESET BUTTON
-------------------------------------- */
-
-document
-  .getElementById("resetBtn")
-  .addEventListener(
-    "click",
-    function() {
-
-      if (
-        confirm(
-          "Reset today's and total count?"
-        )
-      ) {
-
-        totalCount = 0;
-
-        todayCount = 0;
+    recognition = null;
 
 
-        updateDisplay();
+    $("heard").textContent =
+        "Language changed. Press Start.";
+
+};
 
 
-        document.getElementById(
-          "status"
-        ).textContent =
-          "Count reset to 0.";
 
-      }
-
-    }
-  );
-
-
-/* -------------------------------------
+/* =========================================
    DARK MODE
-------------------------------------- */
+========================================= */
 
-const darkSaved =
-  localStorage.getItem(
-    "waheguruDark"
-  );
+$("dark").onclick =
+function() {
+
+    document.body.classList.toggle(
+        "dark"
+    );
 
 
-if (darkSaved === "true") {
+    localStorage.setItem(
+        "wg_dark",
+        document.body.classList.contains(
+            "dark"
+        )
+    );
 
-  document.body.classList.add(
-    "dark"
-  );
+};
 
-  document.getElementById(
-    "darkBtn"
-  ).textContent =
-    "☀️ Light Mode";
+
+
+if (
+    localStorage.getItem(
+        "wg_dark"
+    ) === "true"
+) {
+
+    document.body.classList.add(
+        "dark"
+    );
 
 }
 
 
-document
-  .getElementById("darkBtn")
-  .addEventListener(
-    "click",
-    function() {
 
-      document.body.classList.toggle(
-        "dark"
-      );
+/* =========================================
+   CALENDAR
+========================================= */
+
+function renderCalendar() {
+
+    const year =
+        viewDate.getFullYear();
 
 
-      const dark =
-        document.body.classList.contains(
-          "dark"
+    const month =
+        viewDate.getMonth();
+
+
+    $("monthTitle").textContent =
+        viewDate.toLocaleString(
+            "en",
+            {
+                month: "long",
+                year: "numeric"
+            }
         );
 
 
-      localStorage.setItem(
-        "waheguruDark",
-        dark
-      );
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
 
 
-      this.textContent =
-        dark
-        ? "☀️ Light Mode"
-        : "🌙 Dark Mode";
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    const box =
+        $("days");
+
+
+    box.innerHTML = "";
+
+
+    /*
+    Empty spaces before first day
+    */
+
+    for (
+        let i = 0;
+        i < firstDay;
+        i++
+    ) {
+
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+        box.appendChild(empty);
 
     }
-  );
+
+
+
+    /*
+    Create calendar days
+    */
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+
+        const element =
+            document.createElement(
+                "div"
+            );
+
+
+        element.className =
+            "day";
+
+
+        const thisDate =
+            new Date(
+                year,
+                month,
+                day
+            );
+
+
+        const key =
+            dateKey(thisDate);
+
+
+        const dailyCount =
+            records[key] || 0;
+
+
+        /*
+        Show count on day
+        */
+
+        if (dailyCount > 0) {
+
+            element.classList.add(
+                "has-count"
+            );
+
+        }
+
+
+        /*
+        Highlight today
+        */
+
+        if (
+            key === dateKey()
+        ) {
+
+            element.classList.add(
+                "today"
+            );
+
+        }
+
+
+        element.innerHTML =
+            day +
+            (
+                dailyCount
+                ? "<small>" +
+                  dailyCount +
+                  "</small>"
+                : ""
+            );
+
+
+        /*
+        Click date to see record
+        */
+
+        element.onclick =
+        function() {
+
+            showRecord(key);
+
+        };
+
+
+        box.appendChild(
+            element
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   CHANGE MONTH
+========================================= */
+
+function changeMonth(amount) {
+
+    viewDate.setMonth(
+        viewDate.getMonth() +
+        amount
+    );
+
+
+    renderCalendar();
+
+}
+
+
+
+/* =========================================
+   SHOW SELECTED DAY
+========================================= */
+
+function showRecord(key) {
+
+    const dailyCount =
+        records[key] || 0;
+
+
+    $("recordTitle").textContent =
+        "Record: " + key;
+
+
+    if (dailyCount > 0) {
+
+        $("records").innerHTML =
+            `
+            <div class="empty">
+                🙏 ${dailyCount}
+                Waheguru counted
+            </div>
+            `;
+
+    }
+
+    else {
+
+        $("records").innerHTML =
+            `
+            <div class="empty">
+                No count recorded for this day.
+            </div>
+            `;
+
+    }
+
+}
+
+
+
+/* =========================================
+   RECENT RECORDS
+========================================= */
+
+function renderRecords() {
+
+    /*
+    Don't overwrite selected date
+    */
+
+    if (
+        $("recordTitle")
+        .textContent
+        .startsWith("Record:")
+    ) {
+
+        return;
+
+    }
+
+
+    $("recordTitle").textContent =
+        "Recent Daily Records";
+
+
+    const keys =
+        Object.keys(records)
+        .sort()
+        .reverse()
+        .slice(0, 10);
+
+
+    if (keys.length === 0) {
+
+        $("records").innerHTML =
+            `
+            <div class="empty">
+                No daily records yet.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    $("records").innerHTML =
+        keys
+        .map(
+            key =>
+            `
+            <div class="record">
+                <span>📅 ${key}</span>
+                <b>🙏 ${records[key]}</b>
+            </div>
+            `
+        )
+        .join("");
+
+}
+
+
+
+/* =========================================
+   START APP
+========================================= */
+
+update();
 
 </script>
 
