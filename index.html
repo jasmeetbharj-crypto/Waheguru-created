@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Waheguru Voice Counter</title>
 
 <style>
@@ -64,14 +63,21 @@ h1 {
     margin: 10px 0;
 }
 
-.target {
+.mala-title {
     text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.mala-progress {
+    text-align: center;
+    font-size: 17px;
     color: #777;
-    margin-bottom: 12px;
+    margin: 8px 0 12px;
 }
 
 .progress {
-    height: 12px;
+    height: 14px;
     background: #ddd;
     border-radius: 20px;
     overflow: hidden;
@@ -81,11 +87,18 @@ h1 {
     height: 100%;
     width: 0%;
     background: #555;
-    transition: 0.25s;
+    transition: width 0.25s;
 }
 
-button,
-select {
+.heard {
+    text-align: center;
+    min-height: 25px;
+    margin-top: 12px;
+    color: #777;
+}
+
+select,
+button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
@@ -104,8 +117,8 @@ button.danger {
     background: #b33;
 }
 
-.dark button,
-.dark select {
+.dark select,
+.dark button {
     background: #eee;
     color: #111;
 }
@@ -116,19 +129,15 @@ button.danger {
     gap: 10px;
 }
 
-.controls button {
-    margin-top: 10px;
-}
-
 .stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
     text-align: center;
 }
 
 .stat {
-    padding: 12px;
+    padding: 12px 5px;
     border-radius: 16px;
     background: #eee;
 }
@@ -137,16 +146,29 @@ button.danger {
     background: #292929;
 }
 
-.stat b {
-    display: block;
-    font-size: 28px;
+.stat span {
+    font-size: 13px;
 }
 
-.heard {
+.stat b {
+    display: block;
+    font-size: 25px;
+    margin-top: 4px;
+}
+
+.complete {
+    display: none;
     text-align: center;
-    min-height: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 14px;
+    background: #eee;
     margin-top: 12px;
-    color: #777;
+}
+
+.dark .complete {
+    background: #292929;
 }
 
 .calendar-head {
@@ -246,22 +268,30 @@ button.danger {
 <h1>🙏 Waheguru Counter</h1>
 
 <div class="sub">
-Voice • Automatic Counting • Daily Records
+Voice Jaap • Jaap Mala • Daily Records
 </div>
 
 
-<!-- COUNTER -->
+<!-- MAIN COUNTER -->
+
 <div class="card">
 
 <div class="counter" id="count">0</div>
 
-<div class="target">
-Mala progress:
-<span id="mala">0</span> / 108
+<div class="mala-title">
+📿 Jaap Mala
+</div>
+
+<div class="mala-progress">
+<span id="malaCount">0</span> / 108
 </div>
 
 <div class="progress">
 <div class="bar" id="bar"></div>
+</div>
+
+<div class="complete" id="complete">
+🙏 Mala Complete!
 </div>
 
 <div class="heard" id="heard">
@@ -270,8 +300,15 @@ Press Start Listening
 
 
 <select id="language">
-<option value="en-US">English recognition</option>
-<option value="pa-IN">Punjabi recognition</option>
+
+<option value="en-US">
+English recognition
+</option>
+
+<option value="pa-IN">
+Punjabi recognition
+</option>
+
 </select>
 
 
@@ -289,7 +326,7 @@ Press Start Listening
 
 
 <button id="reset" class="danger">
-Reset Current Count
+Reset Current Mala
 </button>
 
 
@@ -301,7 +338,8 @@ Reset Current Count
 
 
 
-<!-- TODAY / TOTAL -->
+<!-- STATISTICS -->
+
 <div class="card stats">
 
 <div class="stat">
@@ -310,8 +348,13 @@ Reset Current Count
 </div>
 
 <div class="stat">
-<span>Total</span>
+<span>Total Jaap</span>
 <b id="total">0</b>
+</div>
+
+<div class="stat">
+<span>Malas</span>
+<b id="malas">0</b>
 </div>
 
 </div>
@@ -319,6 +362,7 @@ Reset Current Count
 
 
 <!-- CALENDAR -->
+
 <div class="card">
 
 <div class="calendar-head">
@@ -355,7 +399,8 @@ Reset Current Count
 
 
 
-<!-- RECORDS -->
+<!-- DAILY RECORDS -->
+
 <div class="card">
 
 <h3 class="record-title" id="recordTitle">
@@ -365,13 +410,14 @@ Recent Daily Records
 <div id="records"></div>
 
 <p class="note">
-🙏 Your daily counts are saved on this device.
-Tap any calendar date to see its record.
+🙏 Your daily Jaap records are saved on this device.
+Tap any calendar date to see its count.
 </p>
 
 </div>
 
 </div>
+
 
 
 <script>
@@ -385,6 +431,9 @@ let count =
 
 let total =
     Number(localStorage.getItem("wg_total") || 0);
+
+let completedMalas =
+    Number(localStorage.getItem("wg_malas") || 0);
 
 let records =
     JSON.parse(
@@ -400,32 +449,31 @@ let listening = false;
 
 let recognition = null;
 
-/*
-IMPORTANT:
-This prevents the same speech recognition
-result from being counted more than once.
-*/
-let processedResults = new Set();
+let lastAcceptedText = "";
+
+let lastAcceptedTime = 0;
+
 
 /*
-Longer cooldown prevents one spoken word
-from being counted twice.
+   Prevent accidental duplicate recognition.
+
+   A repeated identical recognition inside
+   4 seconds will be ignored.
 */
-let lastCountTime = 0;
 
-const COOLDOWN = 1500;
+const DUPLICATE_TIME = 4000;
 
 
-/* Calendar month */
+/* Calendar */
 let viewDate = new Date();
-
 
 
 /* =========================================
    ELEMENT SHORTCUT
 ========================================= */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+    document.getElementById(id);
 
 
 
@@ -438,9 +486,13 @@ function dateKey(date = new Date()) {
     return (
         date.getFullYear() +
         "-" +
-        String(date.getMonth() + 1).padStart(2, "0") +
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0") +
         "-" +
-        String(date.getDate()).padStart(2, "0")
+        String(
+            date.getDate()
+        ).padStart(2, "0")
     );
 
 }
@@ -448,7 +500,7 @@ function dateKey(date = new Date()) {
 
 
 /* =========================================
-   SAVE EVERYTHING
+   SAVE DATA
 ========================================= */
 
 function save() {
@@ -458,10 +510,18 @@ function save() {
         count
     );
 
+
     localStorage.setItem(
         "wg_total",
         total
     );
+
+
+    localStorage.setItem(
+        "wg_malas",
+        completedMalas
+    );
+
 
     localStorage.setItem(
         "wg_records",
@@ -478,33 +538,45 @@ function save() {
 
 function update() {
 
-    const todayKey = dateKey();
-
-    const todayCount =
-        records[todayKey] || 0;
+    const today =
+        dateKey();
 
 
-    $("count").textContent = count;
+    $("count").textContent =
+        count;
+
 
     $("today").textContent =
-        todayCount;
+        records[today] || 0;
+
 
     $("total").textContent =
         total;
 
 
+    $("malas").textContent =
+        completedMalas;
+
+
     /*
-    Show progress toward 108
+       Current mala progress
     */
-    const malaCount =
+
+    const malaPosition =
         count % 108;
 
-    $("mala").textContent =
-        malaCount;
 
+    $("malaCount").textContent =
+        malaPosition;
+
+
+    /*
+       Progress bar
+    */
 
     const progress =
-        (malaCount / 108) * 100;
+        (malaPosition / 108) * 100;
+
 
     $("bar").style.width =
         progress + "%";
@@ -519,13 +591,12 @@ function update() {
 
 
 /* =========================================
-   RECOGNIZE WAHEGURU
+   CLEAN SPEECH
 ========================================= */
 
-function isWaheguru(text) {
+function cleanText(text) {
 
-    const s =
-        text
+    return text
         .toLowerCase()
         .replace(
             /[^a-z\u0a00-\u0a7f ]/g,
@@ -536,6 +607,19 @@ function isWaheguru(text) {
             " "
         )
         .trim();
+
+}
+
+
+
+/* =========================================
+   DETECT WAHEGURU
+========================================= */
+
+function containsWaheguru(text) {
+
+    const s =
+        cleanText(text);
 
 
     return (
@@ -561,24 +645,34 @@ function isWaheguru(text) {
 
 
 /* =========================================
-   ADD ONE COUNT
+   ADD ONE JAAP
 ========================================= */
 
-function addCount() {
+function addOne(text) {
 
-    const now = Date.now();
+    const now =
+        Date.now();
+
+
+    const cleaned =
+        cleanText(text);
 
 
     /*
-    VERY IMPORTANT:
+       DUPLICATE PROTECTION
 
-    Don't count again if the browser
-    sends another result immediately.
+       If exactly the same speech result
+       comes again within 4 seconds,
+       ignore it.
     */
 
     if (
-        now - lastCountTime <
-        COOLDOWN
+
+        cleaned === lastAcceptedText &&
+
+        now - lastAcceptedTime <
+        DUPLICATE_TIME
+
     ) {
 
         return;
@@ -586,30 +680,72 @@ function addCount() {
     }
 
 
-    lastCountTime = now;
+    lastAcceptedText =
+        cleaned;
 
 
-    /* Increase current count */
+    lastAcceptedTime =
+        now;
+
+
+    /*
+       ONE speech result = ONE JAAP
+    */
+
     count++;
 
-
-    /* Increase lifetime total */
     total++;
 
 
-    /* Save today's record */
-    const key =
+    /*
+       Save today's count
+    */
+
+    const today =
         dateKey();
 
 
-    if (!records[key]) {
+    if (!records[today]) {
 
-        records[key] = 0;
+        records[today] = 0;
 
     }
 
 
-    records[key]++;
+    records[today]++;
+
+
+    /*
+       Check for complete mala
+    */
+
+    if (count >= 108) {
+
+        completedMalas++;
+
+
+        /*
+           Start a new mala.
+        */
+
+        count = 0;
+
+
+        $("complete").style.display =
+            "block";
+
+
+        setTimeout(
+            function() {
+
+                $("complete").style.display =
+                    "none";
+
+            },
+            2500
+        );
+
+    }
 
 
     save();
@@ -622,7 +758,7 @@ function addCount() {
 
 
     /*
-    Small confirmation sound
+       Small confirmation sound
     */
 
     try {
@@ -654,7 +790,9 @@ function addCount() {
 
         oscillator.connect(gain);
 
-        gain.connect(ctx.destination);
+        gain.connect(
+            ctx.destination
+        );
 
 
         oscillator.start();
@@ -697,167 +835,122 @@ function setupRecognition() {
         new SpeechRecognition();
 
 
-    r.continuous = true;
+    r.continuous =
+        true;
 
-    r.interimResults = true;
+
+    /*
+       IMPORTANT:
+
+       Do NOT process interim speech.
+       This helps prevent duplicate counts.
+    */
+
+    r.interimResults =
+        false;
+
 
     r.lang =
         $("language").value;
 
 
-    /*
-    Keeps track of final results
-    */
-
-    r.onresult = function(event) {
+    r.onresult =
+        function(event) {
 
 
-        for (
-            let i = event.resultIndex;
-            i < event.results.length;
-            i++
-        ) {
+            for (
+
+                let i =
+                    event.resultIndex;
+
+                i <
+                    event.results.length;
+
+                i++
+
+            ) {
 
 
-            const result =
-                event.results[i];
+                const result =
+                    event.results[i];
 
 
-            const text =
-                result[0].transcript;
+                /*
+                   Only final speech.
+                */
 
+                if (!result.isFinal) {
+
+                    continue;
+
+                }
+
+
+                const text =
+                    result[0].transcript;
+
+
+                $("heard").textContent =
+                    "Heard: " + text;
+
+
+                /*
+                   Detect Waheguru.
+                */
+
+                if (
+                    containsWaheguru(text)
+                ) {
+
+                    addOne(text);
+
+                }
+
+            }
+
+        };
+
+
+    r.onerror =
+        function(event) {
 
             $("heard").textContent =
-                "Heard: " + text;
+                "Recognition: " +
+                event.error;
+
+        };
 
 
-            /*
-            KEY FIX:
+    /*
+       Restart recognition if it stops.
+    */
 
-            Only process FINAL speech.
+    r.onend =
+        function() {
 
-            Interim speech is ignored.
+            if (listening) {
 
-            This stops the browser from counting
-            the same word once during interim
-            recognition and again when finalized.
-            */
+                setTimeout(
+                    function() {
 
-            if (!result.isFinal) {
+                        try {
 
-                continue;
+                            recognition =
+                                setupRecognition();
 
-            }
+                            recognition.start();
 
+                        }
 
-            /*
-            Create a unique ID for this result.
+                        catch (e) {}
 
-            Prevents the exact same result from
-            being processed twice.
-            */
-
-            const resultID =
-                event.timeStamp +
-                "-" +
-                i +
-                "-" +
-                text;
-
-
-            if (
-                processedResults.has(
-                    resultID
-                )
-            ) {
-
-                continue;
-
-            }
-
-
-            processedResults.add(
-                resultID
-            );
-
-
-            /*
-            Keep memory small.
-            */
-
-            if (
-                processedResults.size >
-                100
-            ) {
-
-                const first =
-                    processedResults.values()
-                    .next()
-                    .value;
-
-                processedResults.delete(
-                    first
+                    },
+                    500
                 );
 
             }
 
-
-            /*
-            Now check Waheguru.
-            */
-
-            if (
-                isWaheguru(text)
-            ) {
-
-                addCount();
-
-            }
-
-        }
-
-    };
-
-
-    r.onerror = function(event) {
-
-        $("heard").textContent =
-            "Recognition: " +
-            event.error;
-
-    };
-
-
-    /*
-    Automatically restart if recognition
-    stops while Start mode is active.
-    */
-
-    r.onend = function() {
-
-        if (listening) {
-
-            setTimeout(
-                function() {
-
-                    try {
-
-                        recognition =
-                            setupRecognition();
-
-                        recognition.start();
-
-                    }
-
-                    catch (e) {}
-
-                },
-                300
-            );
-
-        }
-
-    };
+        };
 
 
     return r;
@@ -867,7 +960,7 @@ function setupRecognition() {
 
 
 /* =========================================
-   START
+   START LISTENING
 ========================================= */
 
 $("start").onclick =
@@ -888,12 +981,14 @@ function() {
     }
 
 
-    listening = true;
+    listening =
+        true;
 
 
     try {
 
         recognition.start();
+
 
         $("heard").textContent =
             "🎙️ Listening... Say Waheguru";
@@ -913,7 +1008,8 @@ function() {
 $("pause").onclick =
 function() {
 
-    listening = false;
+    listening =
+        false;
 
 
     if (recognition) {
@@ -937,33 +1033,37 @@ function() {
 
 
 /* =========================================
-   RESET CURRENT COUNT
+   RESET CURRENT MALA
 ========================================= */
 
 $("reset").onclick =
 function() {
 
-    count = 0;
+    count =
+        0;
+
 
     save();
 
     update();
 
+
     $("heard").textContent =
-        "Current count reset";
+        "Current mala reset";
 
 };
 
 
 
 /* =========================================
-   CHANGE LANGUAGE
+   LANGUAGE
 ========================================= */
 
 $("language").onchange =
 function() {
 
-    listening = false;
+    listening =
+        false;
 
 
     if (recognition) {
@@ -979,7 +1079,8 @@ function() {
     }
 
 
-    recognition = null;
+    recognition =
+        null;
 
 
     $("heard").textContent =
@@ -1009,7 +1110,6 @@ function() {
     );
 
 };
-
 
 
 if (
@@ -1070,11 +1170,12 @@ function renderCalendar() {
         $("days");
 
 
-    box.innerHTML = "";
+    box.innerHTML =
+        "";
 
 
     /*
-    Empty spaces before first day
+       Empty spaces before first day.
     */
 
     for (
@@ -1083,19 +1184,17 @@ function renderCalendar() {
         i++
     ) {
 
-        const empty =
+        box.appendChild(
             document.createElement(
                 "div"
-            );
-
-        box.appendChild(empty);
+            )
+        );
 
     }
 
 
-
     /*
-    Create calendar days
+       Calendar days.
     */
 
     for (
@@ -1115,7 +1214,7 @@ function renderCalendar() {
             "day";
 
 
-        const thisDate =
+        const date =
             new Date(
                 year,
                 month,
@@ -1124,16 +1223,12 @@ function renderCalendar() {
 
 
         const key =
-            dateKey(thisDate);
+            dateKey(date);
 
 
         const dailyCount =
             records[key] || 0;
 
-
-        /*
-        Show count on day
-        */
 
         if (dailyCount > 0) {
 
@@ -1144,13 +1239,7 @@ function renderCalendar() {
         }
 
 
-        /*
-        Highlight today
-        */
-
-        if (
-            key === dateKey()
-        ) {
+        if (key === dateKey()) {
 
             element.classList.add(
                 "today"
@@ -1170,16 +1259,12 @@ function renderCalendar() {
             );
 
 
-        /*
-        Click date to see record
-        */
-
         element.onclick =
-        function() {
+            function() {
 
-            showRecord(key);
+                showRecord(key);
 
-        };
+            };
 
 
         box.appendChild(
@@ -1211,12 +1296,12 @@ function changeMonth(amount) {
 
 
 /* =========================================
-   SHOW SELECTED DAY
+   SHOW DAILY RECORD
 ========================================= */
 
 function showRecord(key) {
 
-    const dailyCount =
+    const daily =
         records[key] || 0;
 
 
@@ -1224,13 +1309,12 @@ function showRecord(key) {
         "Record: " + key;
 
 
-    if (dailyCount > 0) {
+    if (daily > 0) {
 
         $("records").innerHTML =
             `
             <div class="empty">
-                🙏 ${dailyCount}
-                Waheguru counted
+                🙏 ${daily} Jaap
             </div>
             `;
 
@@ -1241,7 +1325,7 @@ function showRecord(key) {
         $("records").innerHTML =
             `
             <div class="empty">
-                No count recorded for this day.
+                No Jaap recorded for this day.
             </div>
             `;
 
@@ -1256,10 +1340,6 @@ function showRecord(key) {
 ========================================= */
 
 function renderRecords() {
-
-    /*
-    Don't overwrite selected date
-    */
 
     if (
         $("recordTitle")
@@ -1298,17 +1378,22 @@ function renderRecords() {
 
 
     $("records").innerHTML =
-        keys
-        .map(
+        keys.map(
             key =>
             `
             <div class="record">
-                <span>📅 ${key}</span>
-                <b>🙏 ${records[key]}</b>
+
+                <span>
+                    📅 ${key}
+                </span>
+
+                <b>
+                    🙏 ${records[key]}
+                </b>
+
             </div>
             `
-        )
-        .join("");
+        ).join("");
 
 }
 
