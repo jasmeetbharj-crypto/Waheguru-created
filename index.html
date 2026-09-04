@@ -3,113 +3,400 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter V8</title>
+<title>Waheguru Voice Counter</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f4f1ea;
-        color: #222;
-        text-align: center;
-    }
+:root {
+  --mala-color: #ff2020;
+  --mala-dark: #8d0000;
+  --mala-light: #ff7070;
+  --mala-glow: rgba(255,0,0,.8);
+  --mala-center: #280000;
+}
 
-    .app {
-        max-width: 500px;
-        margin: auto;
-        padding: 20px;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #050505;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+}
 
-    h1 {
-        margin-top: 10px;
-        font-size: 32px;
-    }
+.app {
+  width: 100%;
+  max-width: 500px;
+  padding: 18px 15px 40px;
+  text-align: center;
+}
 
-    .status {
-        margin: 15px 0;
-        padding: 12px;
-        border-radius: 12px;
-        background: #ddd;
-        font-weight: bold;
-    }
+h1 {
+  margin: 5px 0 2px;
+  font-size: 28px;
+  color: var(--mala-color);
+  text-shadow: 0 0 15px var(--mala-glow);
+}
 
-    .listening {
-        background: #b7e4c7;
-    }
+.subtitle {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
 
-    .paused {
-        background: #f8d7da;
-    }
+/* COLOR */
 
-    .counter-box {
-        background: white;
-        border-radius: 25px;
-        padding: 25px;
-        margin: 20px 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-    }
+.color-box {
+  margin: 10px auto 15px;
+  padding: 10px;
+  max-width: 340px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
 
-    .label {
-        font-size: 18px;
-        margin-bottom: 5px;
-    }
+.color-title {
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
 
-    .count {
-        font-size: 80px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
+.colors {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
 
-    .mala {
-        font-size: 24px;
-        margin: 10px;
-    }
+.color-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #555;
+  cursor: pointer;
+}
 
-    button {
-        border: none;
-        border-radius: 15px;
-        padding: 15px 20px;
-        margin: 6px;
-        font-size: 18px;
-        cursor: pointer;
-    }
+.color-btn:hover {
+  transform: scale(1.1);
+}
 
-    .start {
-        width: 90%;
-        font-size: 22px;
-        background: #222;
-        color: white;
-    }
+.color-btn.selected {
+  border-color: white;
+  box-shadow: 0 0 10px white;
+}
 
-    .manual {
-        background: #ddd;
-    }
+.red { background: #ff2020; }
+.orange { background: #ff8c00; }
+.yellow { background: #ffd700; }
+.green { background: #00d26a; }
+.blue { background: #168cff; }
+.purple { background: #a855f7; }
+.pink { background: #ff3b9d; }
+.white { background: #ffffff; }
 
-    .reset {
-        background: #f1b0b7;
-    }
+/* STATUS */
 
-    .records {
-        background: white;
-        border-radius: 18px;
-        padding: 18px;
-        margin-top: 20px;
-        text-align: left;
-    }
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #111;
+  border: 1px solid #333;
+  color: #999;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
 
-    .record {
-        padding: 8px 0;
-        border-bottom: 1px solid #ddd;
-    }
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #555;
+}
 
-    .small {
-        font-size: 14px;
-        color: #666;
-    }
+.status.active {
+  color: var(--mala-color);
+  border-color: var(--mala-dark);
+}
+
+.status.active .dot {
+  background: var(--mala-color);
+  box-shadow: 0 0 12px var(--mala-color);
+}
+
+/* MALA */
+
+.mala-wrapper {
+  position: relative;
+  width: min(90vw, 390px);
+  height: min(90vw, 390px);
+  margin: 8px auto 20px;
+}
+
+.mala {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.bead {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #161616;
+  border: 1px solid #444;
+  box-shadow: inset 0 0 5px #000;
+  transform: translate(-50%, -50%);
+  transition: .15s;
+}
+
+.bead.active {
+  background: var(--mala-color);
+  border-color: var(--mala-light);
+  box-shadow:
+    0 0 7px var(--mala-color),
+    0 0 18px var(--mala-glow);
+}
+
+.bead.current {
+  transform: translate(-50%, -50%) scale(1.35);
+  box-shadow:
+    0 0 10px white,
+    0 0 22px var(--mala-color);
+}
+
+/* CENTER */
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      var(--mala-center) 0%,
+      #0b0b0b 65%
+    );
+  border: 2px solid var(--mala-dark);
+  box-shadow:
+    0 0 20px var(--mala-glow),
+    inset 0 0 25px #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-count {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--mala-color);
+  text-shadow: 0 0 15px var(--mala-color);
+}
+
+.center-label {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.mala-number {
+  color: #777;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+/* BUTTONS */
+
+.controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+button {
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 13px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #191919;
+  color: white;
+}
+
+button:hover {
+  background: #292929;
+}
+
+.start {
+  background: var(--mala-dark);
+  border-color: var(--mala-color);
+}
+
+.start:hover {
+  background: var(--mala-color);
+}
+
+/* TIMEOUT */
+
+.timeout-box {
+  margin: 10px auto 15px;
+  padding: 10px;
+  max-width: 340px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  color: #999;
+  font-size: 13px;
+}
+
+.timeout-value {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+.timer {
+  margin-top: 5px;
+  color: #777;
+  font-size: 12px;
+}
+
+/* MANUAL */
+
+.manual {
+  margin: 15px 0;
+  padding: 15px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 12px;
+}
+
+.manual-title {
+  font-size: 15px;
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.manual-row {
+  display: flex;
+  gap: 8px;
+}
+
+.manual-row input {
+  flex: 1;
+  min-width: 0;
+  background: #080808;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 9px;
+  padding: 13px;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+}
+
+.manual-row input:focus {
+  border-color: var(--mala-color);
+  box-shadow: 0 0 8px var(--mala-glow);
+}
+
+.add-btn {
+  background: var(--mala-dark);
+  border-color: var(--mala-color);
+  min-width: 90px;
+}
+
+.quick-buttons {
+  display: flex;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.quick-buttons button {
+  flex: 1;
+  padding: 9px 5px;
+  font-size: 12px;
+}
+
+/* STATS */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.stat {
+  background: #101010;
+  border: 1px solid #282828;
+  border-radius: 12px;
+  padding: 13px;
+}
+
+.stat-number {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--mala-color);
+}
+
+.stat-label {
+  color: #777;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+/* RECORDS */
+
+.records {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.records h2 {
+  text-align: center;
+  font-size: 18px;
+  color: #ddd;
+}
+
+.record {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #101010;
+  border-bottom: 1px solid #222;
+  border-radius: 7px;
+  margin-bottom: 5px;
+}
+
+.record-date {
+  color: #aaa;
+}
+
+.record-count {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+.note {
+  margin-top: 18px;
+  color: #555;
+  font-size: 11px;
+  line-height: 1.5;
+}
 </style>
 </head>
 
@@ -117,583 +404,1494 @@
 
 <div class="app">
 
-    <h1>ੴ Waheguru</h1>
+<h1>Waheguru Voice Counter</h1>
+<div class="subtitle">Digital 108-Bead Mala</div>
 
-    <div id="status" class="status paused">
-        Mic is OFF
-    </div>
+<!-- COLOR -->
 
-    <div class="counter-box">
+<div class="color-box">
 
-        <div class="label">Current Mala</div>
+  <div class="color-title">
+    🎨 Mala Color
+  </div>
 
-        <div id="malaCount" class="count">0</div>
+  <div class="colors">
 
-        <div class="mala">
-            / 108
-        </div>
-
-        <div class="small">
-            Total Saved Count
-        </div>
-
-        <div id="totalCount" class="mala">
-            0
-        </div>
-
-    </div>
-
-    <button id="startBtn" class="start">
-        🎙️ Start Voice Counting
+    <button class="color-btn red"
+      data-color="#ff2020"
+      data-dark="#8d0000"
+      data-light="#ff7070"
+      data-glow="rgba(255,0,0,.8)"
+      data-center="#280000">
     </button>
 
-    <div>
-        <button id="manualBtn" class="manual">
-            ➕ Manual Count
-        </button>
+    <button class="color-btn orange"
+      data-color="#ff8c00"
+      data-dark="#a85500"
+      data-light="#ffc266"
+      data-glow="rgba(255,140,0,.8)"
+      data-center="#281500">
+    </button>
 
-        <button id="resetBtn" class="reset">
-            🔄 Reset Mala
-        </button>
-    </div>
+    <button class="color-btn yellow"
+      data-color="#ffd700"
+      data-dark="#a88a00"
+      data-light="#fff099"
+      data-glow="rgba(255,215,0,.8)"
+      data-center="#282400">
+    </button>
 
-    <div class="records">
-        <h2>Daily Records</h2>
-        <div id="records"></div>
-    </div>
+    <button class="color-btn green"
+      data-color="#00d26a"
+      data-dark="#007a3d"
+      data-light="#66ffad"
+      data-glow="rgba(0,210,106,.8)"
+      data-center="#002818">
+    </button>
+
+    <button class="color-btn blue"
+      data-color="#168cff"
+      data-dark="#07539c"
+      data-light="#75baff"
+      data-glow="rgba(22,140,255,.8)"
+      data-center="#001b35">
+    </button>
+
+    <button class="color-btn purple"
+      data-color="#a855f7"
+      data-dark="#63209c"
+      data-light="#d29aff"
+      data-glow="rgba(168,85,247,.8)"
+      data-center="#210b35">
+    </button>
+
+    <button class="color-btn pink"
+      data-color="#ff3b9d"
+      data-dark="#a51760"
+      data-light="#ff9dcc"
+      data-glow="rgba(255,59,157,.8)"
+      data-center="#350018">
+    </button>
+
+    <button class="color-btn white"
+      data-color="#ffffff"
+      data-dark="#888888"
+      data-light="#ffffff"
+      data-glow="rgba(255,255,255,.8)"
+      data-center="#222222">
+    </button>
+
+  </div>
 
 </div>
 
+<!-- STATUS -->
+
+<div id="status" class="status">
+  <span class="dot"></span>
+  <span id="statusText">Mic paused</span>
+</div>
+
+<!-- MALA -->
+
+<div class="mala-wrapper">
+
+  <div id="mala" class="mala"></div>
+
+  <div class="center">
+
+    <div id="count" class="center-count">0</div>
+
+    <div class="center-label">
+      / 108
+    </div>
+
+    <div id="malaNumber" class="mala-number">
+      Mala #1
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TIMEOUT -->
+
+<div class="timeout-box">
+
+  Auto mic-off after:
+  <span class="timeout-value">
+    30 seconds
+  </span>
+
+  <div id="timerText" class="timer">
+    Timer starts when listening begins.
+  </div>
+
+</div>
+
+<!-- VOICE CONTROLS -->
+
+<div class="controls">
+
+  <button id="startBtn" class="start">
+    🎙️ Start
+  </button>
+
+  <button id="pauseBtn">
+    ⏸ Pause
+  </button>
+
+  <button id="resetBtn">
+    ↺ Reset Mala
+  </button>
+
+</div>
+
+<!-- MANUAL -->
+
+<div class="manual">
+
+  <div class="manual-title">
+    ➕ Add Manual Count
+  </div>
+
+  <div class="manual-row">
+
+    <input
+      id="manualInput"
+      type="number"
+      min="1"
+      inputmode="numeric"
+      placeholder="Enter count"
+    >
+
+    <button
+      id="addManualBtn"
+      class="add-btn">
+      Add
+    </button>
+
+  </div>
+
+  <div class="quick-buttons">
+
+    <button data-add="1">+1</button>
+    <button data-add="10">+10</button>
+    <button data-add="27">+27</button>
+    <button data-add="108">+108</button>
+
+  </div>
+
+</div>
+
+<!-- STATS -->
+
+<div class="stats">
+
+  <div class="stat">
+    <div id="completedMalas" class="stat-number">
+      0
+    </div>
+    <div class="stat-label">
+      COMPLETED MALAS
+    </div>
+  </div>
+
+  <div class="stat">
+    <div id="total" class="stat-number">
+      0
+    </div>
+    <div class="stat-label">
+      SAVED TOTAL
+    </div>
+  </div>
+
+  <div class="stat">
+    <div id="today" class="stat-number">
+      0
+    </div>
+    <div class="stat-label">
+      TODAY
+    </div>
+  </div>
+
+  <div class="stat">
+    <div id="current" class="stat-number">
+      0
+    </div>
+    <div class="stat-label">
+      CURRENT MALA
+    </div>
+  </div>
+
+</div>
+
+<!-- RECORDS -->
+
+<div class="records">
+
+  <h2>📅 Daily Records</h2>
+
+  <div id="recordsList"></div>
+
+</div>
+
+<div class="note">
+  Say “Waheguru” naturally. Voice recognition counts
+  recognized occurrences. Manual counts are saved together
+  with voice counts. The microphone automatically turns off
+  after 30 seconds without speech. The current mala resets
+  automatically at midnight.
+</div>
+
+</div>
+
+
 <script>
 
-/* =========================================
-   WAHEGURU VOICE COUNTER - VERSION 8
-   ========================================= */
+/* =====================================
+   SAVED DATA
+===================================== */
 
-let malaCount = Number(localStorage.getItem("malaCount")) || 0;
-let totalCount = Number(localStorage.getItem("totalCount")) || 0;
+let count =
+  Number(localStorage.getItem("wg_count") || 0);
+
+let total =
+  Number(localStorage.getItem("wg_total") || 0);
+
+let completedMalas =
+  Number(localStorage.getItem("wg_malas") || 0);
+
+let savedColor =
+  localStorage.getItem("wg_color") || "#ff2020";
+
+let records;
+
+try {
+
+  records =
+    JSON.parse(
+      localStorage.getItem("wg_records") || "{}"
+    );
+
+} catch {
+
+  records = {};
+
+}
+
+
+/* =====================================
+   VARIABLES
+===================================== */
 
 let listening = false;
+
 let recognition = null;
-let silenceTimer = null;
 
-const SILENCE_TIME = 30000; // 30 seconds
+let inactivityTimer = null;
 
-const malaDisplay = document.getElementById("malaCount");
-const totalDisplay = document.getElementById("totalCount");
-const statusDisplay = document.getElementById("status");
-const startBtn = document.getElementById("startBtn");
-const manualBtn = document.getElementById("manualBtn");
-const resetBtn = document.getElementById("resetBtn");
-const recordsDisplay = document.getElementById("records");
+let countdownTimer = null;
+
+let lastSpeechTime = null;
+
+let midnightTimer = null;
+
+const INACTIVITY_SECONDS = 30;
 
 
-/* =========================================
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const mala =
+  document.getElementById("mala");
+
+const countEl =
+  document.getElementById("count");
+
+const totalEl =
+  document.getElementById("total");
+
+const todayEl =
+  document.getElementById("today");
+
+const currentEl =
+  document.getElementById("current");
+
+const completedEl =
+  document.getElementById("completedMalas");
+
+const malaNumberEl =
+  document.getElementById("malaNumber");
+
+const status =
+  document.getElementById("status");
+
+const statusText =
+  document.getElementById("statusText");
+
+const timerText =
+  document.getElementById("timerText");
+
+const startBtn =
+  document.getElementById("startBtn");
+
+const pauseBtn =
+  document.getElementById("pauseBtn");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+const manualInput =
+  document.getElementById("manualInput");
+
+const addManualBtn =
+  document.getElementById("addManualBtn");
+
+const recordsList =
+  document.getElementById("recordsList");
+
+
+/* =====================================
+   COLOR
+===================================== */
+
+function setColor(button) {
+
+  const color =
+    button.dataset.color;
+
+  const dark =
+    button.dataset.dark;
+
+  const light =
+    button.dataset.light;
+
+  const glow =
+    button.dataset.glow;
+
+  const center =
+    button.dataset.center;
+
+  document.documentElement.style.setProperty(
+    "--mala-color",
+    color
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-dark",
+    dark
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-light",
+    light
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-glow",
+    glow
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-center",
+    center
+  );
+
+  localStorage.setItem(
+    "wg_color",
+    color
+  );
+
+  document
+    .querySelectorAll(".color-btn")
+    .forEach(btn => {
+
+      btn.classList.remove(
+        "selected"
+      );
+
+    });
+
+  button.classList.add(
+    "selected"
+  );
+
+}
+
+
+/* =====================================
+   COLOR BUTTONS
+===================================== */
+
+document
+  .querySelectorAll(".color-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => setColor(button)
+    );
+
+  });
+
+
+/* Restore saved color */
+
+const savedColorButton =
+  [...document.querySelectorAll(".color-btn")]
+    .find(
+      btn =>
+        btn.dataset.color === savedColor
+    );
+
+if (savedColorButton) {
+
+  setColor(savedColorButton);
+
+}
+
+
+/* =====================================
+   CREATE 108 BEADS
+===================================== */
+
+for (let i = 0; i < 108; i++) {
+
+  const bead =
+    document.createElement("div");
+
+  bead.className = "bead";
+
+  const angle =
+    (i / 108) * Math.PI * 2 -
+    Math.PI / 2;
+
+  const radius = 45;
+
+  const x =
+    50 + Math.cos(angle) * radius;
+
+  const y =
+    50 + Math.sin(angle) * radius;
+
+  bead.style.left =
+    x + "%";
+
+  bead.style.top =
+    y + "%";
+
+  mala.appendChild(bead);
+
+}
+
+
+/* =====================================
+   DATE
+===================================== */
+
+function todayKey() {
+
+  const d = new Date();
+
+  return (
+    d.getFullYear() +
+    "-" +
+    String(
+      d.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+      d.getDate()
+    ).padStart(2, "0")
+  );
+
+}
+
+
+/* =====================================
+   SAVE DATA
+===================================== */
+
+function saveData() {
+
+  localStorage.setItem(
+    "wg_count",
+    count
+  );
+
+  localStorage.setItem(
+    "wg_total",
+    total
+  );
+
+  localStorage.setItem(
+    "wg_malas",
+    completedMalas
+  );
+
+  localStorage.setItem(
+    "wg_records",
+    JSON.stringify(records)
+  );
+
+}
+
+
+/* =====================================
    DISPLAY
-   ========================================= */
+===================================== */
 
 function updateDisplay() {
 
-    malaDisplay.textContent = malaCount;
-    totalDisplay.textContent = totalCount;
+  countEl.textContent =
+    count;
 
-    localStorage.setItem("malaCount", malaCount);
-    localStorage.setItem("totalCount", totalCount);
+  totalEl.textContent =
+    total;
 
-    showRecords();
-}
+  completedEl.textContent =
+    completedMalas;
+
+  currentEl.textContent =
+    count;
+
+  malaNumberEl.textContent =
+    "Mala #" +
+    (completedMalas + 1);
 
 
-/* =========================================
-   COUNT ONE WAHEGURU
-   ========================================= */
+  todayEl.textContent =
+    records[todayKey()] || 0;
 
-function addCount() {
 
-    totalCount++;
+  const beads =
+    document.querySelectorAll(".bead");
 
-    malaCount++;
 
-    /*
-       When mala reaches 108,
-       save the completed mala and
-       automatically start the next mala.
-    */
+  beads.forEach(
+    (bead, i) => {
 
-    if (malaCount >= 108) {
+      bead.classList.remove(
+        "active"
+      );
 
-        saveDailyRecord();
+      bead.classList.remove(
+        "current"
+      );
 
-        malaCount = 0;
 
-        // Small notification
-        if (navigator.vibrate) {
-            navigator.vibrate([200, 100, 200]);
-        }
+      if (i < count) {
+
+        bead.classList.add(
+          "active"
+        );
+
+      }
+
+
+      if (
+        i === count &&
+        count < 108
+      ) {
+
+        bead.classList.add(
+          "current"
+        );
+
+      }
+
     }
+  );
 
-    updateDisplay();
+
+  saveData();
+
+  updateRecords();
+
 }
 
 
-/* =========================================
-   MANUAL COUNT
-   ========================================= */
+/* =====================================
+   ADD COUNT
+===================================== */
 
-manualBtn.addEventListener("click", function() {
-    addCount();
-});
+function addCount(amount) {
 
-
-/* =========================================
-   RESET CURRENT MALA
-   ========================================= */
-
-resetBtn.addEventListener("click", function() {
-
-    if (confirm("Reset the current mala to 0?")) {
-
-        malaCount = 0;
-
-        updateDisplay();
-    }
-});
+  amount =
+    Number(amount);
 
 
-/* =========================================
-   VOICE RECOGNITION
-   ========================================= */
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
 
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+    return;
 
-if (SpeechRecognition) {
-
-    recognition = new SpeechRecognition();
-
-    recognition.continuous = true;
-
-    recognition.interimResults = true;
-
-    recognition.lang = "en-US";
+  }
 
 
-    recognition.onstart = function() {
-
-        listening = true;
-
-        setListeningStatus();
-
-        /*
-           Important V8 rule:
-
-           When microphone is listening,
-           the app does NOT pause.
-
-           The 30-second timer is started
-           only when listening stops.
-        */
-
-        clearTimeout(silenceTimer);
-    };
+  amount =
+    Math.floor(amount);
 
 
-    recognition.onresult = function(event) {
-
-        /*
-           Every time speech is detected,
-           reset the 30-second timer.
-
-           This means the microphone can continue
-           listening while you are speaking.
-        */
-
-        clearTimeout(silenceTimer);
-
-        for (
-            let i = event.resultIndex;
-            i < event.results.length;
-            i++
-        ) {
-
-            if (event.results[i].isFinal) {
-
-                let spokenText =
-                    event.results[i][0].transcript
-                    .toLowerCase()
-                    .trim();
-
-                console.log("Heard:", spokenText);
-
-                countWaheguru(spokenText);
-            }
-        }
-
-        /*
-           Start the 30-second countdown AFTER
-           speech has been detected.
-        */
-
-        startSilenceTimer();
-    };
+  total += amount;
 
 
-    recognition.onerror = function(event) {
-
-        console.log("Voice error:", event.error);
-
-        /*
-           If the browser stops listening,
-           we don't immediately call it paused.
-           The restart logic below attempts to
-           keep listening.
-        */
-
-        if (
-            event.error !== "not-allowed" &&
-            event.error !== "service-not-allowed"
-        ) {
-            listening = false;
-            setPausedStatus();
-        }
-    };
+  const day =
+    todayKey();
 
 
-    recognition.onend = function() {
+  records[day] =
+    (records[day] || 0) +
+    amount;
 
-        listening = false;
 
-        /*
-           The microphone has stopped listening.
-           Therefore V8 now allows the paused state.
-        */
+  count += amount;
 
-        setPausedStatus();
 
-        /*
-           Automatically restart if the user
-           has not manually stopped it.
-        */
+  while (count >= 108) {
 
-        if (startBtn.dataset.running === "true") {
+    count -= 108;
 
-            setTimeout(function() {
+    completedMalas++;
 
-                if (startBtn.dataset.running === "true") {
+    malaComplete();
 
-                    try {
-                        recognition.start();
-                    } catch (e) {
-                        console.log(e);
-                    }
+  }
 
-                }
 
-            }, 500);
-        }
-    };
+  updateDisplay();
 
-} else {
-
-    statusDisplay.textContent =
-        "Voice recognition is not supported by this browser.";
-
-    startBtn.disabled = true;
 }
 
 
-/* =========================================
-   RECOGNIZE "WAHEGURU"
-   ========================================= */
+/* =====================================
+   MALA COMPLETE
+===================================== */
+
+function malaComplete() {
+
+  if (
+    "vibrate" in navigator
+  ) {
+
+    try {
+
+      navigator.vibrate(
+        [200,100,200]
+      );
+
+    } catch(e) {}
+
+  }
+
+}
+
+
+/* =====================================
+   NORMALIZE SPEECH
+===================================== */
+
+function normalizeText(text) {
+
+  return text
+    .toLowerCase()
+    .replace(/[.,!?;:]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+
+/* =====================================
+   COUNT WAHEGURU
+===================================== */
 
 function countWaheguru(text) {
 
-    /*
-       Different ways the word may be recognized.
-    */
+  const normalized =
+    normalizeText(text);
 
-    const words = text
-        .replace(/[.,!?]/g, " ")
-        .split(/\s+/)
-        .filter(Boolean);
 
-    let found = 0;
+  /*
+    Voice recognition can return
+    slightly different versions.
+  */
 
-    for (let word of words) {
+  const pattern =
+    /\bwaheguru\b|\bwahe guru\b|\bwaheguroo\b|\bwahegooroo\b/g;
 
-        word = word.toLowerCase();
 
-        if (
-            word === "waheguru" ||
-            word === "waheguroo" ||
-            word === "wahe guru" ||
-            word.includes("waheguru")
-        ) {
-            found++;
-        }
-    }
+  const matches =
+    normalized.match(pattern);
 
-    /*
-       Also check common speech-recognition
-       variations.
-    */
 
-    if (
-        text.includes("wahe guru") ||
-        text.includes("waheguru") ||
-        text.includes("waheguroo")
-    ) {
+  if (matches) {
 
-        if (found === 0) {
-            found = 1;
-        }
-    }
+    addCount(
+      matches.length
+    );
 
-    for (let i = 0; i < found; i++) {
-        addCount();
-    }
+  }
+
 }
 
 
-/* =========================================
-   30 SECOND SILENCE TIMER
-   ========================================= */
+/* =====================================
+   CLEAR TIMER
+===================================== */
 
-function startSilenceTimer() {
+function clearInactivityTimers() {
 
-    clearTimeout(silenceTimer);
+  if (inactivityTimer) {
 
-    silenceTimer = setTimeout(function() {
+    clearTimeout(
+      inactivityTimer
+    );
 
-        /*
-           Only stop the microphone after
-           30 seconds without speech.
-        */
+    inactivityTimer = null;
 
-        if (listening) {
+  }
 
-            try {
-                recognition.stop();
-            } catch (e) {
-                console.log(e);
-            }
 
-        }
+  if (countdownTimer) {
 
-    }, SILENCE_TIME);
+    clearInterval(
+      countdownTimer
+    );
+
+    countdownTimer = null;
+
+  }
+
 }
 
 
-/* =========================================
-   START / STOP VOICE
-   ========================================= */
+/* =====================================
+   30 SECOND TIMER
+===================================== */
 
-startBtn.addEventListener("click", function() {
+function startInactivityTimer() {
 
-    if (!recognition) {
+  clearInactivityTimers();
+
+
+  if (!listening) {
+
+    return;
+
+  }
+
+
+  lastSpeechTime =
+    Date.now();
+
+
+  let remaining =
+    INACTIVITY_SECONDS;
+
+
+  timerText.textContent =
+    "Auto pause in " +
+    remaining +
+    " seconds";
+
+
+  countdownTimer =
+    setInterval(() => {
+
+      /*
+        IMPORTANT:
+        If recognition is still actively
+        listening, the app does NOT pause.
+      */
+
+      if (!listening) {
+
+        clearInterval(
+          countdownTimer
+        );
+
+        countdownTimer = null;
+
         return;
-    }
 
-    if (startBtn.dataset.running === "true") {
+      }
 
-        /*
-           User manually stops voice counting.
-        */
 
-        startBtn.dataset.running = "false";
+      const elapsed =
+        Math.floor(
+          (
+            Date.now() -
+            lastSpeechTime
+          ) / 1000
+        );
 
-        clearTimeout(silenceTimer);
+
+      remaining =
+        Math.max(
+          0,
+          INACTIVITY_SECONDS -
+          elapsed
+        );
+
+
+      timerText.textContent =
+        "Auto pause in " +
+        remaining +
+        " seconds";
+
+
+    }, 1000);
+
+
+  inactivityTimer =
+    setTimeout(() => {
+
+      /*
+        30 seconds have passed
+        without recognized speech.
+      */
+
+      if (!listening) {
+
+        return;
+
+      }
+
+
+      listening = false;
+
+      clearInactivityTimers();
+
+
+      if (recognition) {
 
         try {
-            recognition.stop();
-        } catch (e) {
-            console.log(e);
-        }
 
-        listening = false;
+          recognition.stop();
 
-        setPausedStatus();
+        } catch(e) {}
 
-    } else {
-
-        /*
-           Start voice counting.
-        */
-
-        startBtn.dataset.running = "true";
-
-        try {
-            recognition.start();
-        } catch (e) {
-            console.log(e);
-        }
-
-    }
-
-});
+      }
 
 
-/* =========================================
+      setPausedStatus(
+        "Mic paused — 30 seconds silent"
+      );
+
+
+    }, INACTIVITY_SECONDS * 1000);
+
+}
+
+
+/* =====================================
+   SPEECH DETECTED
+===================================== */
+
+function speechDetected() {
+
+  if (!listening) {
+
+    return;
+
+  }
+
+
+  lastSpeechTime =
+    Date.now();
+
+
+  startInactivityTimer();
+
+}
+
+
+/* =====================================
    STATUS
-   ========================================= */
+===================================== */
 
 function setListeningStatus() {
 
-    statusDisplay.textContent =
-        "🎙️ Mic is listening";
+  status.classList.add(
+    "active"
+  );
 
-    statusDisplay.className =
-        "status listening";
+  statusText.textContent =
+    "Listening… Say Waheguru";
 
-    startBtn.textContent =
-        "⏹️ Stop Voice Counting";
+  startBtn.textContent =
+    "🎙️ Listening";
+
 }
 
 
-function setPausedStatus() {
+function setPausedStatus(
+  message = "Mic paused"
+) {
 
-    statusDisplay.textContent =
-        "⏸️ Mic is OFF";
+  status.classList.remove(
+    "active"
+  );
 
-    statusDisplay.className =
-        "status paused";
+  statusText.textContent =
+    message;
 
-    startBtn.textContent =
-        "🎙️ Start Voice Counting";
+  startBtn.textContent =
+    "🎙️ Start";
+
+  timerText.textContent =
+    "Timer starts when listening begins.";
+
 }
 
 
-/* =========================================
-   DAILY RECORDS
-   ========================================= */
+/* =====================================
+   SPEECH RECOGNITION
+===================================== */
 
-function getRecords() {
+function setupRecognition() {
 
-    return JSON.parse(
-        localStorage.getItem("dailyRecords") || "{}"
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Speech recognition is not supported " +
+      "by this browser."
     );
 
-}
+    return null;
+
+  }
 
 
-function saveDailyRecord() {
+  const r =
+    new SpeechRecognition();
 
-    const today =
-        new Date().toISOString().split("T")[0];
 
-    const records = getRecords();
+  r.continuous = true;
 
-    if (!records[today]) {
-        records[today] = 0;
+  r.interimResults = false;
+
+  /*
+    English is used for the word
+    "Waheguru". No language selector.
+  */
+
+  r.lang = "en-IN";
+
+
+  r.onstart = () => {
+
+    if (!listening) {
+
+      return;
+
     }
 
-    records[today] += 108;
 
-    localStorage.setItem(
-        "dailyRecords",
-        JSON.stringify(records)
+    setListeningStatus();
+
+    /*
+      Mic is actively listening.
+      Do NOT pause here.
+    */
+
+  };
+
+
+  r.onresult = (event) => {
+
+    if (!listening) {
+
+      return;
+
+    }
+
+
+    let combined = "";
+
+
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+
+      const result =
+        event.results[i];
+
+
+      if (!result.isFinal) {
+
+        continue;
+
+      }
+
+
+      const text =
+        result[0].transcript;
+
+
+      combined +=
+        " " + text;
+
+    }
+
+
+    /*
+      Any recognized speech resets
+      the 30-second inactivity timer.
+    */
+
+    if (combined.trim()) {
+
+      speechDetected();
+
+      countWaheguru(
+        combined
+      );
+
+    }
+
+  };
+
+
+  r.onerror = (event) => {
+
+    console.log(
+      "Speech recognition error:",
+      event.error
     );
 
-    showRecords();
+
+    if (
+      event.error ===
+      "not-allowed" ||
+      event.error ===
+      "service-not-allowed"
+    ) {
+
+      listening = false;
+
+      clearInactivityTimers();
+
+      setPausedStatus(
+        "Microphone permission needed"
+      );
+
+    }
+
+  };
+
+
+  r.onend = () => {
+
+    /*
+      Some browsers stop recognition
+      automatically.
+
+      If the user still has listening
+      turned on, restart recognition.
+    */
+
+    if (listening) {
+
+      setTimeout(() => {
+
+        if (!listening) {
+
+          return;
+
+        }
+
+
+        try {
+
+          r.start();
+
+        } catch(e) {}
+
+      }, 300);
+
+    }
+
+  };
+
+
+  return r;
+
 }
 
 
-function showRecords() {
+/* =====================================
+   START
+===================================== */
 
-    const records = getRecords();
+function startListening() {
 
-    recordsDisplay.innerHTML = "";
+  if (!recognition) {
 
-    const dates = Object.keys(records)
-        .sort()
-        .reverse();
+    recognition =
+      setupRecognition();
 
-    if (dates.length === 0) {
 
-        recordsDisplay.innerHTML =
-            "<div class='small'>No completed malas yet.</div>";
+    if (!recognition) {
 
-        return;
+      return;
+
     }
 
-    dates.forEach(function(date) {
+  }
 
-        const div =
-            document.createElement("div");
 
-        div.className = "record";
+  listening = true;
 
-        div.textContent =
-            date + " — " +
-            records[date] +
-            " counts";
 
-        recordsDisplay.appendChild(div);
-    });
+  setListeningStatus();
+
+
+  try {
+
+    recognition.start();
+
+  } catch(e) {
+
+    console.log(e);
+
+  }
+
+
+  /*
+    Start the 30-second timer.
+  */
+
+  startInactivityTimer();
+
 }
 
 
-/* =========================================
-   MIDNIGHT MALA RESET
-   ========================================= */
+/* =====================================
+   PAUSE
+===================================== */
 
-function checkMidnightReset() {
+function pauseListening() {
 
-    const today =
-        new Date().toISOString().split("T")[0];
+  listening = false;
 
-    const lastDate =
-        localStorage.getItem("lastDate");
+  clearInactivityTimers();
 
-    if (!lastDate) {
 
-        localStorage.setItem(
-            "lastDate",
-            today
-        );
+  if (recognition) {
 
-        return;
-    }
+    try {
 
-    if (lastDate !== today) {
+      recognition.stop();
 
-        /*
-           New day:
-           reset CURRENT mala only.
+    } catch(e) {}
 
-           Saved total remains.
-        */
+  }
 
-        malaCount = 0;
 
-        localStorage.setItem(
-            "lastDate",
-            today
-        );
+  setPausedStatus();
 
-        updateDisplay();
-    }
 }
 
 
-/* =========================================
-   MIDNIGHT CHECK
-   ========================================= */
+/* =====================================
+   RESET CURRENT MALA
+===================================== */
 
-setInterval(
-    checkMidnightReset,
-    1000
+function resetCurrentMala() {
+
+  if (
+    !confirm(
+      "Reset the current mala to 0?\n\n" +
+      "Your saved total and daily records " +
+      "will remain unchanged."
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  count = 0;
+
+  updateDisplay();
+
+}
+
+
+/* =====================================
+   MANUAL COUNT
+===================================== */
+
+function addManualCount() {
+
+  const value =
+    Number(
+      manualInput.value
+    );
+
+
+  if (
+    !Number.isFinite(value) ||
+    value <= 0
+  ) {
+
+    alert(
+      "Please enter a number greater than 0."
+    );
+
+    return;
+
+  }
+
+
+  addCount(value);
+
+  manualInput.value = "";
+
+}
+
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+addManualBtn.addEventListener(
+  "click",
+  addManualCount
 );
 
 
-/* =========================================
+manualInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter"
+    ) {
+
+      addManualCount();
+
+    }
+
+  }
+);
+
+
+document
+  .querySelectorAll(
+    ".quick-buttons button"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        addCount(
+          Number(
+            button.dataset.add
+          )
+        );
+
+      }
+    );
+
+  });
+
+
+startBtn.addEventListener(
+  "click",
+  startListening
+);
+
+
+pauseBtn.addEventListener(
+  "click",
+  pauseListening
+);
+
+
+resetBtn.addEventListener(
+  "click",
+  resetCurrentMala
+);
+
+
+/* =====================================
+   DAILY RECORDS
+===================================== */
+
+function updateRecords() {
+
+  recordsList.innerHTML = "";
+
+
+  const dates =
+    Object.keys(records)
+      .sort()
+      .reverse();
+
+
+  if (!dates.length) {
+
+    recordsList.innerHTML =
+      '<div class="record">' +
+      '<span class="record-date">' +
+      'No records yet' +
+      '</span>' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  dates
+    .slice(0, 30)
+    .forEach(date => {
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+      row.className =
+        "record";
+
+
+      const dateEl =
+        document.createElement(
+          "span"
+        );
+
+      dateEl.className =
+        "record-date";
+
+      dateEl.textContent =
+        date;
+
+
+      const countEl =
+        document.createElement(
+          "span"
+        );
+
+      countEl.className =
+        "record-count";
+
+      countEl.textContent =
+        records[date];
+
+
+      row.appendChild(
+        dateEl
+      );
+
+      row.appendChild(
+        countEl
+      );
+
+
+      recordsList.appendChild(
+        row
+      );
+
+    });
+
+}
+
+
+/* =====================================
+   MIDNIGHT RESET
+===================================== */
+
+function checkMidnightReset() {
+
+  const now =
+    new Date();
+
+  const currentDate =
+    todayKey();
+
+
+  const savedDate =
+    localStorage.getItem(
+      "wg_current_date"
+    );
+
+
+  if (!savedDate) {
+
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
+
+    return;
+
+  }
+
+
+  if (
+    savedDate !== currentDate
+  ) {
+
+    /*
+      New day:
+      Reset ONLY current mala.
+
+      Saved total remains.
+      Completed malas remain.
+      Daily records remain.
+    */
+
+    count = 0;
+
+
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
+
+
+    updateDisplay();
+
+  }
+
+}
+
+
+/* Check every second for midnight */
+
+setInterval(
+  checkMidnightReset,
+  1000
+);
+
+
+/* =====================================
    INITIALIZE
-   ========================================= */
+===================================== */
 
 checkMidnightReset();
 
 updateDisplay();
+
+setPausedStatus();
 
 </script>
 
