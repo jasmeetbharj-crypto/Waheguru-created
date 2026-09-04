@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter</title>
+<title>Waheguru Voice Counter - Version 10</title>
 
 <style>
 * {
@@ -362,6 +362,7 @@ button:hover {
 
 .manual-row {
   display: flex;
+  gap: 8px;
 }
 
 .manual-row input {
@@ -379,6 +380,17 @@ button:hover {
 .manual-row input:focus {
   border-color: var(--mala-color);
   box-shadow: 0 0 8px var(--mala-glow);
+}
+
+.manual-add-btn {
+  min-width: 105px;
+  background: var(--mala-dark);
+  border-color: var(--mala-color);
+  color: white;
+}
+
+.manual-add-btn:hover {
+  background: var(--mala-color);
 }
 
 /* STATS */
@@ -481,7 +493,7 @@ body.light .center {
 <button id="darkModeBtn" class="dark-mode-btn">☀️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala</div>
+<div class="subtitle">Digital 108-Bead Mala — Version 10</div>
 
 <!-- STATUS -->
 
@@ -636,6 +648,12 @@ body.light .center {
       inputmode="numeric"
       placeholder="Enter count">
 
+    <button
+      id="manualAddBtn"
+      class="manual-add-btn">
+      ➕ Add Count
+    </button>
+
   </div>
 
 </div>
@@ -679,14 +697,13 @@ body.light .center {
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
   recognized occurrences. You can also enter a manual count
-  in the box above. The microphone automatically turns off
-  after 45 seconds of continuous silence. The current mala
-  resets automatically at midnight while saved totals and
-  daily records remain.
+  and press Add Count. The microphone automatically turns
+  off after 45 seconds of continuous silence. The current
+  mala resets automatically at midnight while saved totals
+  and daily records remain.
 </div>
 
 </div>
-
 
 <script>
 
@@ -720,7 +737,6 @@ try {
   records = {};
 }
 
-
 /* =====================================
    CONSTANTS
 ===================================== */
@@ -730,7 +746,6 @@ const MALA_SIZE = 108;
 const SILENCE_TIME = 45000;
 
 const AUDIO_THRESHOLD = 0.015;
-
 
 /* =====================================
    VARIABLES
@@ -761,7 +776,6 @@ let analyser = null;
 let audioData = null;
 
 let audioMonitor = null;
-
 
 /* =====================================
    ELEMENTS
@@ -809,6 +823,9 @@ const resetBtn =
 const manualInput =
   document.getElementById("manualInput");
 
+const manualAddBtn =
+  document.getElementById("manualAddBtn");
+
 const recordsList =
   document.getElementById("recordsList");
 
@@ -817,7 +834,6 @@ const colorBox =
 
 const darkModeBtn =
   document.getElementById("darkModeBtn");
-
 
 /* =====================================
    COLOR
@@ -867,7 +883,6 @@ function setColor(button) {
   button.classList.add("selected");
 }
 
-
 /* =====================================
    COLOR BUTTONS
 ===================================== */
@@ -891,7 +906,6 @@ document
 
   });
 
-
 const savedColorButton =
   [...document.querySelectorAll(".color-btn")]
     .find(
@@ -902,7 +916,6 @@ const savedColorButton =
 if (savedColorButton) {
   setColor(savedColorButton);
 }
-
 
 /* =====================================
    OPEN COLOR PALETTE
@@ -923,7 +936,6 @@ document
     }
   );
 
-
 document.addEventListener(
   "click",
   event => {
@@ -942,7 +954,6 @@ document.addEventListener(
   }
 );
 
-
 /* =====================================
    DARK MODE
 ===================================== */
@@ -958,7 +969,6 @@ function applyDarkMode() {
     savedDarkMode ? "☀️" : "🌙";
 
 }
-
 
 darkModeBtn.addEventListener(
   "click",
@@ -978,7 +988,6 @@ darkModeBtn.addEventListener(
 );
 
 applyDarkMode();
-
 
 /* =====================================
    CREATE 108 BEADS
@@ -1021,7 +1030,6 @@ for (let i = 0; i < MALA_SIZE; i++) {
 
 }
 
-
 /* =====================================
    DATE
 ===================================== */
@@ -1044,7 +1052,6 @@ function todayKey() {
   );
 
 }
-
 
 /* =====================================
    SAVE DATA
@@ -1074,7 +1081,6 @@ function saveData() {
 
 }
 
-
 /* =====================================
    DISPLAY
 ===================================== */
@@ -1100,12 +1106,10 @@ function updateDisplay() {
   todayEl.textContent =
     records[todayKey()] || 0;
 
-
   const beads =
     document.querySelectorAll(
       ".bead"
     );
-
 
   beads.forEach(
     (bead, i) => {
@@ -1118,7 +1122,6 @@ function updateDisplay() {
         "current"
       );
 
-
       if (i < count) {
 
         bead.classList.add(
@@ -1126,7 +1129,6 @@ function updateDisplay() {
         );
 
       }
-
 
       if (
         i === count &&
@@ -1142,13 +1144,11 @@ function updateDisplay() {
     }
   );
 
-
   saveData();
 
   updateRecords();
 
 }
-
 
 /* =====================================
    ADD COUNT
@@ -1171,7 +1171,6 @@ function addCount(amount) {
 
   total += amount;
 
-
   const day =
     todayKey();
 
@@ -1179,9 +1178,7 @@ function addCount(amount) {
     (records[day] || 0) +
     amount;
 
-
   count += amount;
-
 
   while (
     count >= MALA_SIZE
@@ -1195,11 +1192,9 @@ function addCount(amount) {
 
   }
 
-
   updateDisplay();
 
 }
-
 
 /* =====================================
    MALA COMPLETE
@@ -1223,7 +1218,6 @@ function malaComplete() {
 
 }
 
-
 /* =====================================
    NORMALIZE SPEECH
 ===================================== */
@@ -1238,7 +1232,6 @@ function normalizeText(text) {
 
 }
 
-
 /* =====================================
    COUNT WAHEGURU
 ===================================== */
@@ -1248,14 +1241,11 @@ function countWaheguru(text) {
   const normalized =
     normalizeText(text);
 
-
   const pattern =
     /\bwaheguru\b|\bwahe guru\b|\bwaheguroo\b|\bwahegooroo\b/g;
 
-
   const matches =
     normalized.match(pattern);
-
 
   if (matches) {
 
@@ -1269,7 +1259,6 @@ function countWaheguru(text) {
   }
 
 }
-
 
 /* =====================================
    BEEP
@@ -1326,7 +1315,6 @@ function beep() {
 
 }
 
-
 /* =====================================
    AUDIO MONITOR
 ===================================== */
@@ -1335,19 +1323,19 @@ async function startAudioMonitor() {
 
   try {
 
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
 
       return;
 
     }
 
-
     micStream =
       await navigator.mediaDevices.getUserMedia({
         audio: true
       });
-
 
     audioContext =
       new (
@@ -1355,12 +1343,10 @@ async function startAudioMonitor() {
         window.webkitAudioContext
       )();
 
-
     const source =
       audioContext.createMediaStreamSource(
         micStream
       );
-
 
     analyser =
       audioContext.createAnalyser();
@@ -1373,11 +1359,9 @@ async function startAudioMonitor() {
         analyser.fftSize
       );
 
-
     source.connect(
       analyser
     );
-
 
     monitorAudio();
 
@@ -1392,7 +1376,6 @@ async function startAudioMonitor() {
 
 }
 
-
 /* =====================================
    MONITOR MICROPHONE ACTIVITY
 ===================================== */
@@ -1405,7 +1388,6 @@ function monitorAudio() {
 
   }
 
-
   if (
     !analyser ||
     !audioData
@@ -1415,14 +1397,11 @@ function monitorAudio() {
 
   }
 
-
   analyser.getByteTimeDomainData(
     audioData
   );
 
-
   let sum = 0;
-
 
   for (
     let i = 0;
@@ -1440,17 +1419,14 @@ function monitorAudio() {
 
   }
 
-
   const rms =
     Math.sqrt(
       sum /
       audioData.length
     );
 
-
   const now =
     performance.now();
-
 
   if (
     rms >= AUDIO_THRESHOLD
@@ -1461,11 +1437,9 @@ function monitorAudio() {
 
   }
 
-
   const elapsed =
     now -
     lastActivityAt;
-
 
   const remaining =
     Math.max(
@@ -1474,14 +1448,12 @@ function monitorAudio() {
       elapsed
     );
 
-
   timerText.textContent =
     "Auto mic-off in " +
     Math.ceil(
       remaining / 1000
     ) +
     " seconds";
-
 
   if (
     remaining <= 0
@@ -1493,14 +1465,12 @@ function monitorAudio() {
 
   }
 
-
   audioMonitor =
     requestAnimationFrame(
       monitorAudio
     );
 
 }
-
 
 /* =====================================
    STOP AUDIO MONITOR
@@ -1518,7 +1488,6 @@ function stopAudioMonitor() {
 
   }
 
-
   if (micStream) {
 
     micStream
@@ -1530,7 +1499,6 @@ function stopAudioMonitor() {
     micStream = null;
 
   }
-
 
   if (audioContext) {
 
@@ -1548,7 +1516,6 @@ function stopAudioMonitor() {
 
 }
 
-
 /* =====================================
    CLEAR TIMERS
 ===================================== */
@@ -1565,7 +1532,6 @@ function clearTimers() {
 
   }
 
-
   if (countdownTimer) {
 
     clearInterval(
@@ -1577,7 +1543,6 @@ function clearTimers() {
   }
 
 }
-
 
 /* =====================================
    AUTO PAUSE
@@ -1591,13 +1556,11 @@ function autoPause() {
 
   }
 
-
   listening = false;
 
   clearTimers();
 
   stopAudioMonitor();
-
 
   if (recognition) {
 
@@ -1609,16 +1572,13 @@ function autoPause() {
 
   }
 
-
   beep();
-
 
   setPausedStatus(
     "Mic paused — 45 seconds silent"
   );
 
 }
-
 
 /* =====================================
    STATUS
@@ -1637,7 +1597,6 @@ function setListeningStatus() {
     "🎙️ Listening";
 
 }
-
 
 function setPausedStatus(
   message = "Mic paused"
@@ -1658,7 +1617,6 @@ function setPausedStatus(
 
 }
 
-
 /* =====================================
    SPEECH RECOGNITION
 ===================================== */
@@ -1668,7 +1626,6 @@ function setupRecognition() {
   const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
-
 
   if (!SpeechRecognition) {
 
@@ -1680,17 +1637,14 @@ function setupRecognition() {
 
   }
 
-
   const r =
     new SpeechRecognition();
-
 
   r.continuous = true;
 
   r.interimResults = true;
 
   r.lang = "en-IN";
-
 
   r.onstart = () => {
 
@@ -1699,7 +1653,6 @@ function setupRecognition() {
 
     recognitionStarting =
       false;
-
 
     if (!listening) {
 
@@ -1711,11 +1664,9 @@ function setupRecognition() {
 
     }
 
-
     setListeningStatus();
 
   };
-
 
   r.onresult = event => {
 
@@ -1725,9 +1676,7 @@ function setupRecognition() {
 
     }
 
-
     let finalText = "";
-
 
     for (
       let i = event.resultIndex;
@@ -1738,20 +1687,20 @@ function setupRecognition() {
       const result =
         event.results[i];
 
-
       /*
         Any actual recognition activity
         keeps the silence timer alive.
       */
 
-      if (result[0] &&
-          result[0].transcript) {
+      if (
+        result[0] &&
+        result[0].transcript
+      ) {
 
         lastActivityAt =
           performance.now();
 
       }
-
 
       if (result.isFinal) {
 
@@ -1762,7 +1711,6 @@ function setupRecognition() {
       }
 
     }
-
 
     if (
       finalText.trim()
@@ -1779,14 +1727,12 @@ function setupRecognition() {
 
   };
 
-
   r.onerror = event => {
 
     console.log(
       "Speech recognition:",
       event.error
     );
-
 
     if (
       event.error === "not-allowed" ||
@@ -1807,7 +1753,6 @@ function setupRecognition() {
 
     }
 
-
     /*
       Temporary recognition errors do
       NOT mean the user stopped speaking.
@@ -1821,7 +1766,6 @@ function setupRecognition() {
 
   };
 
-
   r.onend = () => {
 
     recognitionRunning =
@@ -1830,9 +1774,7 @@ function setupRecognition() {
     recognitionStarting =
       false;
 
-
     /*
-      IMPORTANT:
       Recognition ending does NOT
       mean the user is silent.
 
@@ -1848,11 +1790,9 @@ function setupRecognition() {
 
   };
 
-
   return r;
 
 }
-
 
 /* =====================================
    SAFE RESTART
@@ -1866,13 +1806,11 @@ function scheduleRecognitionRestart() {
 
   }
 
-
   if (recognitionRestartTimer) {
 
     return;
 
   }
-
 
   recognitionRestartTimer =
     setTimeout(() => {
@@ -1886,7 +1824,6 @@ function scheduleRecognitionRestart() {
 
 }
 
-
 /* =====================================
    START RECOGNITION SAFELY
 ===================================== */
@@ -1899,7 +1836,6 @@ function startRecognitionSafely() {
 
   }
 
-
   if (
     recognitionRunning ||
     recognitionStarting
@@ -1909,10 +1845,8 @@ function startRecognitionSafely() {
 
   }
 
-
   recognitionStarting =
     true;
-
 
   try {
 
@@ -1929,7 +1863,6 @@ function startRecognitionSafely() {
 
 }
 
-
 /* =====================================
    START LISTENING
 ===================================== */
@@ -1941,7 +1874,6 @@ async function startListening() {
     recognition =
       setupRecognition();
 
-
     if (!recognition) {
 
       return;
@@ -1950,24 +1882,18 @@ async function startListening() {
 
   }
 
-
   listening = true;
-
 
   lastActivityAt =
     performance.now();
 
-
   setListeningStatus();
 
-
   startRecognitionSafely();
-
 
   await startAudioMonitor();
 
 }
-
 
 /* =====================================
    PAUSE
@@ -1981,7 +1907,6 @@ function pauseListening() {
 
   stopAudioMonitor();
 
-
   if (recognitionRestartTimer) {
 
     clearTimeout(
@@ -1993,7 +1918,6 @@ function pauseListening() {
 
   }
 
-
   if (recognition) {
 
     try {
@@ -2004,18 +1928,15 @@ function pauseListening() {
 
   }
 
-
   recognitionRunning =
     false;
 
   recognitionStarting =
     false;
 
-
   setPausedStatus();
 
 }
-
 
 /* =====================================
    RESET CURRENT MALA
@@ -2034,13 +1955,11 @@ function resetCurrentMala() {
 
   }
 
-
   count = 0;
 
   updateDisplay();
 
 }
-
 
 /* =====================================
    MANUAL COUNT
@@ -2053,7 +1972,6 @@ function addManualCount() {
       manualInput.value
     );
 
-
   if (
     !Number.isFinite(value) ||
     value <= 0
@@ -2063,18 +1981,22 @@ function addManualCount() {
 
   }
 
-
   addCount(value);
 
   manualInput.value = "";
 
 }
 
-
 /*
   Manual count:
-  Type a number and press Enter.
+  Type a number and press Add Count
+  or press Enter.
 */
+
+manualAddBtn.addEventListener(
+  "click",
+  addManualCount
+);
 
 manualInput.addEventListener(
   "keydown",
@@ -2091,7 +2013,6 @@ manualInput.addEventListener(
   }
 );
 
-
 /* =====================================
    BUTTONS
 ===================================== */
@@ -2101,18 +2022,15 @@ startBtn.addEventListener(
   startListening
 );
 
-
 pauseBtn.addEventListener(
   "click",
   pauseListening
 );
 
-
 resetBtn.addEventListener(
   "click",
   resetCurrentMala
 );
-
 
 /* =====================================
    DAILY RECORDS
@@ -2122,12 +2040,10 @@ function updateRecords() {
 
   recordsList.innerHTML = "";
 
-
   const dates =
     Object.keys(records)
       .sort()
       .reverse();
-
 
   if (!dates.length) {
 
@@ -2142,7 +2058,6 @@ function updateRecords() {
 
   }
 
-
   dates
     .slice(0, 30)
     .forEach(date => {
@@ -2155,7 +2070,6 @@ function updateRecords() {
       row.className =
         "record";
 
-
       const dateEl =
         document.createElement(
           "span"
@@ -2166,7 +2080,6 @@ function updateRecords() {
 
       dateEl.textContent =
         date;
-
 
       const recordCountEl =
         document.createElement(
@@ -2179,7 +2092,6 @@ function updateRecords() {
       recordCountEl.textContent =
         records[date];
 
-
       row.appendChild(
         dateEl
       );
@@ -2188,7 +2100,6 @@ function updateRecords() {
         recordCountEl
       );
 
-
       recordsList.appendChild(
         row
       );
@@ -2196,7 +2107,6 @@ function updateRecords() {
     });
 
 }
-
 
 /* =====================================
    MIDNIGHT RESET
@@ -2207,12 +2117,10 @@ function checkMidnightReset() {
   const currentDate =
     todayKey();
 
-
   const savedDate =
     localStorage.getItem(
       "wg_current_date"
     );
-
 
   if (!savedDate) {
 
@@ -2224,7 +2132,6 @@ function checkMidnightReset() {
     return;
 
   }
-
 
   if (
     savedDate !== currentDate
@@ -2240,19 +2147,16 @@ function checkMidnightReset() {
 
     count = 0;
 
-
     localStorage.setItem(
       "wg_current_date",
       currentDate
     );
-
 
     updateDisplay();
 
   }
 
 }
-
 
 /* =====================================
    MIDNIGHT CHECK
@@ -2262,7 +2166,6 @@ setInterval(
   checkMidnightReset,
   1000
 );
-
 
 /* =====================================
    INITIALIZE
