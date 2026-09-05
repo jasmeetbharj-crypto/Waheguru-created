@@ -2214,12 +2214,10 @@ function setupRecognition() {
   r.maxAlternatives =
     1;
 
-  r.lang =
-    recognitionLanguages[
-      recognitionLanguageIndex
-    ];
+r.lang = recognitionLanguage;
 
-  r.onstart = () => {
+r.onstart = () => {
+
 
     recognitionRunning =
       true;
