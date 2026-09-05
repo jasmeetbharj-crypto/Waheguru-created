@@ -980,11 +980,9 @@ let processedSpeechResults = [];
 
 let recognitionLanguageIndex = 0;
 
-const recognitionLanguages = [
-  "en-IN",
-  "pa-IN"
-];
-
+// Speech recognition language
+const recognitionLanguage = "en-IN";
+  
 /* =====================================
    ELEMENTS
 ===================================== */
@@ -1684,47 +1682,22 @@ function countEnglish(text) {
   const normalized =
     normalizeText(text);
 
-  const patterns = [
+  const englishPattern =
+    /\b(?:waheguru|wahe\s*guru|waheguroo|waheguro|waheguruu|vaheguru|vahiguru|waheguruji|waheguru\s*ji)\b/gi;
 
-    /\bwaheguru\b/g,
+  const matches =
+    normalized.match(englishPattern);
 
-    /\bwahe guru\b/g,
-
-    /\bwaheguroo\b/g,
-
-    /\bwahegooroo\b/g,
-
-    /\bwaheguro\b/g,
-
-    /\bwaheguruu\b/g,
-
-    /\bvaheguru\b/g,
-
-    /\bvahiguru\b/g
-
-  ];
-
-  let totalMatches = 0;
-
-  patterns.forEach(
-    pattern => {
-
-      const matches =
-        normalized.match(pattern);
-
-      if (matches) {
-
-        totalMatches +=
-          matches.length;
-
-      }
-
-    }
-  );
-
-  return totalMatches;
+  return matches
+    ? matches.length
+    : 0;
 
 }
+
+/* =====================================
+   COUNT WAHEGURU
+===================================== */
+
 
 /* =====================================
    COUNT WAHEGURU
@@ -2298,7 +2271,13 @@ function setupRecognition() {
       if (
         result.isFinal
       ) {
+  const spokenText = result[0].transcript;
 
+  console.log("Recognized:", spokenText);
+
+  countWaheguru(spokenText);
+
+}
         const transcript =
           result[0].transcript.trim();
 
@@ -2320,20 +2299,7 @@ function setupRecognition() {
 
     }
 
-    if (
-      finalText.trim()
-    ) {
-
-      lastActivityAt =
-        performance.now();
-
-      countWaheguru(
-        finalText
-      );
-
-    }
-
-  };
+   
 
   r.onerror = event => {
 
