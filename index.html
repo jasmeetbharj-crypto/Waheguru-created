@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 13</title>
+<title>Waheguru Voice Counter - V 17</title>
 
 <style>
 * {
@@ -54,8 +54,6 @@ h1 {
   margin-bottom: 15px;
 }
 
-/* STATUS */
-
 .status {
   display: inline-flex;
   align-items: center;
@@ -85,8 +83,6 @@ h1 {
   background: var(--mala-color);
   box-shadow: 0 0 12px var(--mala-color);
 }
-
-/* MALA */
 
 .mala-wrapper {
   position: relative;
@@ -128,8 +124,6 @@ h1 {
     0 0 22px var(--mala-color);
 }
 
-/* CENTER */
-
 .center {
   position: absolute;
   left: 50%;
@@ -155,8 +149,6 @@ h1 {
   overflow: visible;
 }
 
-/* IK ONKAR */
-
 .ik-onkar {
   position: absolute;
   left: 50%;
@@ -171,8 +163,6 @@ h1 {
   user-select: none;
   z-index: 0;
 }
-
-/* COUNT */
 
 .center-count {
   position: relative;
@@ -191,11 +181,10 @@ h1 {
   margin-top: 6px;
 }
 
-/* COLOR BUTTON */
-
 .mala-color-btn:hover {
   background: #292929;
 }
+
 .right-side-btn { 
   position: fixed; 
   right: 14px; 
@@ -208,19 +197,15 @@ h1 {
   font-size: 19px; 
   z-index: 100; 
   cursor: pointer; 
-} 
+}
 
-/* COLOUR BUTTON - UNDER DARK MODE */
 #malaColorBtn { 
   top: 68px; 
-} 
+}
 
-/* SETTINGS BUTTON - UNDER COLOUR */
 .settings-btn { 
   top: 122px; 
 }
-
-/* DARK MODE */
 
 .dark-mode-btn {
   position: fixed;
@@ -235,8 +220,6 @@ h1 {
   font-size: 19px;
   z-index: 100;
 }
-
-/* COLOR PALETTE */
 
 .color-box {
   display: none;
@@ -297,8 +280,6 @@ h1 {
 .pink { background: #ff3b9d; }
 .white { background: #ffffff; }
 
-/* BUTTONS */
-
 .controls {
   display: flex;
   gap: 8px;
@@ -330,8 +311,6 @@ button:hover {
   background: var(--mala-color);
 }
 
-/* TIMER */
-
 .timeout-box {
   margin: 10px auto 15px;
   padding: 10px;
@@ -353,8 +332,6 @@ button:hover {
   color: #777;
   font-size: 12px;
 }
-
-/* MANUAL */
 
 .manual {
   margin: 15px 0;
@@ -403,8 +380,6 @@ button:hover {
   background: var(--mala-color);
 }
 
-/* STATS */
-
 .stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -430,8 +405,6 @@ button:hover {
   font-size: 11px;
   margin-top: 4px;
 }
-
-/* RECORDS */
 
 .records {
   margin-top: 18px;
@@ -462,8 +435,6 @@ button:hover {
   color: var(--mala-color);
   font-weight: bold;
 }
-
-/* CALENDAR */
 
 .calendar-box {
   margin: 12px 0;
@@ -509,8 +480,6 @@ button:hover {
   font-weight: bold;
 }
 
-/* SETTINGS */
-
 .settings {
   margin-top: 15px;
   padding: 12px;
@@ -540,16 +509,12 @@ button:hover {
   min-width: 65px;
 }
 
-/* NOTE */
-
 .note {
   margin-top: 18px;
   color: #555;
   font-size: 11px;
   line-height: 1.5;
 }
-
-/* LIGHT MODE */
 
 body.light .status,
 body.light .timeout-box,
@@ -581,8 +546,6 @@ body.light .manual-title,
 body.light .settings-title {
   color: #333;
 }
-
-/* MOBILE */
 
 @media (max-width: 420px) {
 
@@ -631,16 +594,12 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V16</div>
-
-<!-- STATUS -->
+<div class="subtitle">Digital 108-Bead Mala—V17</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
   <span id="statusText">Mic paused</span>
 </div>
-
-<!-- MALA -->
 
 <div class="mala-wrapper">
 
@@ -657,8 +616,6 @@ body.light .settings-title {
     <div id="malaNumber" class="mala-number">
       Mala #1
     </div>
-
-    <!-- COLOR PALETTE -->
 
     <div id="colorBox" class="color-box">
 
@@ -730,8 +687,6 @@ body.light .settings-title {
   </div>
 </div>
 
-<!-- TIMER -->
-
 <div class="timeout-box">
 
   Auto mic-off after:
@@ -744,8 +699,6 @@ body.light .settings-title {
   </div>
 
 </div>
-
-<!-- VOICE CONTROLS -->
 
 <div class="controls">
 
@@ -762,8 +715,6 @@ body.light .settings-title {
   </button>
 
 </div>
-
-<!-- MANUAL -->
 
 <div class="manual">
 
@@ -791,41 +742,39 @@ body.light .settings-title {
 
 </div>
 
-<!-- STATS -->
-
 <div class="stats">
+
 <div class="stat">
 <div id="weekly" class="stat-number">0</div>
 <div class="stat-label">THIS WEEK</div>
 </div>
+
 <div class="stat">
 <div id="monthly" class="stat-number">0</div>
 <div class="stat-label">THIS MONTH</div>
 </div>
-  <div class="stat">
-    <div id="completedMalas" class="stat-number">0</div>
-    <div class="stat-label">COMPLETED MALAS</div>
-  </div>
 
-  <div class="stat">
-    <div id="total" class="stat-number">0</div>
-    <div class="stat-label">SAVED TOTAL</div>
-  </div>
-
-  <div class="stat">
-    <div id="today" class="stat-number">0</div>
-    <div class="stat-label">TODAY</div>
-  </div>
-
-  <div class="stat">
-    <div id="current" class="stat-number">0</div>
-    <div class="stat-label">CURRENT MALA</div>
-  </div>
-
+<div class="stat">
+<div id="completedMalas" class="stat-number">0</div>
+<div class="stat-label">COMPLETED MALAS</div>
 </div>
 
-  
-<!-- CALENDAR -->
+<div class="stat">
+<div id="total" class="stat-number">0</div>
+<div class="stat-label">SAVED TOTAL</div>
+</div>
+
+<div class="stat">
+<div id="today" class="stat-number">0</div>
+<div class="stat-label">TODAY</div>
+</div>
+
+<div class="stat">
+<div id="current" class="stat-number">0</div>
+<div class="stat-label">CURRENT MALA</div>
+</div>
+
+</div>
 
 <div class="calendar-box">
 
@@ -844,8 +793,6 @@ body.light .settings-title {
 
 </div>
 
-<!-- RECORDS -->
-
 <div class="records">
 
   <h2>📅 Daily Records</h2>
@@ -853,9 +800,6 @@ body.light .settings-title {
   <div id="recordsList"></div>
 
 </div>
-
-<!-- SETTINGS -->
-
 
 <div id="settingsBox" class="color-box">
 
@@ -874,6 +818,7 @@ body.light .settings-title {
   </div>
 
 </div>
+
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
   recognized occurrences. You can also enter a manual count
@@ -970,23 +915,42 @@ let audioData = null;
 
 let audioMonitor = null;
 
+/* =====================================
+   V17 VOICE TRACKING
+===================================== */
+
 /*
-  Used to prevent the same final
-  recognition result from being
-  counted twice.
+  V17 does NOT switch between English
+  and Punjabi recognition.
+
+  Keeping one language gives the browser
+  a much more consistent recognition session.
 */
 
-let processedSpeechResults = [];
-
-let recognitionLanguageIndex = 0;
-
-// Speech recognition language
 const recognitionLanguage = "en-IN";
-  const recognitionLanguages = [
-  "en-IN",
-  "pa-IN"
-];
-  
+
+/*
+  Stores the number of Waheguru occurrences
+  already counted for each recognition result.
+
+  This is important because interim speech
+  results can grow like:
+
+  "waheguru"
+
+  then:
+
+  "waheguru waheguru"
+
+  then:
+
+  "waheguru waheguru waheguru"
+
+  V17 counts only the NEW occurrence each time.
+*/
+
+let speechResultCounts = {};
+
 /* =====================================
    ELEMENTS
 ===================================== */
@@ -1242,7 +1206,8 @@ document
 
     }
   );
-  /* =====================================
+
+/* =====================================
    OPEN SETTINGS
 ===================================== */
 
@@ -1699,9 +1664,27 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   COUNT WAHEGURU
+   COUNT WAHEGURU MATCHES
 ===================================== */
 
+function countWaheguruMatches(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  const gurmukhiCount =
+    countGurmukhi(text);
+
+  const englishCount =
+    countEnglish(text);
+
+  return (
+    gurmukhiCount +
+    englishCount
+  );
+
+}
 
 /* =====================================
    COUNT WAHEGURU
@@ -1713,57 +1696,14 @@ function countWaheguru(text) {
     return;
   }
 
-  const gurmukhiCount =
-    countGurmukhi(text);
-
-  const englishCount =
-    countEnglish(text);
-
   const matches =
-    gurmukhiCount +
-    englishCount;
+    countWaheguruMatches(text);
 
   if (matches > 0) {
 
     addCount(matches);
 
   }
-
-}
-
-/* =====================================
-   SPEECH RESULT PROTECTION
-===================================== */
-
-function speechResultAlreadyProcessed(
-  text,
-  resultIndex
-) {
-
-  const key =
-    resultIndex +
-    "|" +
-    text.trim();
-
-  if (
-    processedSpeechResults.includes(key)
-  ) {
-
-    return true;
-
-  }
-
-  processedSpeechResults.push(key);
-
-  if (
-    processedSpeechResults.length > 100
-  ) {
-
-    processedSpeechResults.shift();
-
-  }
-
-  return false;
 
 }
 
@@ -1862,11 +1802,6 @@ async function startAudioMonitor() {
       return;
 
     }
-
-    /*
-      Do not request a second microphone
-      stream if one already exists.
-    */
 
     if (micStream) {
       return;
@@ -2187,7 +2122,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   SPEECH RECOGNITION
+   V17 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2212,16 +2147,32 @@ function setupRecognition() {
   r.continuous =
     true;
 
+  /*
+    V17 keeps interim results ON.
+
+    This allows us to see speech before
+    the browser makes the result final.
+  */
   r.interimResults =
     true;
 
   r.maxAlternatives =
     1;
 
-r.lang = recognitionLanguage;
+  /*
+    IMPORTANT V17 CHANGE:
 
-r.onstart = () => {
+    Do not rotate between en-IN and pa-IN.
 
+    The user is saying "Waheguru", so we keep
+    the recognition engine consistently on
+    English India.
+  */
+  r.lang =
+    recognitionLanguage;
+
+
+  r.onstart = () => {
 
     recognitionRunning =
       true;
@@ -2243,58 +2194,125 @@ r.onstart = () => {
 
   };
 
-r.onresult = event => {
 
-  if (!listening) {
-    return;
-  }
+  r.onresult = event => {
 
-  for (
-    let i = event.resultIndex;
-    i < event.results.length;
-    i++
-  ) {
-
-    const result = event.results[i];
-
-    if (!result || !result[0]) {
-      continue;
+    if (!listening) {
+      return;
     }
 
-    const transcript =
-      result[0].transcript.trim();
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
 
-    if (!transcript) {
-      continue;
-    }
-
-    console.log(
-      "Recognized:",
-      transcript,
-      "Final:",
-      result.isFinal
-    );
-
-    // Only count FINAL speech results
-    if (result.isFinal) {
+      const result =
+        event.results[i];
 
       if (
-        speechResultAlreadyProcessed(
-          transcript,
-          i
-        )
+        !result ||
+        !result[0]
       ) {
+
+        continue;
+
+      }
+
+      const transcript =
+        result[0].transcript.trim();
+
+      if (!transcript) {
         continue;
       }
 
-      countWaheguru(transcript);
+      console.log(
+        "Recognized:",
+        transcript,
+        "Final:",
+        result.isFinal
+      );
+
+      /*
+        Count the number of Waheguru
+        occurrences currently present.
+      */
+      const currentCount =
+        countWaheguruMatches(
+          transcript
+        );
+
+      /*
+        How many occurrences have already
+        been counted for this recognition
+        result?
+      */
+      const previousCount =
+        speechResultCounts[i] || 0;
+
+      /*
+        ONLY count the difference.
+
+        Example:
+
+        First interim:
+        "waheguru"
+        current = 1
+        previous = 0
+        ADD = 1
+
+        Next interim:
+        "waheguru waheguru"
+        current = 2
+        previous = 1
+        ADD = 1
+
+        Next interim:
+        "waheguru waheguru waheguru"
+        current = 3
+        previous = 2
+        ADD = 1
+
+        Therefore:
+        3 repetitions = 3 counts.
+
+        The same repetition is not counted
+        again when the transcript updates.
+      */
+
+      if (
+        currentCount >
+        previousCount
+      ) {
+
+        const newOccurrences =
+          currentCount -
+          previousCount;
+
+        addCount(
+          newOccurrences
+        );
+
+        speechResultCounts[i] =
+          currentCount;
+
+      }
+
+      /*
+        Once final, permanently remember
+        the final count for this result.
+      */
+      if (result.isFinal) {
+
+        speechResultCounts[i] =
+          currentCount;
+
+      }
 
     }
 
-  }
+  };
 
-};
-   
 
   r.onerror = event => {
 
@@ -2342,6 +2360,7 @@ r.onresult = event => {
 
   };
 
+
   r.onend = () => {
 
     recognitionRunning =
@@ -2355,27 +2374,32 @@ r.onresult = event => {
     }
 
     /*
-      Rotate recognition language
-      after each recognition session.
+      IMPORTANT:
 
-      This gives the browser an opportunity
-      to recognize English and Punjabi.
+      V17 does NOT change language
+      when recognition ends.
+
+      Always stay on en-IN.
     */
 
-    recognitionLanguageIndex =
-      (
-        recognitionLanguageIndex + 1
-      ) %
-      recognitionLanguages.length;
-
     r.lang =
-      recognitionLanguages[
-        recognitionLanguageIndex
-      ];
+      recognitionLanguage;
+
+    /*
+      The browser has started a new
+      recognition session.
+
+      Old result indexes are no longer
+      relevant, so clear them.
+    */
+
+    speechResultCounts =
+      {};
 
     scheduleRecognitionRestart();
 
   };
+
 
   return r;
 
@@ -2409,7 +2433,7 @@ function scheduleRecognitionRestart() {
         startRecognitionSafely();
 
       },
-      400
+      300
     );
 
 }
@@ -2433,15 +2457,21 @@ function startRecognitionSafely() {
 
   }
 
+  if (!recognition) {
+    return;
+  }
+
   recognitionStarting =
     true;
 
   try {
 
+    /*
+      V17 always uses the same language.
+    */
+
     recognition.lang =
-      recognitionLanguages[
-        recognitionLanguageIndex
-      ];
+      recognitionLanguage;
 
     recognition.start();
 
@@ -2449,6 +2479,11 @@ function startRecognitionSafely() {
 
     recognitionStarting =
       false;
+
+    console.log(
+      "Recognition start error:",
+      e
+    );
 
     scheduleRecognitionRestart();
 
@@ -2483,8 +2518,13 @@ async function startListening() {
   lastActivityAt =
     performance.now();
 
-  processedSpeechResults =
-    [];
+  /*
+    Start a fresh speech-result tracker
+    whenever the user presses Start.
+  */
+
+  speechResultCounts =
+    {};
 
   setListeningStatus();
 
@@ -2522,6 +2562,14 @@ function pauseListening() {
 
   recognitionStarting =
     false;
+
+  /*
+    Clear speech tracking when manually
+    paused so the next Start begins clean.
+  */
+
+  speechResultCounts =
+    {};
 
   setPausedStatus();
 
@@ -2620,6 +2668,7 @@ resetBtn.addEventListener(
 /* =====================================
    DAILY RECORDS
 ===================================== */
+
 function updateExtraStats() {
 
   let weekly = 0;
@@ -2627,35 +2676,52 @@ function updateExtraStats() {
 
   const now = new Date();
 
-  const weekStart = new Date(now);
+  const weekStart =
+    new Date(now);
+
   weekStart.setDate(
-    now.getDate() - now.getDay()
+    now.getDate() -
+    now.getDay()
   );
 
   Object.entries(records).forEach(
     ([date, value]) => {
 
-      const d = new Date(date);
+      const d =
+        new Date(date);
 
       if (d >= weekStart) {
-        weekly += Number(value) || 0;
+        weekly +=
+          Number(value) || 0;
       }
 
       if (
-        d.getMonth() === now.getMonth() &&
-        d.getFullYear() === now.getFullYear()
+        d.getMonth() ===
+          now.getMonth() &&
+        d.getFullYear() ===
+          now.getFullYear()
       ) {
-        monthly += Number(value) || 0;
+
+        monthly +=
+          Number(value) || 0;
+
       }
+
     }
   );
 
-  document.getElementById("weekly").textContent =
+  document.getElementById(
+    "weekly"
+  ).textContent =
     weekly;
 
-  document.getElementById("monthly").textContent =
+  document.getElementById(
+    "monthly"
+  ).textContent =
     monthly;
+
 }
+
 function updateRecords() {
 
   recordsList.innerHTML =
@@ -2783,13 +2849,9 @@ calendarDate.addEventListener(
 
     selectedDateLabel.textContent =
       selected === todayKey()
-        ? "Today — " + formatDate(selected)
+        ? "Today — " +
+          formatDate(selected)
         : formatDate(selected);
-
-    /*
-      The calendar lets you inspect
-      the saved count for any date.
-    */
 
     console.log(
       "Record for " +
@@ -2838,14 +2900,6 @@ function checkMidnightReset() {
   if (
     savedDate !== currentDate
   ) {
-
-    /*
-      Reset ONLY current mala.
-
-      Saved total remains.
-      Completed malas remain.
-      Daily records remain.
-    */
 
     count =
       0;
