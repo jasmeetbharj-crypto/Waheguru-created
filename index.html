@@ -54,21 +54,6 @@ h1 {
   margin-bottom: 15px;
 }
 
-/* DARK MODE */
-
-.dark-mode-btn {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 50%;
-  background: #191919;
-  border: 1px solid #444;
-  font-size: 19px;
-  z-index: 100;
-}
 
 /* STATUS */
 
@@ -178,7 +163,7 @@ h1 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -52%);
-  font-size: 82px;
+  font-size: 182px;
   line-height: 1;
   color: var(--mala-color);
   opacity: .11;
@@ -208,32 +193,48 @@ h1 {
 
 /* COLOR BUTTON */
 
-.mala-color-btn {
-  position: absolute;
-  right: 9px;
-  bottom: 9px;
-  width: 31px;
-  height: 31px;
-  padding: 0;
-  border-radius: 50%;
-  background: #151515;
-  border: 1px solid #555;
-  font-size: 15px;
-  z-index: 5;
+.top-buttons {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
 }
 
+.dark-mode-btn,
+.mala-color-btn {
+  position: static;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.mala-color-btn {
+  font-size: 17px;
+}
+
+.dark-mode-btn:hover,
 .mala-color-btn:hover {
   background: #292929;
 }
+/* DARK MODE */
 
 /* COLOR PALETTE */
 
 .color-box {
   display: none;
   position: absolute;
-  left: 50%;
   top: calc(100% + 8px);
-  transform: translateX(-50%);
+  right: 0;
+  left: auto;
+  transform: none;
   width: 185px;
   padding: 10px;
   background: #101010;
@@ -490,33 +491,9 @@ body.light .center {
 
 <div class="app">
 
-<button id="darkModeBtn" class="dark-mode-btn">☀️</button>
+<div class="top-buttons">
 
-<h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala — Version 10</div>
-
-<!-- STATUS -->
-
-<div id="status" class="status">
-  <span class="dot"></span>
-  <span id="statusText">Mic paused</span>
-</div>
-
-<!-- MALA -->
-
-<div class="mala-wrapper">
-
-  <div id="mala" class="mala"></div>
-
-  <div class="center">
-
-    <div class="ik-onkar">ੴ</div>
-
-    <div id="count" class="center-count">0</div>
-
-    <div id="malaNumber" class="mala-number">
-      Mala #1
-    </div>
+  <button id="darkModeBtn" class="dark-mode-btn">☀️</button>
 
     <button
       id="malaColorBtn"
@@ -593,6 +570,36 @@ body.light .center {
 
       </div>
     </div>
+
+
+</div>
+
+<h1>Waheguru Voice Counter</h1>
+<div class="subtitle">Digital 108-Bead Mala — Version 10</div>
+
+<!-- STATUS -->
+
+<div id="status" class="status">
+  <span class="dot"></span>
+  <span id="statusText">Mic paused</span>
+</div>
+
+<!-- MALA -->
+
+<div class="mala-wrapper">
+
+  <div id="mala" class="mala"></div>
+
+  <div class="center">
+
+    <div class="ik-onkar">ੴ</div>
+
+    <div id="count" class="center-count">0</div>
+
+    <div id="malaNumber" class="mala-number">
+      Mala #1
+    </div>
+
 
   </div>
 </div>
