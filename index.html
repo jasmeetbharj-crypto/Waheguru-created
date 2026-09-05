@@ -645,13 +645,31 @@ body.light .settings-title {
       Mala #1
     </div>
 
-    <button
-      id="malaColorBtn"
-      class="mala-color-btn"
-      title="Mala Color">
-      🎨
-    </button>
 
+<button id="malaColorBtn" class="right-side-btn">
+🎨
+</button>
+<button id="settingsBtn" class="right-side-btn settings-btn">
+⚙️
+</button>
+.right-side-btn {
+position: fixed;
+right: 14px;
+width: 42px;
+height: 42px;
+padding: 0;
+border-radius: 50%;
+background: #191919;
+border: 1px solid #444;
+font-size: 19px;
+z-index: 100;
+}
+#malaColorBtn {
+top: 62px;
+}
+.settings-btn {
+top: 110px;
+}
     <!-- COLOR PALETTE -->
 
     <div id="colorBox" class="color-box">
@@ -788,7 +806,14 @@ body.light .settings-title {
 <!-- STATS -->
 
 <div class="stats">
-
+<div class="stat">
+<div id="weekly" class="stat-number">0</div>
+<div class="stat-label">THIS WEEK</div>
+</div>
+<div class="stat">
+<div id="monthly" class="stat-number">0</div>
+<div class="stat-label">THIS MONTH</div>
+</div>
   <div class="stat">
     <div id="completedMalas" class="stat-number">0</div>
     <div class="stat-label">COMPLETED MALAS</div>
@@ -810,6 +835,51 @@ body.light .settings-title {
   </div>
 
 </div>
+
+  function updateExtraStats() {
+
+  let weekly = 0;
+  let monthly = 0;
+
+  const now = new Date();
+
+  const weekStart = new Date(now);
+
+  weekStart.setDate(
+    now.getDate() -
+    now.getDay()
+  );
+
+  Object.entries(records)
+    .forEach(([date, value]) => {
+
+      const d =
+        new Date(date);
+
+      if (d >= weekStart) {
+        weekly += value;
+      }
+
+      if (
+        d.getMonth() ===
+          now.getMonth() &&
+        d.getFullYear() ===
+          now.getFullYear()
+      ) {
+        monthly += value;
+      }
+
+    });
+
+  document.getElementById(
+    "weekly"
+  ).textContent = weekly;
+
+  document.getElementById(
+    "monthly"
+  ).textContent = monthly;
+
+}
 
 <!-- CALENDAR -->
 
@@ -859,7 +929,23 @@ body.light .settings-title {
   </div>
 
 </div>
+<div id="settingsBox" class="color-box">
 
+  <div class="color-title">
+    Settings
+  </div>
+
+  <div class="setting-row">
+    <span>🔊 Sound</span>
+    <button id="soundBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>📳 Vibration</span>
+    <button id="vibrationBtn">ON</button>
+  </div>
+
+</div>
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
   recognized occurrences. You can also enter a manual count
@@ -1226,6 +1312,28 @@ document
 
     }
   );
+  /* =====================================
+   OPEN SETTINGS
+===================================== */
+
+const settingsBtn =
+  document.getElementById("settingsBtn");
+
+const settingsBox =
+  document.getElementById("settingsBox");
+
+settingsBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    settingsBox.classList.toggle(
+      "open"
+    );
+
+  }
+);
 
 colorBox.addEventListener(
   "click",
@@ -1488,6 +1596,7 @@ function updateDisplay() {
     }
   );
 
+  updateExtraStats();
   saveData();
 
   updateRecords();
