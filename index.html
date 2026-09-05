@@ -652,24 +652,28 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">
 ⚙️
 </button>
+
 .right-side-btn {
-position: fixed;
-right: 14px;
-width: 42px;
-height: 42px;
-padding: 0;
-border-radius: 50%;
-background: #191919;
-border: 1px solid #444;
-font-size: 19px;
-z-index: 100;
+  position: fixed;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  z-index: 100;
 }
+
 #malaColorBtn {
-top: 62px;
+  top: 62px;
 }
+
 .settings-btn {
-top: 110px;
+  top: 110px;
 }
+
     <!-- COLOR PALETTE -->
 
     <div id="colorBox" class="color-box">
@@ -836,51 +840,7 @@ top: 110px;
 
 </div>
 
-  function updateExtraStats() {
-
-  let weekly = 0;
-  let monthly = 0;
-
-  const now = new Date();
-
-  const weekStart = new Date(now);
-
-  weekStart.setDate(
-    now.getDate() -
-    now.getDay()
-  );
-
-  Object.entries(records)
-    .forEach(([date, value]) => {
-
-      const d =
-        new Date(date);
-
-      if (d >= weekStart) {
-        weekly += value;
-      }
-
-      if (
-        d.getMonth() ===
-          now.getMonth() &&
-        d.getFullYear() ===
-          now.getFullYear()
-      ) {
-        monthly += value;
-      }
-
-    });
-
-  document.getElementById(
-    "weekly"
-  ).textContent = weekly;
-
-  document.getElementById(
-    "monthly"
-  ).textContent = monthly;
-
-}
-
+  
 <!-- CALENDAR -->
 
 <div class="calendar-box">
@@ -912,23 +872,7 @@ top: 110px;
 
 <!-- SETTINGS -->
 
-<div class="settings">
 
-  <div class="settings-title">
-    ⚙️ Settings
-  </div>
-
-  <div class="setting-row">
-    <span>🔊 Sound</span>
-    <button id="soundBtn">ON</button>
-  </div>
-
-  <div class="setting-row">
-    <span>📳 Vibration</span>
-    <button id="vibrationBtn">ON</button>
-  </div>
-
-</div>
 <div id="settingsBox" class="color-box">
 
   <div class="color-title">
@@ -1352,11 +1296,15 @@ document.addEventListener(
       !colorBox.contains(event.target) &&
       event.target.id !== "malaColorBtn"
     ) {
+      colorBox.classList.remove("open");
+    }
 
-      colorBox.classList.remove(
-        "open"
-      );
-
+    if (
+      settingsBox &&
+      !settingsBox.contains(event.target) &&
+      event.target.id !== "settingsBtn"
+    ) {
+      settingsBox.classList.remove("open");
     }
 
   }
@@ -2727,7 +2675,42 @@ resetBtn.addEventListener(
 /* =====================================
    DAILY RECORDS
 ===================================== */
+function updateExtraStats() {
 
+  let weekly = 0;
+  let monthly = 0;
+
+  const now = new Date();
+
+  const weekStart = new Date(now);
+  weekStart.setDate(
+    now.getDate() - now.getDay()
+  );
+
+  Object.entries(records).forEach(
+    ([date, value]) => {
+
+      const d = new Date(date);
+
+      if (d >= weekStart) {
+        weekly += Number(value) || 0;
+      }
+
+      if (
+        d.getMonth() === now.getMonth() &&
+        d.getFullYear() === now.getFullYear()
+      ) {
+        monthly += Number(value) || 0;
+      }
+    }
+  );
+
+  document.getElementById("weekly").textContent =
+    weekly;
+
+  document.getElementById("monthly").textContent =
+    monthly;
+}
 function updateRecords() {
 
   recordsList.innerHTML =
