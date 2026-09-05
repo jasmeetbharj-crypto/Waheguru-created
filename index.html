@@ -982,6 +982,10 @@ let recognitionLanguageIndex = 0;
 
 // Speech recognition language
 const recognitionLanguage = "en-IN";
+  const recognitionLanguages = [
+  "en-IN",
+  "pa-IN"
+];
   
 /* =====================================
    ELEMENTS
@@ -2239,64 +2243,57 @@ r.onstart = () => {
 
   };
 
-  r.onresult = event => {
+r.onresult = event => {
 
-    if (!listening) {
-      return;
+  if (!listening) {
+    return;
+  }
+
+  for (
+    let i = event.resultIndex;
+    i < event.results.length;
+    i++
+  ) {
+
+    const result = event.results[i];
+
+    if (!result || !result[0]) {
+      continue;
     }
 
-    let finalText = "";
+    const transcript =
+      result[0].transcript.trim();
 
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
+    if (!transcript) {
+      continue;
+    }
 
-      const result =
-        event.results[i];
+    console.log(
+      "Recognized:",
+      transcript,
+      "Final:",
+      result.isFinal
+    );
 
-      if (
-        result[0] &&
-        result[0].transcript
-      ) {
-
-        lastActivityAt =
-          performance.now();
-
-      }
+    // Only count FINAL speech results
+    if (result.isFinal) {
 
       if (
-        result.isFinal
+        speechResultAlreadyProcessed(
+          transcript,
+          i
+        )
       ) {
-  const spokenText = result[0].transcript;
-
-  console.log("Recognized:", spokenText);
-
-  countWaheguru(spokenText);
-
-}
-        const transcript =
-          result[0].transcript.trim();
-
-        if (
-          transcript &&
-          !speechResultAlreadyProcessed(
-            transcript,
-            i
-          )
-        ) {
-
-          finalText +=
-            " " +
-            transcript;
-
-        }
-
+        continue;
       }
+
+      countWaheguru(transcript);
 
     }
 
+  }
+
+};
    
 
   r.onerror = event => {
