@@ -3,2181 +3,273 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - Version 10</title>
-
+<title>Waheguru Voice Counter — Version 11</title>
 <style>
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  --mala-color: #ff2020;
-  --mala-dark: #8d0000;
-  --mala-light: #ff7070;
-  --mala-glow: rgba(255,0,0,.8);
-  --mala-center: #280000;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #050505;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  transition: background .3s, color .3s;
-}
-
-body.light {
-  background: #f2f2f2;
-  color: #111;
-}
-
-.app {
-  width: 100%;
-  max-width: 500px;
-  padding: 18px 15px 40px;
-  text-align: center;
-}
-
-h1 {
-  margin: 5px 0 2px;
-  font-size: 28px;
-  color: var(--mala-color);
-  text-shadow: 0 0 15px var(--mala-glow);
-}
-
-.subtitle {
-  color: #888;
-  font-size: 13px;
-  margin-bottom: 15px;
-}
-
-/* DARK MODE */
-
-.dark-mode-btn {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 50%;
-  background: #191919;
-  border: 1px solid #444;
-  font-size: 19px;
-  z-index: 100;
-}
-
-/* STATUS */
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 20px;
-  background: #111;
-  border: 1px solid #333;
-  color: #999;
-  font-size: 13px;
-  margin-bottom: 15px;
-}
-
-.dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #555;
-}
-
-.status.active {
-  color: var(--mala-color);
-  border-color: var(--mala-dark);
-}
-
-.status.active .dot {
-  background: var(--mala-color);
-  box-shadow: 0 0 12px var(--mala-color);
-}
-
-/* MALA */
-
-.mala-wrapper {
-  position: relative;
-  width: min(90vw, 390px);
-  height: min(90vw, 390px);
-  margin: 8px auto 20px;
-}
-
-.mala {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.bead {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #161616;
-  border: 1px solid #444;
-  box-shadow: inset 0 0 5px #000;
-  transform: translate(-50%, -50%);
-  transition: .15s;
-}
-
-.bead.active {
-  background: var(--mala-color);
-  border-color: var(--mala-light);
-  box-shadow:
-    0 0 7px var(--mala-color),
-    0 0 18px var(--mala-glow);
-}
-
-.bead.current {
-  transform: translate(-50%, -50%) scale(1.35);
-  box-shadow:
-    0 0 10px white,
-    0 0 22px var(--mala-color);
-}
-
-/* CENTER */
-
-.center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 145px;
-  height: 145px;
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      circle,
-      var(--mala-center) 0%,
-      #0b0b0b 65%
-    );
-  border: 2px solid var(--mala-dark);
-  box-shadow:
-    0 0 20px var(--mala-glow),
-    inset 0 0 25px #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-}
-
-/* IK ONKAR */
-
-.ik-onkar {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -52%);
-  font-size: 82px;
-  line-height: 1;
-  color: var(--mala-color);
-  opacity: .11;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
-
-/* COUNT */
-
-.center-count {
-  position: relative;
-  z-index: 2;
-  font-size: 40px;
-  font-weight: bold;
-  color: var(--mala-color);
-  text-shadow: 0 0 15px var(--mala-color);
-}
-
-.mala-number {
-  position: relative;
-  z-index: 2;
-  color: #aaa;
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-/* COLOR BUTTON */
-
-.mala-color-btn {
-  position: absolute;
-  right: 9px;
-  bottom: 9px;
-  width: 31px;
-  height: 31px;
-  padding: 0;
-  border-radius: 50%;
-  background: #151515;
-  border: 1px solid #555;
-  font-size: 15px;
-  z-index: 5;
-}
-
-.mala-color-btn:hover {
-  background: #292929;
-}
-
-/* COLOR PALETTE */
-
-.color-box {
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 8px);
-  transform: translateX(-50%);
-  width: 185px;
-  padding: 10px;
-  background: #101010;
-  border: 1px solid #333;
-  border-radius: 10px;
-  z-index: 20;
-  box-shadow: 0 8px 25px rgba(0,0,0,.5);
-}
-
-.color-box.open {
-  display: block;
-}
-
-.color-title {
-  color: #aaa;
-  font-size: 11px;
-  margin-bottom: 8px;
-}
-
-.colors {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.color-btn {
-  width: 27px;
-  height: 27px;
-  padding: 0;
-  border-radius: 50%;
-  border: 2px solid #555;
-  cursor: pointer;
-}
-
-.color-btn:hover {
-  transform: scale(1.1);
-}
-
-.color-btn.selected {
-  border-color: white;
-  box-shadow: 0 0 10px white;
-}
-
-.red { background: #ff2020; }
-.orange { background: #ff8c00; }
-.yellow { background: #ffd700; }
-.green { background: #00d26a; }
-.blue { background: #168cff; }
-.purple { background: #a855f7; }
-.pink { background: #ff3b9d; }
-.white { background: #ffffff; }
-
-/* BUTTONS */
-
-.controls {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin: 12px 0;
-}
-
-button {
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 13px 15px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  background: #191919;
-  color: white;
-}
-
-button:hover {
-  background: #292929;
-}
-
-.start {
-  background: var(--mala-dark);
-  border-color: var(--mala-color);
-}
-
-.start:hover {
-  background: var(--mala-color);
-}
-
-/* TIMER */
-
-.timeout-box {
-  margin: 10px auto 15px;
-  padding: 10px;
-  max-width: 340px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 10px;
-  color: #999;
-  font-size: 13px;
-}
-
-.timeout-value {
-  color: var(--mala-color);
-  font-weight: bold;
-}
-
-.timer {
-  margin-top: 5px;
-  color: #777;
-  font-size: 12px;
-}
-
-/* MANUAL */
-
-.manual {
-  margin: 15px 0;
-  padding: 15px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 12px;
-}
-
-.manual-title {
-  font-size: 15px;
-  color: #ddd;
-  margin-bottom: 10px;
-}
-
-.manual-row {
-  display: flex;
-  gap: 8px;
-}
-
-.manual-row input {
-  width: 100%;
-  background: #080808;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 9px;
-  padding: 13px;
-  font-size: 16px;
-  text-align: center;
-  outline: none;
-}
-
-.manual-row input:focus {
-  border-color: var(--mala-color);
-  box-shadow: 0 0 8px var(--mala-glow);
-}
-
-.manual-add-btn {
-  min-width: 105px;
-  background: var(--mala-dark);
-  border-color: var(--mala-color);
-  color: white;
-}
-
-.manual-add-btn:hover {
-  background: var(--mala-color);
-}
-
-/* STATS */
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin: 18px 0;
-}
-
-.stat {
-  background: #101010;
-  border: 1px solid #282828;
-  border-radius: 12px;
-  padding: 13px;
-}
-
-.stat-number {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--mala-color);
-}
-
-.stat-label {
-  color: #777;
-  font-size: 11px;
-  margin-top: 4px;
-}
-
-/* RECORDS */
-
-.records {
-  margin-top: 18px;
-  text-align: left;
-}
-
-.records h2 {
-  text-align: center;
-  font-size: 18px;
-  color: #ddd;
-}
-
-.record {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  background: #101010;
-  border-bottom: 1px solid #222;
-  border-radius: 7px;
-  margin-bottom: 5px;
-}
-
-.record-date {
-  color: #aaa;
-}
-
-.record-count {
-  color: var(--mala-color);
-  font-weight: bold;
-}
-
-.note {
-  margin-top: 18px;
-  color: #555;
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-/* LIGHT MODE */
-
-body.light .status,
-body.light .timeout-box,
-body.light .manual,
-body.light .stat,
-body.light .record {
-  background: #fff;
-}
-
-body.light .manual-row input {
-  background: #f7f7f7;
-  color: #111;
-}
-
-body.light .center {
-  background:
-    radial-gradient(
-      circle,
-      var(--mala-center) 0%,
-      #222 65%
-    );
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#050505;color:#aaa;font-family:Arial,Helvetica,sans-serif}
+body{display:flex;justify-content:center}
+.app{width:100%;max-width:760px;min-height:100vh;text-align:center;padding:0 12px 24px;overflow:hidden}
+h1{margin:0;padding-top:0;color:#ff8a00;font-size:43px;line-height:1.1;font-weight:700;text-shadow:0 0 18px rgba(255,138,0,.42)}
+.subtitle{font-size:20px;margin-top:3px;color:#8f8f8f}
+.status{display:inline-flex;align-items:center;gap:12px;margin-top:25px;padding:12px 22px;border:1px solid #343434;border-radius:30px;background:#111;color:#999;font-size:20px}
+.dot{width:14px;height:14px;border-radius:50%;background:#5d5d5d;display:inline-block}
+.status.listening{color:#ddd}.status.listening .dot{background:#ff8a00;box-shadow:0 0 12px #ff8a00}
+.malaWrap{position:relative;width:590px;height:590px;margin:38px auto 0}
+.mala{position:absolute;inset:0}
+.bead{position:absolute;width:28px;height:28px;margin:-14px;border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#252525 0,#151515 65%,#0b0b0b 100%);
+ border:1px solid #4a4a4a;box-shadow:0 0 2px #111;transition:.12s}
+.bead.active{background:radial-gradient(circle at 35% 30%,#ffbd55 0,#ff8a00 70%,#e56f00 100%);
+ border-color:#ffc56d;box-shadow:0 0 15px rgba(255,138,0,.85)}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:216px;height:216px;border-radius:50%;border:3px solid #bd6800;
+ background:radial-gradient(circle,#17100a 0,#090909 65%,#050505 100%);
+ box-shadow:0 0 28px rgba(255,138,0,.36),inset 0 0 30px rgba(255,138,0,.08);
+ display:flex;flex-direction:column;align-items:center;justify-content:center}
+.centerGlow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+ font-size:104px;color:rgba(255,138,0,.16);font-weight:700;pointer-events:none}
+.count{position:relative;font-size:62px;line-height:1;color:#ff8a00;text-shadow:0 0 15px rgba(255,138,0,.28);z-index:1}
+.malaNo{position:relative;margin-top:12px;font-size:18px;color:#bdbdbd;z-index:1}
+.floatBtns{position:absolute;right:83px;bottom:162px;z-index:5;display:flex;flex-direction:column;gap:8px}
+.floatBtn{width:48px;height:48px;border-radius:50%;border:1px solid #555;background:#171717;color:#eee;
+ font-size:23px;cursor:pointer;box-shadow:0 0 12px rgba(0,0,0,.8)}
+.floatBtn:hover{border-color:#ff8a00}
+.controls{margin-top:-2px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+button{font:inherit}
+.mainBtn{padding:10px 16px;border-radius:9px;border:1px solid #454545;background:#111;color:#ccc;cursor:pointer}
+.mainBtn:hover{border-color:#ff8a00;color:#fff}
+.manual{margin-top:10px}
+.statsLine{margin-top:18px;display:flex;justify-content:center;gap:25px;font-size:14px;color:#777}
+.statsLine b{color:#aaa}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.overlay.show{display:flex}
+.panel{width:min(520px,100%);background:#111;border:1px solid #444;border-radius:14px;padding:20px;text-align:left;box-shadow:0 0 35px rgba(255,138,0,.18)}
+.panel h2{margin:0 0 16px;color:#ff8a00;text-align:center}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #252525}
+.row:last-of-type{border-bottom:0}
+.switch{width:48px;height:26px;border-radius:20px;background:#333;position:relative;cursor:pointer}
+.switch:after{content:"";position:absolute;width:20px;height:20px;top:3px;left:3px;border-radius:50%;background:#999;transition:.15s}
+.switch.on{background:#8a4b00}.switch.on:after{left:25px;background:#ff9a24}
+.colorInput{width:48px;height:30px;border:0;background:none}
+.panelBtns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.close{padding:9px 20px;border-radius:8px;border:1px solid #555;background:#181818;color:#ddd;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+th,td{border-bottom:1px solid #2a2a2a;padding:8px;text-align:left}
+th{color:#ff9a24}
+.note{font-size:12px;color:#777;line-height:1.5;margin-top:12px}
+@media(max-width:650px){
+ h1{font-size:34px}.subtitle{font-size:17px}.malaWrap{width:94vw;height:94vw;max-width:590px;max-height:590px}
+ .bead{width:24px;height:24px;margin:-12px}.floatBtns{right:9%;bottom:25%}
+ .center{width:36vw;height:36vw;max-width:216px;max-height:216px}.count{font-size:11vw;max-font-size:62px}
 }
 </style>
 </head>
-
 <body>
-
 <div class="app">
+  <h1>Waheguru Voice Counter</h1>
+  <div class="subtitle">Digital 108-Bead Mala — Version 11</div>
 
-<button id="darkModeBtn" class="dark-mode-btn">☀️</button>
+  <div id="status" class="status">
+    <span class="dot"></span><span id="statusText">Mic paused — 45 seconds silent</span>
+  </div>
 
-<h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala — Version 10</div>
-
-<!-- STATUS -->
-
-<div id="status" class="status">
-  <span class="dot"></span>
-  <span id="statusText">Mic paused</span>
-</div>
-
-<!-- MALA -->
-
-<div class="mala-wrapper">
-
-  <div id="mala" class="mala"></div>
-
-  <div class="center">
-
-    <div class="ik-onkar">ੴ</div>
-
-    <div id="count" class="center-count">0</div>
-
-    <div id="malaNumber" class="mala-number">
-      Mala #1
+  <div class="malaWrap">
+    <div id="mala" class="mala"></div>
+    <div class="center">
+      <div class="centerGlow">ੴ</div>
+      <div id="count" class="count">0</div>
+      <div id="malaNo" class="malaNo">Mala #1</div>
     </div>
 
-    <button
-      id="malaColorBtn"
-      class="mala-color-btn"
-      title="Mala Color">
-      🎨
-    </button>
-
-    <!-- COLOR PALETTE -->
-
-    <div id="colorBox" class="color-box">
-
-      <div class="color-title">
-        Mala Color
-      </div>
-
-      <div class="colors">
-
-        <button class="color-btn red"
-          data-color="#ff2020"
-          data-dark="#8d0000"
-          data-light="#ff7070"
-          data-glow="rgba(255,0,0,.8)"
-          data-center="#280000"></button>
-
-        <button class="color-btn orange"
-          data-color="#ff8c00"
-          data-dark="#a85500"
-          data-light="#ffc266"
-          data-glow="rgba(255,140,0,.8)"
-          data-center="#281500"></button>
-
-        <button class="color-btn yellow"
-          data-color="#ffd700"
-          data-dark="#a88a00"
-          data-light="#fff099"
-          data-glow="rgba(255,215,0,.8)"
-          data-center="#282400"></button>
-
-        <button class="color-btn green"
-          data-color="#00d26a"
-          data-dark="#007a3d"
-          data-light="#66ffad"
-          data-glow="rgba(0,210,106,.8)"
-          data-center="#002818"></button>
-
-        <button class="color-btn blue"
-          data-color="#168cff"
-          data-dark="#07539c"
-          data-light="#75baff"
-          data-glow="rgba(22,140,255,.8)"
-          data-center="#001b35"></button>
-
-        <button class="color-btn purple"
-          data-color="#a855f7"
-          data-dark="#63209c"
-          data-light="#d29aff"
-          data-glow="rgba(168,85,247,.8)"
-          data-center="#210b35"></button>
-
-        <button class="color-btn pink"
-          data-color="#ff3b9d"
-          data-dark="#a51760"
-          data-light="#ff9dcc"
-          data-glow="rgba(255,59,157,.8)"
-          data-center="#350018"></button>
-
-        <button class="color-btn white"
-          data-color="#ffffff"
-          data-dark="#888888"
-          data-light="#ffffff"
-          data-glow="rgba(255,255,255,.8)"
-          data-center="#222222"></button>
-
-      </div>
+    <div class="floatBtns">
+      <button class="floatBtn" id="colorBtn" title="Mala Color">🎨</button>
+      <button class="floatBtn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
+  </div>
 
+  <div class="controls">
+    <button class="mainBtn" id="startBtn">🎙️ Start</button>
+    <button class="mainBtn" id="pauseBtn">⏸ Pause</button>
+    <button class="mainBtn" id="resetBtn">↺ Reset Mala</button>
+  </div>
+  <div class="manual">
+    <button class="mainBtn" id="manualBtn">➕ Manual Count</button>
+    <button class="mainBtn" id="addBtn">➕ Add Count</button>
+  </div>
+
+  <div class="statsLine">
+    <span>COMPLETED MALAS <b id="completed">0</b></span>
+    <span>SAVED TOTAL <b id="saved">0</b></span>
+    <span>TODAY <b id="today">0</b></span>
+    <span>CURRENT MALA <b id="current">0</b></span>
   </div>
 </div>
 
-<!-- TIMER -->
-
-<div class="timeout-box">
-
-  Auto mic-off after:
-  <span class="timeout-value">
-    45 seconds
-  </span>
-
-  <div id="timerText" class="timer">
-    Timer starts when listening begins.
+<div class="overlay" id="settingsOverlay">
+  <div class="panel">
+    <h2>⚙️ Settings</h2>
+    <div class="row"><span>🔊 Sound</span><div class="switch on" id="soundSwitch"></div></div>
+    <div class="row"><span>📳 Vibration</span><div class="switch on" id="vibrationSwitch"></div></div>
+    <div class="row"><span>🇬🇧 English recognition</span><div class="switch on" id="englishSwitch"></div></div>
+    <div class="row"><span>ਪੰਜਾਬੀ Gurmukhi recognition</span><div class="switch on" id="punjabiSwitch"></div></div>
+    <div class="row"><span>🎨 Mala color</span><input id="colorPicker" class="colorInput" type="color" value="#ff8a00"></div>
+    <div class="row"><span>⏱ Auto mic-off after</span>
+      <select id="timeoutSelect" style="background:#181818;color:#ddd;border:1px solid #444;padding:7px;border-radius:7px">
+        <option value="30">30 seconds</option><option value="45" selected>45 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option>
+      </select>
+    </div>
+    <div class="panelBtns"><button class="close" id="statsBtn">📊 Weekly / Monthly Statistics</button><button class="close" id="closeSettings">Close</button></div>
+    <div class="note">Voice matching accepts English and Punjabi forms such as Waheguru, Wahe Guru, Waheguroo, Waheguro, ਵਾਹਿਗੁਰੂ and ਵਾਹੇਗੁਰੂ.</div>
   </div>
-
 </div>
 
-<!-- VOICE CONTROLS -->
-
-<div class="controls">
-
-  <button id="startBtn" class="start">
-    🎙️ Start
-  </button>
-
-  <button id="pauseBtn">
-    ⏸ Pause
-  </button>
-
-  <button id="resetBtn">
-    ↺ Reset Mala
-  </button>
-
-</div>
-
-<!-- MANUAL -->
-
-<div class="manual">
-
-  <div class="manual-title">
-    ➕ Manual Count
+<div class="overlay" id="statsOverlay">
+  <div class="panel">
+    <h2>📊 Statistics</h2>
+    <table>
+      <thead><tr><th>Period</th><th>Count</th><th>Malas</th></tr></thead>
+      <tbody>
+        <tr><td>This week</td><td id="weekCount">0</td><td id="weekMalas">0</td></tr>
+        <tr><td>This month</td><td id="monthCount">0</td><td id="monthMalas">0</td></tr>
+        <tr><td>All saved</td><td id="allCount">0</td><td id="allMalas">0</td></tr>
+      </tbody>
+    </table>
+    <div class="panelBtns"><button class="close" id="closeStats">Close</button></div>
   </div>
-
-  <div class="manual-row">
-
-    <input
-      id="manualInput"
-      type="number"
-      min="1"
-      step="1"
-      inputmode="numeric"
-      placeholder="Enter count">
-
-    <button
-      id="manualAddBtn"
-      class="manual-add-btn">
-      ➕ Add Count
-    </button>
-
-  </div>
-
-</div>
-
-<!-- STATS -->
-
-<div class="stats">
-
-  <div class="stat">
-    <div id="completedMalas" class="stat-number">0</div>
-    <div class="stat-label">COMPLETED MALAS</div>
-  </div>
-
-  <div class="stat">
-    <div id="total" class="stat-number">0</div>
-    <div class="stat-label">SAVED TOTAL</div>
-  </div>
-
-  <div class="stat">
-    <div id="today" class="stat-number">0</div>
-    <div class="stat-label">TODAY</div>
-  </div>
-
-  <div class="stat">
-    <div id="current" class="stat-number">0</div>
-    <div class="stat-label">CURRENT MALA</div>
-  </div>
-
-</div>
-
-<!-- RECORDS -->
-
-<div class="records">
-
-  <h2>📅 Daily Records</h2>
-
-  <div id="recordsList"></div>
-
-</div>
-
-<div class="note">
-  Say “Waheguru” naturally. Voice recognition counts
-  recognized occurrences. You can also enter a manual count
-  and press Add Count. The microphone automatically turns
-  off after 45 seconds of continuous silence. The current
-  mala resets automatically at midnight while saved totals
-  and daily records remain.
-</div>
-
 </div>
 
 <script>
-
-/* =====================================
-   SAVED DATA
-===================================== */
-
-let count =
-  Number(localStorage.getItem("wg_count") || 0);
-
-let total =
-  Number(localStorage.getItem("wg_total") || 0);
-
-let completedMalas =
-  Number(localStorage.getItem("wg_malas") || 0);
-
-let savedColor =
-  localStorage.getItem("wg_color") || "#ff2020";
-
-let savedDarkMode =
-  localStorage.getItem("wg_dark") !== "false";
-
-let records;
-
-try {
-  records =
-    JSON.parse(
-      localStorage.getItem("wg_records") || "{}"
-    );
-} catch {
-  records = {};
-}
-
-/* =====================================
-   CONSTANTS
-===================================== */
-
-const MALA_SIZE = 108;
-
-const SILENCE_TIME = 45000;
-
-const AUDIO_THRESHOLD = 0.015;
-
-/* =====================================
-   VARIABLES
-===================================== */
-
-let listening = false;
-
-let recognition = null;
-
-let recognitionRunning = false;
-
-let recognitionStarting = false;
-
-let recognitionRestartTimer = null;
-
-let silenceTimer = null;
-
-let countdownTimer = null;
-
-let lastActivityAt = 0;
-
-let micStream = null;
-
-let audioContext = null;
-
-let analyser = null;
-
-let audioData = null;
-
-let audioMonitor = null;
-
-/* =====================================
-   ELEMENTS
-===================================== */
-
-const mala =
-  document.getElementById("mala");
-
-const countEl =
-  document.getElementById("count");
-
-const totalEl =
-  document.getElementById("total");
-
-const todayEl =
-  document.getElementById("today");
-
-const currentEl =
-  document.getElementById("current");
-
-const completedEl =
-  document.getElementById("completedMalas");
-
-const malaNumberEl =
-  document.getElementById("malaNumber");
-
-const status =
-  document.getElementById("status");
-
-const statusText =
-  document.getElementById("statusText");
-
-const timerText =
-  document.getElementById("timerText");
-
-const startBtn =
-  document.getElementById("startBtn");
-
-const pauseBtn =
-  document.getElementById("pauseBtn");
-
-const resetBtn =
-  document.getElementById("resetBtn");
-
-const manualInput =
-  document.getElementById("manualInput");
-
-const manualAddBtn =
-  document.getElementById("manualAddBtn");
-
-const recordsList =
-  document.getElementById("recordsList");
-
-const colorBox =
-  document.getElementById("colorBox");
-
-const darkModeBtn =
-  document.getElementById("darkModeBtn");
-
-/* =====================================
-   COLOR
-===================================== */
-
-function setColor(button) {
-
-  const color =
-    button.dataset.color;
-
-  document.documentElement.style.setProperty(
-    "--mala-color",
-    color
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-dark",
-    button.dataset.dark
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-light",
-    button.dataset.light
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-glow",
-    button.dataset.glow
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-center",
-    button.dataset.center
-  );
-
-  localStorage.setItem(
-    "wg_color",
-    color
-  );
-
-  document
-    .querySelectorAll(".color-btn")
-    .forEach(btn => {
-      btn.classList.remove("selected");
-    });
-
-  button.classList.add("selected");
-}
-
-/* =====================================
-   COLOR BUTTONS
-===================================== */
-
-document
-  .querySelectorAll(".color-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        setColor(button);
-
-        colorBox.classList.remove(
-          "open"
-        );
-
-      }
-    );
-
-  });
-
-const savedColorButton =
-  [...document.querySelectorAll(".color-btn")]
-    .find(
-      btn =>
-        btn.dataset.color === savedColor
-    );
-
-if (savedColorButton) {
-  setColor(savedColorButton);
-}
-
-/* =====================================
-   OPEN COLOR PALETTE
-===================================== */
-
-document
-  .getElementById("malaColorBtn")
-  .addEventListener(
-    "click",
-    event => {
-
-      event.stopPropagation();
-
-      colorBox.classList.toggle(
-        "open"
-      );
-
-    }
-  );
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if (
-      !colorBox.contains(event.target) &&
-      event.target.id !== "malaColorBtn"
-    ) {
-
-      colorBox.classList.remove(
-        "open"
-      );
-
-    }
-
-  }
-);
-
-/* =====================================
-   DARK MODE
-===================================== */
-
-function applyDarkMode() {
-
-  document.body.classList.toggle(
-    "light",
-    !savedDarkMode
-  );
-
-  darkModeBtn.textContent =
-    savedDarkMode ? "☀️" : "🌙";
-
-}
-
-darkModeBtn.addEventListener(
-  "click",
-  () => {
-
-    savedDarkMode =
-      !savedDarkMode;
-
-    localStorage.setItem(
-      "wg_dark",
-      savedDarkMode
-    );
-
-    applyDarkMode();
-
-  }
-);
-
-applyDarkMode();
-
-/* =====================================
-   CREATE 108 BEADS
-===================================== */
-
-for (let i = 0; i < MALA_SIZE; i++) {
-
-  const bead =
-    document.createElement("div");
-
-  bead.className =
-    "bead";
-
-  const angle =
-    (i / MALA_SIZE) *
-    Math.PI * 2 -
-    Math.PI / 2;
-
-  const radius = 45;
-
-  const x =
-    50 +
-    Math.cos(angle) *
-    radius;
-
-  const y =
-    50 +
-    Math.sin(angle) *
-    radius;
-
-  bead.style.left =
-    x + "%";
-
-  bead.style.top =
-    y + "%";
-
-  mala.appendChild(
-    bead
-  );
-
-}
-
-/* =====================================
-   DATE
-===================================== */
-
-function todayKey() {
-
-  const d =
-    new Date();
-
-  return (
-    d.getFullYear() +
-    "-" +
-    String(
-      d.getMonth() + 1
-    ).padStart(2, "0") +
-    "-" +
-    String(
-      d.getDate()
-    ).padStart(2, "0")
-  );
-
-}
-
-/* =====================================
-   SAVE DATA
-===================================== */
-
-function saveData() {
-
-  localStorage.setItem(
-    "wg_count",
-    count
-  );
-
-  localStorage.setItem(
-    "wg_total",
-    total
-  );
-
-  localStorage.setItem(
-    "wg_malas",
-    completedMalas
-  );
-
-  localStorage.setItem(
-    "wg_records",
-    JSON.stringify(records)
-  );
-
-}
-
-/* =====================================
-   DISPLAY
-===================================== */
-
-function updateDisplay() {
-
-  countEl.textContent =
-    count;
-
-  totalEl.textContent =
-    total;
-
-  completedEl.textContent =
-    completedMalas;
-
-  currentEl.textContent =
-    count;
-
-  malaNumberEl.textContent =
-    "Mala #" +
-    (completedMalas + 1);
-
-  todayEl.textContent =
-    records[todayKey()] || 0;
-
-  const beads =
-    document.querySelectorAll(
-      ".bead"
-    );
-
-  beads.forEach(
-    (bead, i) => {
-
-      bead.classList.remove(
-        "active"
-      );
-
-      bead.classList.remove(
-        "current"
-      );
-
-      if (i < count) {
-
-        bead.classList.add(
-          "active"
-        );
-
-      }
-
-      if (
-        i === count &&
-        count < MALA_SIZE
-      ) {
-
-        bead.classList.add(
-          "current"
-        );
-
-      }
-
-    }
-  );
-
-  saveData();
-
-  updateRecords();
-
-}
-
-/* =====================================
-   ADD COUNT
-===================================== */
-
-function addCount(amount) {
-
-  amount =
-    Number(amount);
-
-  if (
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
-    return;
-  }
-
-  amount =
-    Math.floor(amount);
-
-  total += amount;
-
-  const day =
-    todayKey();
-
-  records[day] =
-    (records[day] || 0) +
-    amount;
-
-  count += amount;
-
-  while (
-    count >= MALA_SIZE
-  ) {
-
-    count -= MALA_SIZE;
-
-    completedMalas++;
-
-    malaComplete();
-
-  }
-
-  updateDisplay();
-
-}
-
-/* =====================================
-   MALA COMPLETE
-===================================== */
-
-function malaComplete() {
-
-  if (
-    "vibrate" in navigator
-  ) {
-
-    try {
-
-      navigator.vibrate(
-        [200,100,200]
-      );
-
-    } catch(e) {}
-
-  }
-
-}
-
-/* =====================================
-   NORMALIZE SPEECH
-===================================== */
-
-function normalizeText(text) {
-
-  return text
-    .toLowerCase()
-    .replace(/[.,!?;:]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-}
-
-/* =====================================
-   COUNT WAHEGURU
-===================================== */
-
-function countWaheguru(text) {
-
-  const normalized =
-    normalizeText(text);
-
-  const pattern =
-    /\bwaheguru\b|\bwahe guru\b|\bwaheguroo\b|\bwahegooroo\b/g;
-
-  const matches =
-    normalized.match(pattern);
-
-  if (matches) {
-
-    addCount(
-      matches.length
-    );
-
-    lastActivityAt =
-      performance.now();
-
-  }
-
-}
-
-/* =====================================
-   BEEP
-===================================== */
-
-function beep() {
-
-  try {
-
-    const ctx =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-    const oscillator =
-      ctx.createOscillator();
-
-    const gain =
-      ctx.createGain();
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.value =
-      880;
-
-    gain.gain.setValueAtTime(
-      0.001,
-      ctx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.25,
-      ctx.currentTime + 0.02
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      ctx.currentTime + 0.35
-    );
-
-    oscillator.connect(gain);
-
-    gain.connect(ctx.destination);
-
-    oscillator.start();
-
-    oscillator.stop(
-      ctx.currentTime + 0.35
-    );
-
-  } catch(e) {}
-
-}
-
-/* =====================================
-   AUDIO MONITOR
-===================================== */
-
-async function startAudioMonitor() {
-
-  try {
-
-    if (
-      !navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia
-    ) {
-
-      return;
-
-    }
-
-    micStream =
-      await navigator.mediaDevices.getUserMedia({
-        audio: true
-      });
-
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-    const source =
-      audioContext.createMediaStreamSource(
-        micStream
-      );
-
-    analyser =
-      audioContext.createAnalyser();
-
-    analyser.fftSize =
-      512;
-
-    audioData =
-      new Uint8Array(
-        analyser.fftSize
-      );
-
-    source.connect(
-      analyser
-    );
-
-    monitorAudio();
-
-  } catch(e) {
-
-    console.log(
-      "Audio monitor:",
-      e
-    );
-
-  }
-
-}
-
-/* =====================================
-   MONITOR MICROPHONE ACTIVITY
-===================================== */
-
-function monitorAudio() {
-
-  if (!listening) {
-
-    return;
-
-  }
-
-  if (
-    !analyser ||
-    !audioData
-  ) {
-
-    return;
-
-  }
-
-  analyser.getByteTimeDomainData(
-    audioData
-  );
-
-  let sum = 0;
-
-  for (
-    let i = 0;
-    i < audioData.length;
-    i++
-  ) {
-
-    const value =
-      (
-        audioData[i] - 128
-      ) / 128;
-
-    sum +=
-      value * value;
-
-  }
-
-  const rms =
-    Math.sqrt(
-      sum /
-      audioData.length
-    );
-
-  const now =
-    performance.now();
-
-  if (
-    rms >= AUDIO_THRESHOLD
-  ) {
-
-    lastActivityAt =
-      now;
-
-  }
-
-  const elapsed =
-    now -
-    lastActivityAt;
-
-  const remaining =
-    Math.max(
-      0,
-      SILENCE_TIME -
-      elapsed
-    );
-
-  timerText.textContent =
-    "Auto mic-off in " +
-    Math.ceil(
-      remaining / 1000
-    ) +
-    " seconds";
-
-  if (
-    remaining <= 0
-  ) {
-
-    autoPause();
-
-    return;
-
-  }
-
-  audioMonitor =
-    requestAnimationFrame(
-      monitorAudio
-    );
-
-}
-
-/* =====================================
-   STOP AUDIO MONITOR
-===================================== */
-
-function stopAudioMonitor() {
-
-  if (audioMonitor) {
-
-    cancelAnimationFrame(
-      audioMonitor
-    );
-
-    audioMonitor = null;
-
-  }
-
-  if (micStream) {
-
-    micStream
-      .getTracks()
-      .forEach(
-        track => track.stop()
-      );
-
-    micStream = null;
-
-  }
-
-  if (audioContext) {
-
-    try {
-      audioContext.close();
-    } catch(e) {}
-
-    audioContext = null;
-
-  }
-
-  analyser = null;
-
-  audioData = null;
-
-}
-
-/* =====================================
-   CLEAR TIMERS
-===================================== */
-
-function clearTimers() {
-
-  if (silenceTimer) {
-
-    clearTimeout(
-      silenceTimer
-    );
-
-    silenceTimer = null;
-
-  }
-
-  if (countdownTimer) {
-
-    clearInterval(
-      countdownTimer
-    );
-
-    countdownTimer = null;
-
-  }
-
-}
-
-/* =====================================
-   AUTO PAUSE
-===================================== */
-
-function autoPause() {
-
-  if (!listening) {
-
-    return;
-
-  }
-
-  listening = false;
-
-  clearTimers();
-
-  stopAudioMonitor();
-
-  if (recognition) {
-
-    try {
-
-      recognition.stop();
-
-    } catch(e) {}
-
-  }
-
-  beep();
-
-  setPausedStatus(
-    "Mic paused — 45 seconds silent"
-  );
-
-}
-
-/* =====================================
-   STATUS
-===================================== */
-
-function setListeningStatus() {
-
-  status.classList.add(
-    "active"
-  );
-
-  statusText.textContent =
-    "Listening… Say Waheguru";
-
-  startBtn.textContent =
-    "🎙️ Listening";
-
-}
-
-function setPausedStatus(
-  message = "Mic paused"
-) {
-
-  status.classList.remove(
-    "active"
-  );
-
-  statusText.textContent =
-    message;
-
-  startBtn.textContent =
-    "🎙️ Start";
-
-  timerText.textContent =
-    "Timer starts when listening begins.";
-
-}
-
-/* =====================================
-   SPEECH RECOGNITION
-===================================== */
-
-function setupRecognition() {
-
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-
-    alert(
-      "Speech recognition is not supported by this browser."
-    );
-
-    return null;
-
-  }
-
-  const r =
-    new SpeechRecognition();
-
-  r.continuous = true;
-
-  r.interimResults = true;
-
-  r.lang = "en-IN";
-
-  r.onstart = () => {
-
-    recognitionRunning =
-      true;
-
-    recognitionStarting =
-      false;
-
-    if (!listening) {
-
-      try {
-        r.stop();
-      } catch(e) {}
-
-      return;
-
-    }
-
-    setListeningStatus();
-
+(() => {
+  const KEY='waheguru_v11_data';
+  const $=id=>document.getElementById(id);
+  const data=JSON.parse(localStorage.getItem(KEY)||'null') || {
+    count:0, completed:0, saved:0, days:{}, malas:{},
+    sound:true,vibration:true,english:true,punjabi:true,color:'#ff8a00',timeout:45
   };
+  const todayKey=()=>new Date().toISOString().slice(0,10);
+  const dayCount=()=>data.days[todayKey()]||0;
+  let listening=false, timer=null, recognition=null, restartTimer=null;
 
-  r.onresult = event => {
-
-    if (!listening) {
-
-      return;
-
+  function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+  function totalToday(){return dayCount();}
+  function setStatus(text,on=false){$('statusText').textContent=text;$('status').classList.toggle('listening',on);}
+  function beep(){
+    if(!data.sound) return;
+    try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();
+      o.frequency.value=720;g.gain.value=.045;o.connect(g);g.connect(c.destination);o.start();
+      setTimeout(()=>{o.stop();c.close()},90);
+    }catch(e){}
+  }
+  function vibrate(){if(data.vibration&&navigator.vibrate) navigator.vibrate(35)}
+  function addCount(n=1){
+    for(let i=0;i<n;i++){
+      data.count++; data.saved++; data.days[todayKey()]=(data.days[todayKey()]||0)+1;
+      if(data.count>=108){data.completed++;data.count=0;data.malas[todayKey()]=(data.malas[todayKey()]||0)+1;beep();vibrate();}
     }
-
-    let finalText = "";
-
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
-
-      const result =
-        event.results[i];
-
-      /*
-        Any actual recognition activity
-        keeps the silence timer alive.
-      */
-
-      if (
-        result[0] &&
-        result[0].transcript
-      ) {
-
-        lastActivityAt =
-          performance.now();
-
+    save();render();
+  }
+  function render(){
+    $('count').textContent=data.count;
+    $('current').textContent=data.count;
+    $('completed').textContent=data.completed;
+    $('saved').textContent=data.saved;
+    $('today').textContent=totalToday();
+    $('malaNo').textContent='Mala #'+(data.completed+1);
+    document.documentElement.style.setProperty('--accent',data.color);
+    document.querySelectorAll('.bead').forEach((b,i)=>b.classList.toggle('active',i<data.count));
+  }
+  function buildMala(){
+    const mala=$('mala');mala.innerHTML='';
+    const cx=295,cy=295,r=270;
+    for(let i=0;i<108;i++){
+      const a=(-Math.PI/2)+(i/108)*Math.PI*2;
+      const b=document.createElement('div');b.className='bead';
+      b.style.left=(cx+Math.cos(a)*r)+'px';b.style.top=(cy+Math.sin(a)*r)+'px';
+      mala.appendChild(b);
+    }
+    render();
+  }
+  function normalize(s){
+    return s.toLowerCase().replace(/[.,!?;:'"“”‘’\-]/g,' ').replace(/\s+/g,' ').trim();
+  }
+  function isWaheguru(s){
+    const t=normalize(s);
+    const variants=[
+      'waheguru','wahe guru','waheguroo','waheguro',
+      'ਵਾਹਿਗੁਰੂ','ਵਾਹੇਗੁਰੂ','ਵਾਹਿਗੁਰੁ','ਵਾਹੇਗੁਰੁ'
+    ];
+    return variants.some(v=>t.includes(v)) || /wahe\s*gur/.test(t);
+  }
+  function beginSilenceTimer(){
+    clearTimeout(timer);timer=setTimeout(()=>pause(true),data.timeout*1000);
+  }
+  function makeRecognition(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){setStatus('Speech recognition unavailable — use Manual Count');return null;}
+    const r=new SR();r.continuous=true;r.interimResults=true;r.lang=data.punjabi&&!data.english?'pa-IN':'en-US';
+    r.onresult=e=>{
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const txt=e.results[i][0].transcript;
+        if(e.results[i].isFinal && isWaheguru(txt)){addCount(1);beginSilenceTimer();}
       }
+    };
+    r.onerror=()=>{if(listening){clearTimeout(restartTimer);restartTimer=setTimeout(()=>{try{r.start()}catch(e){}},500);}};
+    r.onend=()=>{if(listening){clearTimeout(restartTimer);restartTimer=setTimeout(()=>{try{r.start()}catch(e){}},350);}};
+    return r;
+  }
+  function start(){
+    if(listening)return;
+    listening=true;setStatus('Listening — say “Waheguru”',true);beginSilenceTimer();
+    recognition=makeRecognition();
+    if(recognition){try{recognition.start()}catch(e){}}
+  }
+  function pause(auto=false){
+    listening=false;clearTimeout(timer);clearTimeout(restartTimer);
+    if(recognition){try{recognition.stop()}catch(e){}}
+    recognition=null;
+    setStatus(auto?'Mic paused — '+data.timeout+' seconds silent':'Mic paused — '+data.timeout+' seconds silent',false);
+  }
+  $('startBtn').onclick=start;
+  $('pauseBtn').onclick=()=>pause(false);
+  $('resetBtn').onclick=()=>{data.count=0;save();render()};
+  $('manualBtn').onclick=()=>addCount(1);
+  $('addBtn').onclick=()=>{const n=parseInt(prompt('How many counts would you like to add?','1'),10);if(Number.isFinite(n)&&n>0)addCount(Math.floor(n));};
+  $('colorBtn').onclick=()=>{ $('settingsOverlay').classList.add('show'); };
+  $('settingsBtn').onclick=()=>{ $('settingsOverlay').classList.add('show'); };
 
-      if (result.isFinal) {
+  function setupSwitch(id,key){
+    const el=$(id);el.classList.toggle('on',!!data[key]);
+    el.onclick=()=>{data[key]=!data[key];el.classList.toggle('on',data[key]);save();};
+  }
+  setupSwitch('soundSwitch','sound');setupSwitch('vibrationSwitch','vibration');
+  setupSwitch('englishSwitch','english');setupSwitch('punjabiSwitch','punjabi');
+  $('colorPicker').value=data.color;
+  $('colorPicker').oninput=e=>{data.color=e.target.value;save();};
+  $('timeoutSelect').value=String(data.timeout);
+  $('timeoutSelect').onchange=e=>{data.timeout=Number(e.target.value);save();if(listening)beginSilenceTimer();};
 
-        finalText +=
-          " " +
-          result[0].transcript;
-
-      }
-
-    }
-
-    if (
-      finalText.trim()
-    ) {
-
-      lastActivityAt =
-        performance.now();
-
-      countWaheguru(
-        finalText
-      );
-
-    }
-
+  $('closeSettings').onclick=()=>$('settingsOverlay').classList.remove('show');
+  $('statsBtn').onclick=()=>{
+    $('weekCount').textContent=periodCount(7);
+    $('monthCount').textContent=periodCount(31);
+    $('weekMalas').textContent=periodMalas(7);
+    $('monthMalas').textContent=periodMalas(31);
+    $('allCount').textContent=data.saved;$('allMalas').textContent=data.completed;
+    $('statsOverlay').classList.add('show');
   };
-
-  r.onerror = event => {
-
-    console.log(
-      "Speech recognition:",
-      event.error
-    );
-
-    if (
-      event.error === "not-allowed" ||
-      event.error === "service-not-allowed"
-    ) {
-
-      listening = false;
-
-      clearTimers();
-
-      stopAudioMonitor();
-
-      setPausedStatus(
-        "Microphone permission needed"
-      );
-
-      return;
-
-    }
-
-    /*
-      Temporary recognition errors do
-      NOT mean the user stopped speaking.
-    */
-
-    if (listening) {
-
-      scheduleRecognitionRestart();
-
-    }
-
-  };
-
-  r.onend = () => {
-
-    recognitionRunning =
-      false;
-
-    recognitionStarting =
-      false;
-
-    /*
-      Recognition ending does NOT
-      mean the user is silent.
-
-      If listening is still enabled,
-      recognition is restarted.
-    */
-
-    if (listening) {
-
-      scheduleRecognitionRestart();
-
-    }
-
-  };
-
-  return r;
-
-}
-
-/* =====================================
-   SAFE RESTART
-===================================== */
-
-function scheduleRecognitionRestart() {
-
-  if (!listening) {
-
-    return;
-
+  $('closeStats').onclick=()=>$('statsOverlay').classList.remove('show');
+  function periodCount(days){
+    let sum=0,d=new Date();
+    for(let i=0;i<days;i++){let k=d.toISOString().slice(0,10);sum+=data.days[k]||0;d.setDate(d.getDate()-1)}
+    return sum;
   }
-
-  if (recognitionRestartTimer) {
-
-    return;
-
+  function periodMalas(days){
+    let sum=0,d=new Date();
+    for(let i=0;i<days;i++){let k=d.toISOString().slice(0,10);sum+=data.malas[k]||0;d.setDate(d.getDate()-1)}
+    return sum;
   }
-
-  recognitionRestartTimer =
-    setTimeout(() => {
-
-      recognitionRestartTimer =
-        null;
-
-      startRecognitionSafely();
-
-    }, 300);
-
-}
-
-/* =====================================
-   START RECOGNITION SAFELY
-===================================== */
-
-function startRecognitionSafely() {
-
-  if (!listening) {
-
-    return;
-
-  }
-
-  if (
-    recognitionRunning ||
-    recognitionStarting
-  ) {
-
-    return;
-
-  }
-
-  recognitionStarting =
-    true;
-
-  try {
-
-    recognition.start();
-
-  } catch(e) {
-
-    recognitionStarting =
-      false;
-
-    scheduleRecognitionRestart();
-
-  }
-
-}
-
-/* =====================================
-   START LISTENING
-===================================== */
-
-async function startListening() {
-
-  if (!recognition) {
-
-    recognition =
-      setupRecognition();
-
-    if (!recognition) {
-
-      return;
-
-    }
-
-  }
-
-  listening = true;
-
-  lastActivityAt =
-    performance.now();
-
-  setListeningStatus();
-
-  startRecognitionSafely();
-
-  await startAudioMonitor();
-
-}
-
-/* =====================================
-   PAUSE
-===================================== */
-
-function pauseListening() {
-
-  listening = false;
-
-  clearTimers();
-
-  stopAudioMonitor();
-
-  if (recognitionRestartTimer) {
-
-    clearTimeout(
-      recognitionRestartTimer
-    );
-
-    recognitionRestartTimer =
-      null;
-
-  }
-
-  if (recognition) {
-
-    try {
-
-      recognition.stop();
-
-    } catch(e) {}
-
-  }
-
-  recognitionRunning =
-    false;
-
-  recognitionStarting =
-    false;
-
-  setPausedStatus();
-
-}
-
-/* =====================================
-   RESET CURRENT MALA
-===================================== */
-
-function resetCurrentMala() {
-
-  if (
-    !confirm(
-      "Reset the current mala to 0?\n\n" +
-      "Your saved total and daily records will remain unchanged."
-    )
-  ) {
-
-    return;
-
-  }
-
-  count = 0;
-
-  updateDisplay();
-
-}
-
-/* =====================================
-   MANUAL COUNT
-===================================== */
-
-function addManualCount() {
-
-  const value =
-    Number(
-      manualInput.value
-    );
-
-  if (
-    !Number.isFinite(value) ||
-    value <= 0
-  ) {
-
-    return;
-
-  }
-
-  addCount(value);
-
-  manualInput.value = "";
-
-}
-
-/*
-  Manual count:
-  Type a number and press Add Count
-  or press Enter.
-*/
-
-manualAddBtn.addEventListener(
-  "click",
-  addManualCount
-);
-
-manualInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter"
-    ) {
-
-      addManualCount();
-
-    }
-
-  }
-);
-
-/* =====================================
-   BUTTONS
-===================================== */
-
-startBtn.addEventListener(
-  "click",
-  startListening
-);
-
-pauseBtn.addEventListener(
-  "click",
-  pauseListening
-);
-
-resetBtn.addEventListener(
-  "click",
-  resetCurrentMala
-);
-
-/* =====================================
-   DAILY RECORDS
-===================================== */
-
-function updateRecords() {
-
-  recordsList.innerHTML = "";
-
-  const dates =
-    Object.keys(records)
-      .sort()
-      .reverse();
-
-  if (!dates.length) {
-
-    recordsList.innerHTML =
-      '<div class="record">' +
-      '<span class="record-date">' +
-      'No records yet' +
-      '</span>' +
-      '</div>';
-
-    return;
-
-  }
-
-  dates
-    .slice(0, 30)
-    .forEach(date => {
-
-      const row =
-        document.createElement(
-          "div"
-        );
-
-      row.className =
-        "record";
-
-      const dateEl =
-        document.createElement(
-          "span"
-        );
-
-      dateEl.className =
-        "record-date";
-
-      dateEl.textContent =
-        date;
-
-      const recordCountEl =
-        document.createElement(
-          "span"
-        );
-
-      recordCountEl.className =
-        "record-count";
-
-      recordCountEl.textContent =
-        records[date];
-
-      row.appendChild(
-        dateEl
-      );
-
-      row.appendChild(
-        recordCountEl
-      );
-
-      recordsList.appendChild(
-        row
-      );
-
-    });
-
-}
-
-/* =====================================
-   MIDNIGHT RESET
-===================================== */
-
-function checkMidnightReset() {
-
-  const currentDate =
-    todayKey();
-
-  const savedDate =
-    localStorage.getItem(
-      "wg_current_date"
-    );
-
-  if (!savedDate) {
-
-    localStorage.setItem(
-      "wg_current_date",
-      currentDate
-    );
-
-    return;
-
-  }
-
-  if (
-    savedDate !== currentDate
-  ) {
-
-    /*
-      Reset ONLY current mala.
-
-      Saved total remains.
-      Completed malas remain.
-      Daily records remain.
-    */
-
-    count = 0;
-
-    localStorage.setItem(
-      "wg_current_date",
-      currentDate
-    );
-
-    updateDisplay();
-
-  }
-
-}
-
-/* =====================================
-   MIDNIGHT CHECK
-===================================== */
-
-setInterval(
-  checkMidnightReset,
-  1000
-);
-
-/* =====================================
-   INITIALIZE
-===================================== */
-
-checkMidnightReset();
-
-updateDisplay();
-
-setPausedStatus();
-
+  buildMala();
+})();
 </script>
-
 </body>
 </html>
