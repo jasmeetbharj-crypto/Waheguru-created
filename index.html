@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 11</title>
+<title>Waheguru Voice Counter - Version 11</title>
 
 <style>
 * {
@@ -53,7 +53,6 @@ h1 {
   font-size: 13px;
   margin-bottom: 15px;
 }
-
 
 /* STATUS */
 
@@ -193,36 +192,49 @@ h1 {
 
 /* COLOR BUTTON */
 
-.top-buttons {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 100;
-}
-
-.dark-mode-btn,
 .mala-color-btn {
-  font-size: 17px;
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border-radius: 50%;
+  background: #151515;
+  border: 1px solid #555;
+  font-size: 15px;
+  z-index: 5;
+  cursor: pointer;
 }
 
-.dark-mode-btn:hover,
 .mala-color-btn:hover {
   background: #292929;
 }
+
 /* DARK MODE */
+
+.dark-mode-btn {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  z-index: 100;
+}
 
 /* COLOR PALETTE */
 
 .color-box {
   display: none;
   position: absolute;
+  left: 50%;
   top: calc(100% + 8px);
-  right: 0;
-  left: auto;
-  transform: none;
+  transform: translateX(-50%);
   width: 185px;
   padding: 10px;
   background: #101010;
@@ -231,6 +243,7 @@ h1 {
   z-index: 20;
   box-shadow: 0 8px 25px rgba(0,0,0,.5);
 }
+
 .color-box.open {
   display: block;
 }
@@ -441,6 +454,85 @@ button:hover {
   font-weight: bold;
 }
 
+/* CALENDAR */
+
+.calendar-box {
+  margin: 12px 0;
+  padding: 12px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.calendar-title {
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.calendar-box input {
+  width: 100%;
+  max-width: 220px;
+  padding: 10px;
+  background: #080808;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.calendar-box input:focus {
+  outline: none;
+  border-color: var(--mala-color);
+  box-shadow: 0 0 8px var(--mala-glow);
+}
+
+.selected-day {
+  margin-top: 7px;
+  color: #777;
+  font-size: 11px;
+}
+
+.selected-day span {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* SETTINGS */
+
+.settings {
+  margin-top: 15px;
+  padding: 12px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.settings-title {
+  color: #ddd;
+  font-size: 14px;
+  margin-bottom: 9px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 2px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.setting-row button {
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 65px;
+}
+
+/* NOTE */
+
 .note {
   margin-top: 18px;
   color: #555;
@@ -454,11 +546,14 @@ body.light .status,
 body.light .timeout-box,
 body.light .manual,
 body.light .stat,
-body.light .record {
+body.light .record,
+body.light .calendar-box,
+body.light .settings {
   background: #fff;
 }
 
-body.light .manual-row input {
+body.light .manual-row input,
+body.light .calendar-box input {
   background: #f7f7f7;
   color: #111;
 }
@@ -472,51 +567,49 @@ body.light .center {
     );
 }
 
-.settings-box {
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 185px;
-  padding: 12px;
-  background: #101010;
-  border: 1px solid #333;
-  border-radius: 10px;
-  z-index: 20;
-  box-shadow: 0 8px 25px rgba(0,0,0,.5);
+body.light .records h2,
+body.light .manual-title,
+body.light .settings-title {
+  color: #333;
 }
 
-.settings-box.open { display: block; }
+/* MOBILE */
 
-.settings-title {
-  font-weight: 700;
-  margin-bottom: 10px;
-  text-align: center;
+@media (max-width: 420px) {
+
+  .app {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .mala-wrapper {
+    width: min(92vw, 370px);
+    height: min(92vw, 370px);
+  }
+
+  .center {
+    width: 140px;
+    height: 140px;
+  }
+
+  .ik-onkar {
+    font-size: 170px;
+  }
+
+  .controls {
+    gap: 5px;
+  }
+
+  .controls button {
+    padding: 12px 10px;
+    font-size: 12px;
+  }
+
 }
-
-.setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-}
-
-.setting-toggle {
-  min-width: 54px;
-  padding: 5px 10px;
-  border-radius: 16px;
-  border: 1px solid #555;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.setting-toggle.off {
-  opacity: .65;
-}
-
 </style>
 </head>
 
@@ -524,15 +617,33 @@ body.light .center {
 
 <div class="app">
 
-<div class="top-buttons">
+<button id="darkModeBtn" class="dark-mode-btn">☀️</button>
 
-  <div class="top-buttons">
-  <button id="darkModeBtn" class="dark-mode-btn" title="Dark / Light Mode">☀️</button>
+<h1>Waheguru Voice Counter</h1>
+<div class="subtitle">Digital 108-Bead Mala — Version 11</div>
 
-  <button id="malaColorBtn" class="mala-color-btn" title="Mala Color">🎨</button>
+<!-- STATUS -->
 
-  <div id="colorBox" class="color-box">
+<div id="status" class="status">
+  <span class="dot"></span>
+  <span id="statusText">Mic paused</span>
+</div>
 
+<!-- MALA -->
+
+<div class="mala-wrapper">
+
+  <div id="mala" class="mala"></div>
+
+  <div class="center">
+
+    <div class="ik-onkar">ੴ</div>
+
+    <div id="count" class="center-count">0</div>
+
+    <div id="malaNumber" class="mala-number">
+      Mala #1
+    </div>
 
     <button
       id="malaColorBtn"
@@ -609,53 +720,6 @@ body.light .center {
 
       </div>
     </div>
-
-
-</div>
-  <button id="settingsBtn" class="settings-btn" title="Settings">⚙️</button>
-
-  <div id="settingsBox" class="settings-box">
-    <div class="settings-title">Settings</div>
-
-    <div class="setting-row">
-      <span>Sound</span>
-      <button id="soundToggle" class="setting-toggle on" type="button">ON</button>
-    </div>
-
-    <div class="setting-row">
-      <span>Vibration</span>
-      <button id="vibrationToggle" class="setting-toggle on" type="button">ON</button>
-    </div>
-  </div>
-</div>
-
-
-<h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala — Version 10</div>
-
-<!-- STATUS -->
-
-<div id="status" class="status">
-  <span class="dot"></span>
-  <span id="statusText">Mic paused</span>
-</div>
-
-<!-- MALA -->
-
-<div class="mala-wrapper">
-
-  <div id="mala" class="mala"></div>
-
-  <div class="center">
-
-    <div class="ik-onkar">ੴ</div>
-
-    <div id="count" class="center-count">0</div>
-
-    <div id="malaNumber" class="mala-number">
-      Mala #1
-    </div>
-
 
   </div>
 </div>
@@ -747,6 +811,25 @@ body.light .center {
 
 </div>
 
+<!-- CALENDAR -->
+
+<div class="calendar-box">
+
+  <div class="calendar-title">
+    📅 Select Date
+  </div>
+
+  <input
+    id="calendarDate"
+    type="date">
+
+  <div class="selected-day">
+    Selected date:
+    <span id="selectedDateLabel">Today</span>
+  </div>
+
+</div>
+
 <!-- RECORDS -->
 
 <div class="records">
@@ -754,6 +837,26 @@ body.light .center {
   <h2>📅 Daily Records</h2>
 
   <div id="recordsList"></div>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div class="settings">
+
+  <div class="settings-title">
+    ⚙️ Settings
+  </div>
+
+  <div class="setting-row">
+    <span>🔊 Sound</span>
+    <button id="soundBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>📳 Vibration</span>
+    <button id="vibrationBtn">ON</button>
+  </div>
 
 </div>
 
@@ -789,15 +892,32 @@ let savedColor =
 let savedDarkMode =
   localStorage.getItem("wg_dark") !== "false";
 
+let soundEnabled =
+  localStorage.getItem("wg_sound") !== "false";
+
+let vibrationEnabled =
+  localStorage.getItem("wg_vibration") !== "false";
+
 let records;
 
 try {
+
   records =
     JSON.parse(
       localStorage.getItem("wg_records") || "{}"
     );
+
+  if (
+    !records ||
+    typeof records !== "object"
+  ) {
+    records = {};
+  }
+
 } catch {
+
   records = {};
+
 }
 
 /* =====================================
@@ -824,16 +944,6 @@ let recognitionStarting = false;
 
 let recognitionRestartTimer = null;
 
-// Speech recognition languages are rotated so both English and
-// Punjabi/Gurmukhi speech can be recognized by browsers that support them.
-const recognitionLanguages = ["en-IN", "pa-IN"];
-let recognitionLanguageIndex = 0;
-let recognitionLanguage = recognitionLanguages[0];
-
-let silenceTimer = null;
-
-let countdownTimer = null;
-
 let lastActivityAt = 0;
 
 let micStream = null;
@@ -845,6 +955,21 @@ let analyser = null;
 let audioData = null;
 
 let audioMonitor = null;
+
+/*
+  Used to prevent the same final
+  recognition result from being
+  counted twice.
+*/
+
+let processedSpeechResults = [];
+
+let recognitionLanguageIndex = 0;
+
+const recognitionLanguages = [
+  "en-IN",
+  "pa-IN"
+];
 
 /* =====================================
    ELEMENTS
@@ -904,11 +1029,68 @@ const colorBox =
 const darkModeBtn =
   document.getElementById("darkModeBtn");
 
+const calendarDate =
+  document.getElementById("calendarDate");
+
+const selectedDateLabel =
+  document.getElementById("selectedDateLabel");
+
+const soundBtn =
+  document.getElementById("soundBtn");
+
+const vibrationBtn =
+  document.getElementById("vibrationBtn");
+
+/* =====================================
+   DATE HELPERS
+===================================== */
+
+function todayKey() {
+
+  const d = new Date();
+
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
+
+}
+
+function formatDate(dateString) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  return (
+    parts[1] +
+    "/" +
+    parts[2] +
+    "/" +
+    parts[0]
+  );
+
+}
+
 /* =====================================
    COLOR
 ===================================== */
 
 function setColor(button) {
+
+  if (!button) {
+    return;
+  }
 
   const color =
     button.dataset.color;
@@ -938,6 +1120,8 @@ function setColor(button) {
     button.dataset.center
   );
 
+  savedColor = color;
+
   localStorage.setItem(
     "wg_color",
     color
@@ -946,10 +1130,17 @@ function setColor(button) {
   document
     .querySelectorAll(".color-btn")
     .forEach(btn => {
-      btn.classList.remove("selected");
+
+      btn.classList.remove(
+        "selected"
+      );
+
     });
 
-  button.classList.add("selected");
+  button.classList.add(
+    "selected"
+  );
+
 }
 
 /* =====================================
@@ -962,9 +1153,11 @@ document
 
     button.addEventListener(
       "click",
-      () => {
+      function(event) {
 
-        setColor(button);
+        event.stopPropagation();
+
+        setColor(this);
 
         colorBox.classList.remove(
           "open"
@@ -975,16 +1168,45 @@ document
 
   });
 
-const savedColorButton =
-  [...document.querySelectorAll(".color-btn")]
-    .find(
-      btn =>
-        btn.dataset.color === savedColor
+function loadSavedColor() {
+
+  const buttons =
+    document.querySelectorAll(
+      ".color-btn"
     );
 
-if (savedColorButton) {
-  setColor(savedColorButton);
+  let selected =
+    null;
+
+  buttons.forEach(button => {
+
+    if (
+      button.dataset.color ===
+      savedColor
+    ) {
+
+      selected = button;
+
+    }
+
+  });
+
+  if (!selected) {
+
+    selected =
+      document.querySelector(
+        '.color-btn[data-color="#ff2020"]'
+      );
+
+  }
+
+  if (selected) {
+    setColor(selected);
+  }
+
 }
+
+loadSavedColor();
 
 /* =====================================
    OPEN COLOR PALETTE
@@ -1004,6 +1226,15 @@ document
 
     }
   );
+
+colorBox.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+  }
+);
 
 document.addEventListener(
   "click",
@@ -1035,7 +1266,9 @@ function applyDarkMode() {
   );
 
   darkModeBtn.textContent =
-    savedDarkMode ? "☀️" : "🌙";
+    savedDarkMode
+      ? "☀️"
+      : "🌙";
 
 }
 
@@ -1059,10 +1292,68 @@ darkModeBtn.addEventListener(
 applyDarkMode();
 
 /* =====================================
+   SETTINGS
+===================================== */
+
+function updateSettingsButtons() {
+
+  soundBtn.textContent =
+    soundEnabled
+      ? "ON"
+      : "OFF";
+
+  vibrationBtn.textContent =
+    vibrationEnabled
+      ? "ON"
+      : "OFF";
+
+}
+
+soundBtn.addEventListener(
+  "click",
+  () => {
+
+    soundEnabled =
+      !soundEnabled;
+
+    localStorage.setItem(
+      "wg_sound",
+      soundEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+vibrationBtn.addEventListener(
+  "click",
+  () => {
+
+    vibrationEnabled =
+      !vibrationEnabled;
+
+    localStorage.setItem(
+      "wg_vibration",
+      vibrationEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+updateSettingsButtons();
+
+/* =====================================
    CREATE 108 BEADS
 ===================================== */
 
-for (let i = 0; i < MALA_SIZE; i++) {
+for (
+  let i = 0;
+  i < MALA_SIZE;
+  i++
+) {
 
   const bead =
     document.createElement("div");
@@ -1100,29 +1391,6 @@ for (let i = 0; i < MALA_SIZE; i++) {
 }
 
 /* =====================================
-   DATE
-===================================== */
-
-function todayKey() {
-
-  const d =
-    new Date();
-
-  return (
-    d.getFullYear() +
-    "-" +
-    String(
-      d.getMonth() + 1
-    ).padStart(2, "0") +
-    "-" +
-    String(
-      d.getDate()
-    ).padStart(2, "0")
-  );
-
-}
-
-/* =====================================
    SAVE DATA
 ===================================== */
 
@@ -1146,6 +1414,11 @@ function saveData() {
   localStorage.setItem(
     "wg_records",
     JSON.stringify(records)
+  );
+
+  localStorage.setItem(
+    "wg_current_date",
+    todayKey()
   );
 
 }
@@ -1191,7 +1464,9 @@ function updateDisplay() {
         "current"
       );
 
-      if (i < count) {
+      if (
+        i < count
+      ) {
 
         bead.classList.add(
           "active"
@@ -1217,6 +1492,8 @@ function updateDisplay() {
 
   updateRecords();
 
+  updateSelectedDateDisplay();
+
 }
 
 /* =====================================
@@ -1232,11 +1509,17 @@ function addCount(amount) {
     !Number.isFinite(amount) ||
     amount <= 0
   ) {
+
     return;
+
   }
 
   amount =
     Math.floor(amount);
+
+  if (amount <= 0) {
+    return;
+  }
 
   total += amount;
 
@@ -1272,16 +1555,23 @@ function addCount(amount) {
 function malaComplete() {
 
   if (
+    vibrationEnabled &&
     "vibrate" in navigator
   ) {
 
     try {
 
       navigator.vibrate(
-        [200,100,200]
+        [200, 100, 200]
       );
 
     } catch(e) {}
+
+  }
+
+  if (soundEnabled) {
+
+    beep();
 
   }
 
@@ -1293,11 +1583,105 @@ function malaComplete() {
 
 function normalizeText(text) {
 
-  return text
+  return String(text)
     .toLowerCase()
-    .replace(/[.,!?;:]/g, " ")
+    .replace(/[.,!?;:()[\]{}"'`]/g, " ")
+    .replace(/[-_]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+
+}
+
+/* =====================================
+   COUNT GURMUKHI
+===================================== */
+
+function countGurmukhi(text) {
+
+  const patterns = [
+
+    /ਵਾਹਿਗੁਰੂ/g,
+
+    /ਵਾਹੇਗੁਰੂ/g,
+
+    /ਵਾਹੇ ਗੁਰੂ/g,
+
+    /ਵਾਹਿਗੁਰੁ/g,
+
+    /ਵਾਹੇਗੁਰੁ/g
+
+  ];
+
+  let totalMatches = 0;
+
+  patterns.forEach(
+    pattern => {
+
+      const matches =
+        text.match(pattern);
+
+      if (matches) {
+
+        totalMatches +=
+          matches.length;
+
+      }
+
+    }
+  );
+
+  return totalMatches;
+
+}
+
+/* =====================================
+   COUNT ENGLISH
+===================================== */
+
+function countEnglish(text) {
+
+  const normalized =
+    normalizeText(text);
+
+  const patterns = [
+
+    /\bwaheguru\b/g,
+
+    /\bwahe guru\b/g,
+
+    /\bwaheguroo\b/g,
+
+    /\bwahegooroo\b/g,
+
+    /\bwaheguro\b/g,
+
+    /\bwaheguruu\b/g,
+
+    /\bvaheguru\b/g,
+
+    /\bvahiguru\b/g
+
+  ];
+
+  let totalMatches = 0;
+
+  patterns.forEach(
+    pattern => {
+
+      const matches =
+        normalized.match(pattern);
+
+      if (matches) {
+
+        totalMatches +=
+          matches.length;
+
+      }
+
+    }
+  );
+
+  return totalMatches;
 
 }
 
@@ -1311,49 +1695,57 @@ function countWaheguru(text) {
     return;
   }
 
-  const normalized =
-    normalizeText(text)
-      .normalize("NFKC");
+  const gurmukhiCount =
+    countGurmukhi(text);
 
-  /*
-    English variations commonly produced by speech recognition:
-      Waheguru
-      Wahe Guru
-      Waheguroo
-      Waheguro
+  const englishCount =
+    countEnglish(text);
 
-    Punjabi/Gurmukhi variations:
-      ਵਾਹਿਗੁਰੂ
-      ਵਾਹੇਗੁਰੂ
+  const matches =
+    gurmukhiCount +
+    englishCount;
 
-    We also accept a few harmless spacing/spelling variations that
-    speech-to-text engines commonly return.
-  */
+  if (matches > 0) {
 
-  const englishPattern =
-    /\b(?:waheguru|wahe\s+guru|waheguroo|waheguro|waheguruu|vaheguru|vahiguru)\b/gi;
-
-  const gurmukhiPattern =
-    /ਵਾਹਿਗੁਰੂ|ਵਾਹੇਗੁਰੂ|ਵਾਹੇ\s*ਗੁਰੂ/g;
-
-  const englishMatches =
-    normalized.match(englishPattern) || [];
-
-  const gurmukhiMatches =
-    normalized.match(gurmukhiPattern) || [];
-
-  const totalMatches =
-    englishMatches.length +
-    gurmukhiMatches.length;
-
-  if (totalMatches > 0) {
-
-    addCount(totalMatches);
-
-    lastActivityAt =
-      performance.now();
+    addCount(matches);
 
   }
+
+}
+
+/* =====================================
+   SPEECH RESULT PROTECTION
+===================================== */
+
+function speechResultAlreadyProcessed(
+  text,
+  resultIndex
+) {
+
+  const key =
+    resultIndex +
+    "|" +
+    text.trim();
+
+  if (
+    processedSpeechResults.includes(key)
+  ) {
+
+    return true;
+
+  }
+
+  processedSpeechResults.push(key);
+
+  if (
+    processedSpeechResults.length > 100
+  ) {
+
+    processedSpeechResults.shift();
+
+  }
+
+  return false;
 
 }
 
@@ -1363,13 +1755,22 @@ function countWaheguru(text) {
 
 function beep() {
 
+  if (!soundEnabled) {
+    return;
+  }
+
   try {
 
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioCtx) {
+      return;
+    }
+
     const ctx =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
+      new AudioCtx();
 
     const oscillator =
       ctx.createOscillator();
@@ -1398,14 +1799,29 @@ function beep() {
       ctx.currentTime + 0.35
     );
 
-    oscillator.connect(gain);
+    oscillator.connect(
+      gain
+    );
 
-    gain.connect(ctx.destination);
+    gain.connect(
+      ctx.destination
+    );
 
     oscillator.start();
 
     oscillator.stop(
       ctx.currentTime + 0.35
+    );
+
+    setTimeout(
+      () => {
+
+        try {
+          ctx.close();
+        } catch(e) {}
+
+      },
+      500
     );
 
   } catch(e) {}
@@ -1429,9 +1845,22 @@ async function startAudioMonitor() {
 
     }
 
+    /*
+      Do not request a second microphone
+      stream if one already exists.
+    */
+
+    if (micStream) {
+      return;
+    }
+
     micStream =
       await navigator.mediaDevices.getUserMedia({
-        audio: true
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
       });
 
     audioContext =
@@ -1460,6 +1889,14 @@ async function startAudioMonitor() {
       analyser
     );
 
+    if (audioMonitor) {
+
+      cancelAnimationFrame(
+        audioMonitor
+      );
+
+    }
+
     monitorAudio();
 
   } catch(e) {
@@ -1480,9 +1917,7 @@ async function startAudioMonitor() {
 function monitorAudio() {
 
   if (!listening) {
-
     return;
-
   }
 
   if (
@@ -1581,7 +2016,8 @@ function stopAudioMonitor() {
       audioMonitor
     );
 
-    audioMonitor = null;
+    audioMonitor =
+      null;
 
   }
 
@@ -1590,26 +2026,38 @@ function stopAudioMonitor() {
     micStream
       .getTracks()
       .forEach(
-        track => track.stop()
+        track => {
+
+          try {
+            track.stop();
+          } catch(e) {}
+
+        }
       );
 
-    micStream = null;
+    micStream =
+      null;
 
   }
 
   if (audioContext) {
 
     try {
+
       audioContext.close();
+
     } catch(e) {}
 
-    audioContext = null;
+    audioContext =
+      null;
 
   }
 
-  analyser = null;
+  analyser =
+    null;
 
-  audioData = null;
+  audioData =
+    null;
 
 }
 
@@ -1619,23 +2067,25 @@ function stopAudioMonitor() {
 
 function clearTimers() {
 
-  if (silenceTimer) {
+  if (recognitionRestartTimer) {
 
     clearTimeout(
-      silenceTimer
+      recognitionRestartTimer
     );
 
-    silenceTimer = null;
+    recognitionRestartTimer =
+      null;
 
   }
 
-  if (countdownTimer) {
+  if (audioMonitor) {
 
-    clearInterval(
-      countdownTimer
+    cancelAnimationFrame(
+      audioMonitor
     );
 
-    countdownTimer = null;
+    audioMonitor =
+      null;
 
   }
 
@@ -1648,9 +2098,7 @@ function clearTimers() {
 function autoPause() {
 
   if (!listening) {
-
     return;
-
   }
 
   listening = false;
@@ -1668,6 +2116,12 @@ function autoPause() {
     } catch(e) {}
 
   }
+
+  recognitionRunning =
+    false;
+
+  recognitionStarting =
+    false;
 
   beep();
 
@@ -1727,7 +2181,7 @@ function setupRecognition() {
   if (!SpeechRecognition) {
 
     alert(
-      "Speech recognition is not supported by this browser."
+      "Speech recognition is not supported by this browser. Please use Google Chrome or Microsoft Edge."
     );
 
     return null;
@@ -1737,16 +2191,19 @@ function setupRecognition() {
   const r =
     new SpeechRecognition();
 
-  r.continuous = true;
+  r.continuous =
+    true;
 
-  r.interimResults = true;
+  r.interimResults =
+    true;
 
-  // Start with English, then alternate with Punjabi/Gurmukhi
-  // whenever the browser ends a recognition session.
-  recognitionLanguage =
-    recognitionLanguages[recognitionLanguageIndex];
+  r.maxAlternatives =
+    1;
 
-  r.lang = recognitionLanguage;
+  r.lang =
+    recognitionLanguages[
+      recognitionLanguageIndex
+    ];
 
   r.onstart = () => {
 
@@ -1773,9 +2230,7 @@ function setupRecognition() {
   r.onresult = event => {
 
     if (!listening) {
-
       return;
-
     }
 
     let finalText = "";
@@ -1789,11 +2244,6 @@ function setupRecognition() {
       const result =
         event.results[i];
 
-      /*
-        Any actual recognition activity
-        keeps the silence timer alive.
-      */
-
       if (
         result[0] &&
         result[0].transcript
@@ -1804,11 +2254,26 @@ function setupRecognition() {
 
       }
 
-      if (result.isFinal) {
+      if (
+        result.isFinal
+      ) {
 
-        finalText +=
-          " " +
-          result[0].transcript;
+        const transcript =
+          result[0].transcript.trim();
+
+        if (
+          transcript &&
+          !speechResultAlreadyProcessed(
+            transcript,
+            i
+          )
+        ) {
+
+          finalText +=
+            " " +
+            transcript;
+
+        }
 
       }
 
@@ -1837,11 +2302,14 @@ function setupRecognition() {
     );
 
     if (
-      event.error === "not-allowed" ||
-      event.error === "service-not-allowed"
+      event.error ===
+        "not-allowed" ||
+      event.error ===
+        "service-not-allowed"
     ) {
 
-      listening = false;
+      listening =
+        false;
 
       clearTimers();
 
@@ -1855,26 +2323,14 @@ function setupRecognition() {
 
     }
 
-    /*
-      If Punjabi is not supported by the browser/service, immediately
-      fall back to English instead of leaving recognition stuck.
-    */
-
     if (
-      event.error === "language-not-supported" &&
-      recognitionLanguage === "pa-IN"
+      event.error ===
+        "aborted"
     ) {
 
-      recognitionLanguageIndex = 0;
-      recognitionLanguage = "en-IN";
-      r.lang = recognitionLanguage;
+      return;
 
     }
-
-    /*
-      Temporary recognition errors do
-      NOT mean the user stopped speaking.
-    */
 
     if (listening) {
 
@@ -1892,27 +2348,30 @@ function setupRecognition() {
     recognitionStarting =
       false;
 
-    /*
-      Recognition ending does NOT
-      mean the user is silent.
+    if (!listening) {
+      return;
+    }
 
-      If listening is still enabled,
-      recognition is restarted.
+    /*
+      Rotate recognition language
+      after each recognition session.
+
+      This gives the browser an opportunity
+      to recognize English and Punjabi.
     */
 
-    if (listening) {
+    recognitionLanguageIndex =
+      (
+        recognitionLanguageIndex + 1
+      ) %
+      recognitionLanguages.length;
 
-      // Alternate English and Punjabi recognition sessions so the
-      // counter can capture both English and Gurmukhi transcripts.
-      recognitionLanguageIndex =
-        (recognitionLanguageIndex + 1) % recognitionLanguages.length;
+    r.lang =
+      recognitionLanguages[
+        recognitionLanguageIndex
+      ];
 
-      recognitionLanguage =
-        recognitionLanguages[recognitionLanguageIndex];
-
-      scheduleRecognitionRestart();
-
-    }
+    scheduleRecognitionRestart();
 
   };
 
@@ -1927,26 +2386,29 @@ function setupRecognition() {
 function scheduleRecognitionRestart() {
 
   if (!listening) {
-
     return;
-
   }
 
-  if (recognitionRestartTimer) {
+  if (
+    recognitionRestartTimer
+  ) {
 
     return;
 
   }
 
   recognitionRestartTimer =
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      recognitionRestartTimer =
-        null;
+        recognitionRestartTimer =
+          null;
 
-      startRecognitionSafely();
+        startRecognitionSafely();
 
-    }, 300);
+      },
+      400
+    );
 
 }
 
@@ -1957,9 +2419,7 @@ function scheduleRecognitionRestart() {
 function startRecognitionSafely() {
 
   if (!listening) {
-
     return;
-
   }
 
   if (
@@ -1975,6 +2435,11 @@ function startRecognitionSafely() {
     true;
 
   try {
+
+    recognition.lang =
+      recognitionLanguages[
+        recognitionLanguageIndex
+      ];
 
     recognition.start();
 
@@ -1995,23 +2460,29 @@ function startRecognitionSafely() {
 
 async function startListening() {
 
+  if (listening) {
+    return;
+  }
+
   if (!recognition) {
 
     recognition =
       setupRecognition();
 
     if (!recognition) {
-
       return;
-
     }
 
   }
 
-  listening = true;
+  listening =
+    true;
 
   lastActivityAt =
     performance.now();
+
+  processedSpeechResults =
+    [];
 
   setListeningStatus();
 
@@ -2027,22 +2498,12 @@ async function startListening() {
 
 function pauseListening() {
 
-  listening = false;
+  listening =
+    false;
 
   clearTimers();
 
   stopAudioMonitor();
-
-  if (recognitionRestartTimer) {
-
-    clearTimeout(
-      recognitionRestartTimer
-    );
-
-    recognitionRestartTimer =
-      null;
-
-  }
 
   if (recognition) {
 
@@ -2081,7 +2542,8 @@ function resetCurrentMala() {
 
   }
 
-  count = 0;
+  count =
+    0;
 
   updateDisplay();
 
@@ -2109,15 +2571,10 @@ function addManualCount() {
 
   addCount(value);
 
-  manualInput.value = "";
+  manualInput.value =
+    "";
 
 }
-
-/*
-  Manual count:
-  Type a number and press Add Count
-  or press Enter.
-*/
 
 manualAddBtn.addEventListener(
   "click",
@@ -2164,7 +2621,8 @@ resetBtn.addEventListener(
 
 function updateRecords() {
 
-  recordsList.innerHTML = "";
+  recordsList.innerHTML =
+    "";
 
   const dates =
     Object.keys(records)
@@ -2178,6 +2636,7 @@ function updateRecords() {
       '<span class="record-date">' +
       'No records yet' +
       '</span>' +
+      '<span class="record-count">0</span>' +
       '</div>';
 
     return;
@@ -2186,53 +2645,133 @@ function updateRecords() {
 
   dates
     .slice(0, 30)
-    .forEach(date => {
+    .forEach(
+      date => {
 
-      const row =
-        document.createElement(
-          "div"
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.className =
+          "record";
+
+        const dateEl =
+          document.createElement(
+            "span"
+          );
+
+        dateEl.className =
+          "record-date";
+
+        dateEl.textContent =
+          formatDate(date);
+
+        const recordCountEl =
+          document.createElement(
+            "span"
+          );
+
+        recordCountEl.className =
+          "record-count";
+
+        recordCountEl.textContent =
+          records[date] || 0;
+
+        row.appendChild(
+          dateEl
         );
 
-      row.className =
-        "record";
-
-      const dateEl =
-        document.createElement(
-          "span"
+        row.appendChild(
+          recordCountEl
         );
 
-      dateEl.className =
-        "record-date";
-
-      dateEl.textContent =
-        date;
-
-      const recordCountEl =
-        document.createElement(
-          "span"
+        recordsList.appendChild(
+          row
         );
 
-      recordCountEl.className =
-        "record-count";
-
-      recordCountEl.textContent =
-        records[date];
-
-      row.appendChild(
-        dateEl
-      );
-
-      row.appendChild(
-        recordCountEl
-      );
-
-      recordsList.appendChild(
-        row
-      );
-
-    });
+      }
+    );
 
 }
+
+/* =====================================
+   CALENDAR
+===================================== */
+
+function updateSelectedDateDisplay() {
+
+  const selected =
+    calendarDate.value;
+
+  if (!selected) {
+
+    selectedDateLabel.textContent =
+      "Today";
+
+    return;
+
+  }
+
+  if (
+    selected === todayKey()
+  ) {
+
+    selectedDateLabel.textContent =
+      "Today — " +
+      formatDate(selected);
+
+  } else {
+
+    selectedDateLabel.textContent =
+      formatDate(selected);
+
+  }
+
+}
+
+calendarDate.addEventListener(
+  "change",
+  () => {
+
+    const selected =
+      calendarDate.value;
+
+    if (!selected) {
+      return;
+    }
+
+    const amount =
+      records[selected] || 0;
+
+    selectedDateLabel.textContent =
+      selected === todayKey()
+        ? "Today — " + formatDate(selected)
+        : formatDate(selected);
+
+    /*
+      The calendar lets you inspect
+      the saved count for any date.
+    */
+
+    console.log(
+      "Record for " +
+      selected +
+      ": " +
+      amount
+    );
+
+  }
+);
+
+/* =====================================
+   SET CALENDAR TO TODAY
+===================================== */
+
+calendarDate.value =
+  todayKey();
+
+updateSelectedDateDisplay();
 
 /* =====================================
    MIDNIGHT RESET
@@ -2271,7 +2810,8 @@ function checkMidnightReset() {
       Daily records remain.
     */
 
-    count = 0;
+    count =
+      0;
 
     localStorage.setItem(
       "wg_current_date",
@@ -2299,95 +2839,13 @@ setInterval(
 
 checkMidnightReset();
 
+loadSavedColor();
+
 updateDisplay();
 
 setPausedStatus();
 
-
-// Settings: Sound and Vibration
-(function () {
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsBox = document.getElementById('settingsBox');
-  const soundToggle = document.getElementById('soundToggle');
-  const vibrationToggle = document.getElementById('vibrationToggle');
-
-  let soundEnabled = localStorage.getItem('waheguruSound') !== 'off';
-  let vibrationEnabled = localStorage.getItem('waheguruVibration') !== 'off';
-
-  function updateToggle(button, enabled) {
-    if (!button) return;
-    button.textContent = enabled ? 'ON' : 'OFF';
-    button.classList.toggle('on', enabled);
-    button.classList.toggle('off', !enabled);
-  }
-
-  updateToggle(soundToggle, soundEnabled);
-  updateToggle(vibrationToggle, vibrationEnabled);
-
-  if (settingsBtn) {
-    settingsBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (colorBox) colorBox.classList.remove('open');
-      settingsBox.classList.toggle('open');
-    });
-  }
-
-  if (soundToggle) {
-    soundToggle.addEventListener('click', function () {
-      soundEnabled = !soundEnabled;
-      localStorage.setItem('waheguruSound', soundEnabled ? 'on' : 'off');
-      updateToggle(soundToggle, soundEnabled);
-    });
-  }
-
-  if (vibrationToggle) {
-    vibrationToggle.addEventListener('click', function () {
-      vibrationEnabled = !vibrationEnabled;
-      localStorage.setItem('waheguruVibration', vibrationEnabled ? 'on' : 'off');
-      updateToggle(vibrationToggle, vibrationEnabled);
-    });
-  }
-
-  // Make the settings state available to the existing counter code.
-  window.isWaheguruSoundEnabled = function () { return soundEnabled; };
-  window.isWaheguruVibrationEnabled = function () { return vibrationEnabled; };
-
-  // Close settings when clicking elsewhere.
-  document.addEventListener('click', function (e) {
-    if (settingsBox && settingsBtn &&
-        !settingsBox.contains(e.target) && !settingsBtn.contains(e.target)) {
-      settingsBox.classList.remove('open');
-    }
-  });
-})();
-
-
-// Optional helpers for counter actions.
-function playWaheguruSound() {
-  if (typeof window.isWaheguruSoundEnabled === 'function' &&
-      !window.isWaheguruSoundEnabled()) return;
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.09);
-  } catch (e) {}
-}
-
-function vibrateWaheguru(duration) {
-  if (typeof window.isWaheguruVibrationEnabled === 'function' &&
-      !window.isWaheguruVibrationEnabled()) return;
-  if (navigator.vibrate) navigator.vibrate(duration || 30);
-}
+updateSettingsButtons();
 
 </script>
 
