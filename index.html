@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - Version 10</title>
+<title>Waheguru Voice Counter - V 11</title>
 
 <style>
 * {
@@ -205,18 +205,6 @@ h1 {
 
 .dark-mode-btn,
 .mala-color-btn {
-  position: static;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 50%;
-  background: #191919;
-  border: 1px solid #444;
-  font-size: 19px;
-  cursor: pointer;
-}
-
-.mala-color-btn {
   font-size: 17px;
 }
 
@@ -243,7 +231,6 @@ h1 {
   z-index: 20;
   box-shadow: 0 8px 25px rgba(0,0,0,.5);
 }
-
 .color-box.open {
   display: block;
 }
@@ -484,6 +471,52 @@ body.light .center {
       #222 65%
     );
 }
+
+.settings-box {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 185px;
+  padding: 12px;
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 10px;
+  z-index: 20;
+  box-shadow: 0 8px 25px rgba(0,0,0,.5);
+}
+
+.settings-box.open { display: block; }
+
+.settings-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.setting-toggle {
+  min-width: 54px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  border: 1px solid #555;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.setting-toggle.off {
+  opacity: .65;
+}
+
 </style>
 </head>
 
@@ -493,7 +526,13 @@ body.light .center {
 
 <div class="top-buttons">
 
-  <button id="darkModeBtn" class="dark-mode-btn">☀️</button>
+  <div class="top-buttons">
+  <button id="darkModeBtn" class="dark-mode-btn" title="Dark / Light Mode">☀️</button>
+
+  <button id="malaColorBtn" class="mala-color-btn" title="Mala Color">🎨</button>
+
+  <div id="colorBox" class="color-box">
+
 
     <button
       id="malaColorBtn"
@@ -573,6 +612,23 @@ body.light .center {
 
 
 </div>
+  <button id="settingsBtn" class="settings-btn" title="Settings">⚙️</button>
+
+  <div id="settingsBox" class="settings-box">
+    <div class="settings-title">Settings</div>
+
+    <div class="setting-row">
+      <span>Sound</span>
+      <button id="soundToggle" class="setting-toggle on" type="button">ON</button>
+    </div>
+
+    <div class="setting-row">
+      <span>Vibration</span>
+      <button id="vibrationToggle" class="setting-toggle on" type="button">ON</button>
+    </div>
+  </div>
+</div>
+
 
 <h1>Waheguru Voice Counter</h1>
 <div class="subtitle">Digital 108-Bead Mala — Version 10</div>
@@ -767,6 +823,12 @@ let recognitionRunning = false;
 let recognitionStarting = false;
 
 let recognitionRestartTimer = null;
+
+// Speech recognition languages are rotated so both English and
+// Punjabi/Gurmukhi speech can be recognized by browsers that support them.
+const recognitionLanguages = ["en-IN", "pa-IN"];
+let recognitionLanguageIndex = 0;
+let recognitionLanguage = recognitionLanguages[0];
 
 let silenceTimer = null;
 
@@ -1245,20 +1307,48 @@ function normalizeText(text) {
 
 function countWaheguru(text) {
 
+  if (!text) {
+    return;
+  }
+
   const normalized =
-    normalizeText(text);
+    normalizeText(text)
+      .normalize("NFKC");
 
-  const pattern =
-    /\bwaheguru\b|\bwahe guru\b|\bwaheguroo\b|\bwahegooroo\b/g;
+  /*
+    English variations commonly produced by speech recognition:
+      Waheguru
+      Wahe Guru
+      Waheguroo
+      Waheguro
 
-  const matches =
-    normalized.match(pattern);
+    Punjabi/Gurmukhi variations:
+      ਵਾਹਿਗੁਰੂ
+      ਵਾਹੇਗੁਰੂ
 
-  if (matches) {
+    We also accept a few harmless spacing/spelling variations that
+    speech-to-text engines commonly return.
+  */
 
-    addCount(
-      matches.length
-    );
+  const englishPattern =
+    /\b(?:waheguru|wahe\s+guru|waheguroo|waheguro|waheguruu|vaheguru|vahiguru)\b/gi;
+
+  const gurmukhiPattern =
+    /ਵਾਹਿਗੁਰੂ|ਵਾਹੇਗੁਰੂ|ਵਾਹੇ\s*ਗੁਰੂ/g;
+
+  const englishMatches =
+    normalized.match(englishPattern) || [];
+
+  const gurmukhiMatches =
+    normalized.match(gurmukhiPattern) || [];
+
+  const totalMatches =
+    englishMatches.length +
+    gurmukhiMatches.length;
+
+  if (totalMatches > 0) {
+
+    addCount(totalMatches);
 
     lastActivityAt =
       performance.now();
@@ -1651,7 +1741,12 @@ function setupRecognition() {
 
   r.interimResults = true;
 
-  r.lang = "en-IN";
+  // Start with English, then alternate with Punjabi/Gurmukhi
+  // whenever the browser ends a recognition session.
+  recognitionLanguage =
+    recognitionLanguages[recognitionLanguageIndex];
+
+  r.lang = recognitionLanguage;
 
   r.onstart = () => {
 
@@ -1761,6 +1856,22 @@ function setupRecognition() {
     }
 
     /*
+      If Punjabi is not supported by the browser/service, immediately
+      fall back to English instead of leaving recognition stuck.
+    */
+
+    if (
+      event.error === "language-not-supported" &&
+      recognitionLanguage === "pa-IN"
+    ) {
+
+      recognitionLanguageIndex = 0;
+      recognitionLanguage = "en-IN";
+      r.lang = recognitionLanguage;
+
+    }
+
+    /*
       Temporary recognition errors do
       NOT mean the user stopped speaking.
     */
@@ -1790,6 +1901,14 @@ function setupRecognition() {
     */
 
     if (listening) {
+
+      // Alternate English and Punjabi recognition sessions so the
+      // counter can capture both English and Gurmukhi transcripts.
+      recognitionLanguageIndex =
+        (recognitionLanguageIndex + 1) % recognitionLanguages.length;
+
+      recognitionLanguage =
+        recognitionLanguages[recognitionLanguageIndex];
 
       scheduleRecognitionRestart();
 
@@ -2183,6 +2302,92 @@ checkMidnightReset();
 updateDisplay();
 
 setPausedStatus();
+
+
+// Settings: Sound and Vibration
+(function () {
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsBox = document.getElementById('settingsBox');
+  const soundToggle = document.getElementById('soundToggle');
+  const vibrationToggle = document.getElementById('vibrationToggle');
+
+  let soundEnabled = localStorage.getItem('waheguruSound') !== 'off';
+  let vibrationEnabled = localStorage.getItem('waheguruVibration') !== 'off';
+
+  function updateToggle(button, enabled) {
+    if (!button) return;
+    button.textContent = enabled ? 'ON' : 'OFF';
+    button.classList.toggle('on', enabled);
+    button.classList.toggle('off', !enabled);
+  }
+
+  updateToggle(soundToggle, soundEnabled);
+  updateToggle(vibrationToggle, vibrationEnabled);
+
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (colorBox) colorBox.classList.remove('open');
+      settingsBox.classList.toggle('open');
+    });
+  }
+
+  if (soundToggle) {
+    soundToggle.addEventListener('click', function () {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('waheguruSound', soundEnabled ? 'on' : 'off');
+      updateToggle(soundToggle, soundEnabled);
+    });
+  }
+
+  if (vibrationToggle) {
+    vibrationToggle.addEventListener('click', function () {
+      vibrationEnabled = !vibrationEnabled;
+      localStorage.setItem('waheguruVibration', vibrationEnabled ? 'on' : 'off');
+      updateToggle(vibrationToggle, vibrationEnabled);
+    });
+  }
+
+  // Make the settings state available to the existing counter code.
+  window.isWaheguruSoundEnabled = function () { return soundEnabled; };
+  window.isWaheguruVibrationEnabled = function () { return vibrationEnabled; };
+
+  // Close settings when clicking elsewhere.
+  document.addEventListener('click', function (e) {
+    if (settingsBox && settingsBtn &&
+        !settingsBox.contains(e.target) && !settingsBtn.contains(e.target)) {
+      settingsBox.classList.remove('open');
+    }
+  });
+})();
+
+
+// Optional helpers for counter actions.
+function playWaheguruSound() {
+  if (typeof window.isWaheguruSoundEnabled === 'function' &&
+      !window.isWaheguruSoundEnabled()) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.09);
+  } catch (e) {}
+}
+
+function vibrateWaheguru(duration) {
+  if (typeof window.isWaheguruVibrationEnabled === 'function' &&
+      !window.isWaheguruVibrationEnabled()) return;
+  if (navigator.vibrate) navigator.vibrate(duration || 30);
+}
 
 </script>
 
