@@ -84,6 +84,13 @@ h1 {
   box-shadow: 0 0 12px var(--mala-color);
 }
 
+.heard-text {
+  margin: -5px auto 10px;
+  min-height: 18px;
+  color: #777;
+  font-size: 12px;
+}
+
 .mala-wrapper {
   position: relative;
   width: min(90vw, 390px);
@@ -601,6 +608,8 @@ body.light .settings-title {
   <span id="statusText">Mic paused</span>
 </div>
 
+<div id="heardText" class="heard-text"></div>
+
 <div class="mala-wrapper">
 
 <div id="mala" class="mala">
@@ -919,35 +928,7 @@ let audioMonitor = null;
    V17 VOICE TRACKING
 ===================================== */
 
-/*
-  V17 does NOT switch between English
-  and Punjabi recognition.
-
-  Keeping one language gives the browser
-  a much more consistent recognition session.
-*/
-
 const recognitionLanguage = "en-IN";
-
-/*
-  Stores the number of Waheguru occurrences
-  already counted for each recognition result.
-
-  This is important because interim speech
-  results can grow like:
-
-  "waheguru"
-
-  then:
-
-  "waheguru waheguru"
-
-  then:
-
-  "waheguru waheguru waheguru"
-
-  V17 counts only the NEW occurrence each time.
-*/
 
 let speechResultCounts = {};
 
@@ -981,6 +962,9 @@ const status =
 
 const statusText =
   document.getElementById("statusText");
+
+const heardText =
+  document.getElementById("heardText");
 
 const timerText =
   document.getElementById("timerText");
@@ -2147,27 +2131,12 @@ function setupRecognition() {
   r.continuous =
     true;
 
-  /*
-    V17 keeps interim results ON.
-
-    This allows us to see speech before
-    the browser makes the result final.
-  */
   r.interimResults =
     true;
 
   r.maxAlternatives =
     1;
 
-  /*
-    IMPORTANT V17 CHANGE:
-
-    Do not rotate between en-IN and pa-IN.
-
-    The user is saying "Waheguru", so we keep
-    the recognition engine consistently on
-    English India.
-  */
   r.lang =
     recognitionLanguage;
 
@@ -2219,66 +2188,33 @@ function setupRecognition() {
 
       }
 
-      const transcript =
+      const bestTranscript =
         result[0].transcript.trim();
 
-      if (!transcript) {
+      if (!bestTranscript) {
         continue;
+      }
+
+      if (bestTranscript) {
+        heardText.textContent =
+          "Heard: " +
+          bestTranscript;
       }
 
       console.log(
         "Recognized:",
-        transcript,
+        bestTranscript,
         "Final:",
         result.isFinal
       );
 
-      /*
-        Count the number of Waheguru
-        occurrences currently present.
-      */
       const currentCount =
         countWaheguruMatches(
-          transcript
+          bestTranscript
         );
 
-      /*
-        How many occurrences have already
-        been counted for this recognition
-        result?
-      */
       const previousCount =
         speechResultCounts[i] || 0;
-
-      /*
-        ONLY count the difference.
-
-        Example:
-
-        First interim:
-        "waheguru"
-        current = 1
-        previous = 0
-        ADD = 1
-
-        Next interim:
-        "waheguru waheguru"
-        current = 2
-        previous = 1
-        ADD = 1
-
-        Next interim:
-        "waheguru waheguru waheguru"
-        current = 3
-        previous = 2
-        ADD = 1
-
-        Therefore:
-        3 repetitions = 3 counts.
-
-        The same repetition is not counted
-        again when the transcript updates.
-      */
 
       if (
         currentCount >
@@ -2298,10 +2234,6 @@ function setupRecognition() {
 
       }
 
-      /*
-        Once final, permanently remember
-        the final count for this result.
-      */
       if (result.isFinal) {
 
         speechResultCounts[i] =
@@ -2373,25 +2305,8 @@ function setupRecognition() {
       return;
     }
 
-    /*
-      IMPORTANT:
-
-      V17 does NOT change language
-      when recognition ends.
-
-      Always stay on en-IN.
-    */
-
     r.lang =
       recognitionLanguage;
-
-    /*
-      The browser has started a new
-      recognition session.
-
-      Old result indexes are no longer
-      relevant, so clear them.
-    */
 
     speechResultCounts =
       {};
@@ -2466,10 +2381,6 @@ function startRecognitionSafely() {
 
   try {
 
-    /*
-      V17 always uses the same language.
-    */
-
     recognition.lang =
       recognitionLanguage;
 
@@ -2518,13 +2429,11 @@ async function startListening() {
   lastActivityAt =
     performance.now();
 
-  /*
-    Start a fresh speech-result tracker
-    whenever the user presses Start.
-  */
-
   speechResultCounts =
     {};
+
+  heardText.textContent =
+    "";
 
   setListeningStatus();
 
@@ -2562,11 +2471,6 @@ function pauseListening() {
 
   recognitionStarting =
     false;
-
-  /*
-    Clear speech tracking when manually
-    paused so the next Start begins clean.
-  */
 
   speechResultCounts =
     {};
