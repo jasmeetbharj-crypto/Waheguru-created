@@ -1,416 +1,3816 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Waheguru Simran - Digital 108-Bead Mala</title>
-  <style>
-    :root {
-      --bg-color: #0b0b0b;
-      --card-bg: #141414;
-      --border-color: #262626;
-      --primary-amber: #ff9900;
-      --primary-glow: rgba(255, 153, 0, 0.4);
-      --text-main: #f5f5f5;
-      --text-muted: #888888;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waheguru Voice Counter - V 40</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
-    }
+:root {
+  --mala-color: #ff2020;
+  --mala-dark: #8d0000;
+  --mala-light: #ff7070;
+  --mala-glow: rgba(255,0,0,.8);
+  --mala-center: #280000;
+}
 
-    .app-container {
-      width: 100%;
-      max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #050505;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  transition: background .3s, color .3s;
+}
 
-    /* Header Section */
-    .header {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-    }
+body.light {
+  background: #f2f2f2;
+  color: #111;
+}
 
-    .header-text {
-      flex: 1;
-      text-align: center;
-      padding: 0 8px;
-    }
+.app {
+  width: 100%;
+  max-width: 500px;
+  padding: 18px 15px 40px;
+  text-align: center;
+}
 
-    .header-text h1 {
-      font-size: clamp(1.4rem, 6vw, 1.8rem);
-      color: var(--primary-amber);
-      text-shadow: 0 0 12px var(--primary-glow);
-      font-weight: 700;
-      white-space: nowrap;
-    }
+h1 {
+  margin: 5px 0 2px;
+  font-size: 28px;
+  color: var(--mala-color);
+  text-shadow: 0 0 15px var(--mala-glow);
+}
 
-    .header-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
+.subtitle {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
 
-    .icon-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #111;
+  border: 1px solid #333;
+  color: #999;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
 
-    .icon-btn:hover {
-      background: #1f1f1f;
-    }
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #555;
+}
 
-    /* Status Pill */
-    .status-pill {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-color);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+.status.active {
+  color: var(--mala-color);
+  border-color: var(--mala-dark);
+}
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #555;
-    }
+.status.active .dot {
+  background: var(--mala-color);
+  box-shadow: 0 0 12px var(--mala-color);
+}
 
-    .status-dot.active {
-      background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
-    }
+/* HEARD SECTION HIDDEN */
+.heard-text {
+  display: none;
+  margin: -5px auto 10px;
+  min-height: 18px;
+  color: #777;
+  font-size: 12px;
+}
 
-    /* Counter Visualization */
-    .counter-display {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 10px 0;
-    }
+.mala-wrapper {
+  position: relative;
+  width: min(90vw, 390px);
+  height: min(90vw, 390px);
+  margin: 8px auto 20px;
+}
 
-    .svg-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
+.mala {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-    .center-circle {
-      width: 170px;
-      height: 170px;
-      background: #000;
-      border-radius: 50%;
-      border: 2px solid var(--primary-amber);
-      box-shadow: inset 0 0 20px var(--primary-glow), 0 0 20px var(--primary-glow);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-    }
+.bead {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #161616;
+  border: 1px solid #444;
+  box-shadow: inset 0 0 5px #000;
+  transform: translate(-50%, -50%);
+  transition: .15s;
+}
 
-    .count-number {
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: var(--primary-amber);
-      line-height: 1;
-    }
+.bead.active {
+  background: var(--mala-color);
+  border-color: var(--mala-light);
+  box-shadow:
+    0 0 7px var(--mala-color),
+    0 0 18px var(--mala-glow);
+}
 
-    .mala-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
+.bead.current {
+  transform: translate(-50%, -50%) scale(1.35);
+  box-shadow:
+    0 0 10px white,
+    0 0 22px var(--mala-color);
+}
 
-    /* Auto Mic Off Bar */
-    .info-card {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      var(--mala-center) 0%,
+      #0b0b0b 65%
+    );
+  border: 2px solid var(--mala-dark);
+  box-shadow:
+    0 0 20px var(--mala-glow),
+    inset 0 0 25px #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
 
-    .info-card strong {
-      color: var(--primary-amber);
-    }
+.ik-onkar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 260px;
+  line-height: 1;
+  color: var(--mala-color);
+  opacity: .10;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
 
-    /* Controls */
-    .controls-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1.2fr;
-      gap: 10px;
-    }
+.center-count {
+  position: relative;
+  z-index: 2;
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--mala-color);
+  text-shadow: 0 0 15px var(--mala-color);
+}
 
-    .btn {
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      border: 1px solid var(--border-color);
-      background: var(--card-bg);
-      color: var(--text-main);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
+.mala-number {
+  position: relative;
+  z-index: 2;
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 6px;
+}
 
-    .btn-primary {
-      background: var(--primary-amber);
-      color: #000;
-      border: none;
-    }
+.mala-color-btn:hover {
+  background: #292929;
+}
 
-    .btn-primary:hover {
-      background: #e68a00;
-    }
+.right-side-btn {
+  position: fixed;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  z-index: 100;
+  cursor: pointer;
+}
 
-    /* Calendar Card Consolidated */
-    .calendar-card {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 8px;
-    }
+#malaColorBtn {
+  top: 68px;
+}
 
-    .btn-full {
-      width: 100%;
-      justify-content: center;
-    }
+.settings-btn {
+  top: 122px;
+}
 
-    /* Settings Drawer Panel */
-    .settings-panel {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 0.8rem;
-    }
+.dark-mode-btn {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  z-index: 100;
+}
 
-    .settings-panel.active {
-      display: flex;
-    }
+/* SEPARATE COLOUR / SETTINGS PANELS */
 
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.top-panel {
+  display: none;
+  position: fixed;
+  right: 14px;
+  width: 205px;
+  padding: 10px;
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 10px;
+  z-index: 200;
+  box-shadow: 0 8px 25px rgba(0,0,0,.5);
+}
 
-    input[type="range"] {
-      accent-color: var(--primary-amber);
-    }
-  </style>
+.top-panel.open {
+  display: block;
+}
+
+#colorBox {
+  top: 118px;
+}
+
+#settingsBox {
+  top: 172px;
+}
+
+.color-title {
+  color: #aaa;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.colors {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #555;
+  cursor: pointer;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.selected {
+  border-color: white;
+  box-shadow: 0 0 10px white;
+}
+
+.red { background: #ff2020; }
+.orange { background: #ff8c00; }
+.yellow { background: #ffd700; }
+.green { background: #00d26a; }
+.blue { background: #168cff; }
+.purple { background: #a855f7; }
+.pink { background: #ff3b9d; }
+
+.multi {
+  background:
+    linear-gradient(
+      135deg,
+      #ff2020 0%,
+      #ff8c00 16%,
+      #ffd700 32%,
+      #00d26a 48%,
+      #168cff 64%,
+      #a855f7 80%,
+      #ff3b9d 100%
+    );
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+button {
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 13px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #191919;
+  color: white;
+}
+
+button:hover {
+  background: #292929;
+}
+
+.start {
+  background: var(--mala-dark);
+  border-color: var(--mala-color);
+}
+
+.start:hover {
+  background: var(--mala-color);
+}
+
+.timeout-box {
+  margin: 10px auto 15px;
+  padding: 10px;
+  max-width: 340px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  color: #999;
+  font-size: 13px;
+}
+
+.timeout-value {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+.timer {
+  margin-top: 5px;
+  color: #777;
+  font-size: 12px;
+}
+
+/* COMPACT CALENDAR */
+
+.calendar-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.calendar-title {
+  color: #aaa;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.calendar-open-btn {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.selected-day {
+  margin-top: 7px;
+  color: #666;
+  font-size: 11px;
+}
+
+#selectedDateLabel {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* CALENDAR STATS */
+
+.calendar-stats {
+  margin-top: 12px;
+  padding: 13px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.calendar-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 2px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.calendar-stat-row + .calendar-stat-row {
+  border-top: 1px solid #292929;
+}
+
+.calendar-stat-value {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* CALENDAR POPUP */
+
+.calendar-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.78);
+  z-index: 500;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.calendar-modal.open {
+  display: flex;
+}
+
+.calendar-panel {
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 15px 50px rgba(0,0,0,.7);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.calendar-month {
+  color: var(--mala-color);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.calendar-nav {
+  width: 42px;
+  height: 38px;
+  padding: 0;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.calendar-weekday {
+  color: #666;
+  font-size: 9px;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-day {
+  min-height: 68px;
+  padding: 5px 2px;
+  border: 1px solid #292929;
+  border-radius: 8px;
+  background: #171717;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day:hover {
+  background: #292929;
+}
+
+.calendar-day.empty {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.calendar-day.today {
+  border-color: var(--mala-color);
+}
+
+.calendar-day.selected {
+  background: var(--mala-dark);
+  border-color: var(--mala-color);
+}
+
+.day-number {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ddd;
+}
+
+.day-waheguru {
+  margin-top: 3px;
+  font-size: 8px;
+  color: var(--mala-color);
+  line-height: 1.2;
+}
+
+.day-mala {
+  margin-top: 2px;
+  font-size: 8px;
+  color: #aaa;
+  line-height: 1.2;
+}
+
+/* CALENDAR DETAILS */
+
+.calendar-details {
+  margin-top: 15px;
+  padding: 13px;
+  background: #171717;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.calendar-details-title {
+  color: #777;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.calendar-details-date {
+  color: var(--mala-color);
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.calendar-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-top: 1px solid #292929;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.calendar-detail-value {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+.calendar-close {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 2px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.setting-row button {
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 65px;
+}
+
+.note {
+  margin-top: 18px;
+  color: #555;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+body.light .status,
+body.light .timeout-box,
+body.light .calendar-box,
+body.light .calendar-panel,
+body.light .calendar-details,
+body.light .calendar-day,
+body.light .calendar-stats,
+body.light .top-panel {
+  background: #fff;
+}
+
+body.light .calendar-day.empty {
+  background: transparent;
+}
+
+body.light .calendar-day {
+  border-color: #ddd;
+}
+
+body.light .calendar-details {
+  border-color: #ddd;
+}
+
+body.light .calendar-detail-row {
+  border-color: #ddd;
+}
+
+body.light .calendar-stat-row + .calendar-stat-row {
+  border-color: #ddd;
+}
+
+body.light .center {
+  background:
+    radial-gradient(
+      circle,
+      var(--mala-center) 0%,
+      #222 65%
+    );
+}
+
+/*
+   DAY MODE:
+   Mala beads are blank/invisible.
+*/
+body.light .bead.active {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body.light .bead.current {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/*
+   NIGHT MODE:
+   Normal selected colours are shown.
+   Multi-colour is handled by JavaScript.
+*/
+
+@media (max-width: 420px) {
+
+  .app {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .mala-wrapper {
+    width: min(92vw, 370px);
+    height: min(92vw, 370px);
+  }
+
+  .center {
+    width: 140px;
+    height: 140px;
+  }
+
+  .ik-onkar {
+    font-size: 170px;
+  }
+
+  .controls {
+    gap: 5px;
+  }
+
+  .controls button {
+    padding: 12px 10px;
+    font-size: 12px;
+  }
+
+  .calendar-day {
+    min-height: 64px;
+  }
+
+}
+</style>
 </head>
+
 <body>
 
-  <div class="app-container">
-    
-    <div class="header">
-      <button class="icon-btn" title="Toggle Mode">☀️</button>
-      <div class="header-text">
-        <h1>Waheguru Simran</h1>
-        <p>Digital 108-Bead Mala—V41</p>
-      </div>
-      <button class="icon-btn" id="settingsToggle" title="Settings">⚙️</button>
-    </div>
+<div class="app">
 
-    <div class="status-pill">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusText">Mic ready — tap Start</span>
-    </div>
+<button id="darkModeBtn" class="dark-mode-btn">☀️</button>
+<button id="malaColorBtn" class="right-side-btn">🎨</button>
+<button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
-    <div class="counter-display">
-      <svg class="svg-ring" viewBox="0 0 300 300">
-        <circle id="beadTrack" cx="150" cy="150" r="130" fill="none" stroke="#222" stroke-width="8" />
-        <circle id="beadProgress" cx="150" cy="150" r="130" fill="none" stroke="var(--primary-amber)" stroke-width="12"
-          stroke-dasharray="816.8" stroke-dashoffset="816.8" stroke-linecap="round" />
-      </svg>
-      <div class="center-circle">
-        <div class="count-number" id="beadCount">0</div>
-        <div class="mala-label" id="malaCount">Mala #1</div>
-      </div>
-    </div>
+<!-- SEPARATE COLOUR PANEL -->
 
-    <div class="info-card">
-      Auto mic-off after: <strong><span id="timerVal">45</span> seconds</strong><br />
-      <span style="font-size: 0.7rem; opacity: 0.7;">Timer starts when listening begins.</span>
-    </div>
+<div id="colorBox" class="top-panel">
 
-    <div class="controls-grid">
-      <button class="btn btn-primary" id="startBtn">🎙️ Start</button>
-      <button class="btn" id="pauseBtn">⏸️ Pause</button>
-      <button class="btn" id="resetBtn">🔄 Reset Mala</button>
-    </div>
+  <div class="color-title">
+    Mala Color
+  </div>
 
-    <div class="settings-panel" id="settingsPanel">
-      <div class="setting-row">
-        <label for="sensitivity">Mic Sensitivity Threshold:</label>
-        <input type="range" id="sensitivity" min="1" max="10" value="5">
-      </div>
-      <div class="setting-row">
-        <label for="hapticsToggle">Haptic Feedback:</label>
-        <input type="checkbox" id="hapticsToggle" checked>
-      </div>
-    </div>
+  <div class="colors">
 
-    <div class="calendar-card">
-      <button class="btn btn-full" id="calendarBtn">
-        📅 View History & Calendar
-      </button>
+    <button class="color-btn red"
+      data-color="#ff2020"
+      data-dark="#8d0000"
+      data-light="#ff7070"
+      data-glow="rgba(255,0,0,.8)"
+      data-center="#280000"></button>
+
+    <button class="color-btn orange"
+      data-color="#ff8c00"
+      data-dark="#a85500"
+      data-light="#ffc266"
+      data-glow="rgba(255,140,0,.8)"
+      data-center="#281500"></button>
+
+    <button class="color-btn yellow"
+      data-color="#ffd700"
+      data-dark="#a88a00"
+      data-light="#fff099"
+      data-glow="rgba(255,215,0,.8)"
+      data-center="#282400"></button>
+
+    <button class="color-btn green"
+      data-color="#00d26a"
+      data-dark="#007a3d"
+      data-light="#66ffad"
+      data-glow="rgba(0,210,106,.8)"
+      data-center="#002818"></button>
+
+    <button class="color-btn blue"
+      data-color="#168cff"
+      data-dark="#07539c"
+      data-light="#75baff"
+      data-glow="rgba(22,140,255,.8)"
+      data-center="#001b35"></button>
+
+    <button class="color-btn purple"
+      data-color="#a855f7"
+      data-dark="#63209c"
+      data-light="#d29aff"
+      data-glow="rgba(168,85,247,.8)"
+      data-center="#210b35"></button>
+
+    <button class="color-btn pink"
+      data-color="#ff3b9d"
+      data-dark="#a51760"
+      data-light="#ff9dcc"
+      data-glow="rgba(255,59,157,.8)"
+      data-center="#350018"></button>
+
+    <!-- MULTI COLOUR -->
+
+    <button class="color-btn multi"
+      data-multi="true"
+      title="Multi Colour"></button>
+
+  </div>
+
+</div>
+
+<!-- SEPARATE SETTINGS PANEL -->
+
+<div id="settingsBox" class="top-panel">
+
+  <div class="color-title">
+    Settings
+  </div>
+
+  <div class="setting-row">
+    <span>🔊 Sound</span>
+    <button id="soundBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>📳 Vibration</span>
+    <button id="vibrationBtn">ON</button>
+  </div>
+
+</div>
+
+<h1>Waheguru Voice Counter</h1>
+<div class="subtitle">Digital 108-Bead Mala—V40</div>
+
+<div id="status" class="status">
+  <span class="dot"></span>
+  <span id="statusText">Mic paused</span>
+</div>
+
+<div id="heardText" class="heard-text"></div>
+
+<div class="mala-wrapper">
+
+  <div id="mala" class="mala">
+
+    <div class="ik-onkar">ੴ</div>
+
+  </div>
+
+  <div class="center">
+
+    <div id="count" class="center-count">0</div>
+
+    <div id="malaNumber" class="mala-number">
+      Mala #0
     </div>
 
   </div>
 
-  <script>
-    // State Variables
-    let currentBead = parseInt(localStorage.getItem('v41_bead')) || 0;
-    let currentMala = parseInt(localStorage.getItem('v41_mala')) || 1;
-    let isListening = false;
-    const maxBeads = 108;
-    const circumference = 2 * Math.PI * 130;
+</div>
 
-    // DOM Elements
-    const beadCountEl = document.getElementById('beadCount');
-    const malaCountEl = document.getElementById('malaCount');
-    const beadProgress = document.getElementById('beadProgress');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const settingsToggle = document.getElementById('settingsToggle');
-    const settingsPanel = document.getElementById('settingsPanel');
-    const hapticsToggle = document.getElementById('hapticsToggle');
+<div class="timeout-box">
 
-    // Web Audio Synthesis for Chime
-    function playChime() {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 1.5);
-      } catch (e) {
-        console.log('Audio Context restricted');
-      }
-    }
+  Auto mic-off after:
+  <span class="timeout-value">
+    45 seconds
+  </span>
 
-    // Update UI Elements
-    function updateDisplay() {
-      beadCountEl.textContent = currentBead;
-      malaCountEl.textContent = `Mala #${currentMala}`;
-      
-      const offset = circumference - (currentBead / maxBeads) * circumference;
-      beadProgress.style.strokeDasharray = `${circumference}`;
-      beadProgress.style.strokeDashoffset = offset;
+  <div id="timerText" class="timer">
+    Timer starts when listening begins.
+  </div>
 
-      localStorage.setItem('v41_bead', currentBead);
-      localStorage.setItem('v41_mala', currentMala);
-    }
+</div>
 
-    // Increment logic
-    function incrementCounter() {
-      currentBead++;
-      if (hapticsToggle.checked && navigator.vibrate) {
-        navigator.vibrate(40);
-      }
-      
-      if (currentBead >= maxBeads) {
-        playChime();
-        currentBead = 0;
-        currentMala++;
-      }
-      updateDisplay();
-    }
+<div class="controls">
 
-    // Controls Event Listeners
-    startBtn.addEventListener('click', () => {
-      isListening = true;
-      statusDot.classList.add('active');
-      statusText.textContent = 'Listening for "Waheguru"...';
-    });
+  <button id="startBtn" class="start">
+    🎙️ Start
+  </button>
 
-    pauseBtn.addEventListener('click', () => {
-      isListening = false;
-      statusDot.classList.remove('active');
-      statusText.textContent = 'Mic paused';
-    });
+  <button id="pauseBtn">
+    ⏸ Pause
+  </button>
 
-    resetBtn.addEventListener('click', () => {
-      if (confirm("Reset current Mala count?")) {
-        currentBead = 0;
-        updateDisplay();
-      }
-    });
+  <button id="resetBtn">
+    ↺ Reset Mala
+  </button>
 
-    // Manual increment on circle tap
-    document.querySelector('.center-circle').addEventListener('click', () => {
-      incrementCounter();
-    });
+</div>
 
-    // Settings Toggle
-    settingsToggle.addEventListener('click', () => {
-      settingsPanel.classList.toggle('active');
-    });
+<!-- CALENDAR & HISTORY - SEPARATE -->
 
-    // Init
+<div id="calendarBox" class="calendar-box">
+
+  <div class="calendar-title">
+    📅 Calendar & History
+  </div>
+
+  <button
+    id="openCalendarBtn"
+    class="calendar-open-btn">
+    📅 Open Calendar
+  </button>
+
+  <div class="selected-day">
+    Selected date:
+    <span id="selectedDateLabel">Today</span>
+  </div>
+
+</div>
+
+<div class="calendar-stats">
+
+  <div class="calendar-stat-row">
+    <span>🙏 Total Waheguru</span>
+    <span
+      id="calendarStatTotal"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Completed Mala</span>
+    <span
+      id="calendarStatMalas"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Week</span>
+    <span
+      id="calendarStatWeek"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Month</span>
+    <span
+      id="calendarStatMonth"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Year</span>
+    <span
+      id="calendarStatYear"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+</div>
+
+<!-- CALENDAR POPUP -->
+
+<div
+  id="calendarModal"
+  class="calendar-modal">
+
+  <div class="calendar-panel">
+
+    <div class="calendar-header">
+
+      <button
+        id="previousMonthBtn"
+        class="calendar-nav">
+        ‹
+      </button>
+
+      <div
+        id="calendarMonth"
+        class="calendar-month">
+        September 2026
+      </div>
+
+      <button
+        id="nextMonthBtn"
+        class="calendar-nav">
+        ›
+      </button>
+
+    </div>
+
+    <div class="calendar-weekdays">
+
+      <div class="calendar-weekday">SUN</div>
+      <div class="calendar-weekday">MON</div>
+      <div class="calendar-weekday">TUE</div>
+      <div class="calendar-weekday">WED</div>
+      <div class="calendar-weekday">THU</div>
+      <div class="calendar-weekday">FRI</div>
+      <div class="calendar-weekday">SAT</div>
+
+    </div>
+
+    <div
+      id="calendarGrid"
+      class="calendar-grid">
+    </div>
+
+    <div class="calendar-details">
+
+      <div class="calendar-details-title">
+        Selected Date
+      </div>
+
+      <div
+        id="calendarDetailsDate"
+        class="calendar-details-date">
+        Today
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>🙏 Waheguru</span>
+
+        <span
+          id="calendarDetailsCount"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>📿 Completed Malas</span>
+
+        <span
+          id="calendarDetailsMalas"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+    </div>
+
+    <button
+      id="closeCalendarBtn"
+      class="calendar-close">
+      Close Calendar
+    </button>
+
+  </div>
+
+</div>
+
+<div class="note">
+  Say “Waheguru” naturally. Voice recognition counts
+  recognized occurrences. The microphone automatically
+  turns off after 45 seconds of continuous silence.
+  The current mala resets automatically at midnight
+  while completed malas and saved totals remain.
+</div>
+
+</div>
+
+<script>
+
+/* =====================================
+   SAVED DATA
+===================================== */
+
+let count =
+  Number(localStorage.getItem("wg_count") || 0);
+
+let total =
+  Number(localStorage.getItem("wg_total") || 0);
+
+let completedMalas =
+  Number(localStorage.getItem("wg_malas") || 0);
+
+const savedCurrentMalaNumber =
+  localStorage.getItem(
+    "wg_current_mala_number"
+  );
+
+let currentMalaNumber =
+  savedCurrentMalaNumber === null
+    ? completedMalas
+    : Number(savedCurrentMalaNumber || 0);
+
+if (
+  !Number.isFinite(currentMalaNumber) ||
+  currentMalaNumber < 0
+) {
+
+  currentMalaNumber = 0;
+
+}
+
+let savedColor =
+  localStorage.getItem("wg_color") || "#ff2020";
+
+let savedDarkMode =
+  localStorage.getItem("wg_dark") !== "false";
+
+let soundEnabled =
+  localStorage.getItem("wg_sound") !== "false";
+
+let vibrationEnabled =
+  localStorage.getItem("wg_vibration") !== "false";
+
+/* =====================================
+   MULTI COLOUR
+===================================== */
+
+let multiColorEnabled =
+  localStorage.getItem("wg_multi_color") === "true";
+
+/*
+   The colour belongs to the CURRENT mala.
+
+   0 = Red
+   1 = Orange
+   2 = Yellow
+   3 = Green
+   4 = Blue
+   5 = Purple
+   6 = Pink
+
+   It changes ONLY after a complete
+   108-count mala.
+*/
+
+let multiColorIndex =
+  Number(
+    localStorage.getItem(
+      "wg_multi_color_index"
+    ) || 0
+  );
+
+if (
+  !Number.isFinite(multiColorIndex) ||
+  multiColorIndex < 0 ||
+  multiColorIndex > 6
+) {
+
+  multiColorIndex = 0;
+
+}
+
+let records;
+
+try {
+
+  records =
+    JSON.parse(
+      localStorage.getItem("wg_records") || "{}"
+    );
+
+  if (
+    !records ||
+    typeof records !== "object"
+  ) {
+
+    records = {};
+
+  }
+
+} catch {
+
+  records = {};
+
+}
+
+/* =====================================
+   MALA COMPLETION HISTORY
+===================================== */
+
+let malaHistory;
+
+try {
+
+  malaHistory =
+    JSON.parse(
+      localStorage.getItem("wg_mala_history") || "[]"
+    );
+
+  if (!Array.isArray(malaHistory)) {
+    malaHistory = [];
+  }
+
+} catch {
+
+  malaHistory = [];
+
+}
+
+/* =====================================
+   CONSTANTS
+===================================== */
+
+const MALA_SIZE = 108;
+const SILENCE_TIME = 45000;
+const AUDIO_THRESHOLD = 0.015;
+
+/* =====================================
+   VARIABLES
+===================================== */
+
+let listening = false;
+let recognition = null;
+let recognitionRunning = false;
+let recognitionStarting = false;
+let recognitionRestartTimer = null;
+let lastActivityAt = 0;
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+let audioData = null;
+let audioMonitor = null;
+
+/* =====================================
+   VOICE RECOGNITION
+===================================== */
+
+const recognitionLanguage = "en-IN";
+const RECOGNITION_RESTART_DELAY = 500;
+
+let processedMatchCounts = new Map();
+let lastDisplayedTranscript = "";
+let heardCountSinceReset = 0;
+
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const mala =
+  document.getElementById("mala");
+
+const countEl =
+  document.getElementById("count");
+
+const malaNumberEl =
+  document.getElementById("malaNumber");
+
+const status =
+  document.getElementById("status");
+
+const statusText =
+  document.getElementById("statusText");
+
+const heardText =
+  document.getElementById("heardText");
+
+const timerText =
+  document.getElementById("timerText");
+
+const startBtn =
+  document.getElementById("startBtn");
+
+const pauseBtn =
+  document.getElementById("pauseBtn");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+const colorBox =
+  document.getElementById("colorBox");
+
+const darkModeBtn =
+  document.getElementById("darkModeBtn");
+
+const soundBtn =
+  document.getElementById("soundBtn");
+
+const vibrationBtn =
+  document.getElementById("vibrationBtn");
+
+const settingsBtn =
+  document.getElementById("settingsBtn");
+
+const settingsBox =
+  document.getElementById("settingsBox");
+
+/* =====================================
+   CALENDAR ELEMENTS
+===================================== */
+
+const calendarBox =
+  document.getElementById("calendarBox");
+
+const openCalendarBtn =
+  document.getElementById("openCalendarBtn");
+
+const calendarModal =
+  document.getElementById("calendarModal");
+
+const previousMonthBtn =
+  document.getElementById("previousMonthBtn");
+
+const nextMonthBtn =
+  document.getElementById("nextMonthBtn");
+
+const calendarMonth =
+  document.getElementById("calendarMonth");
+
+const calendarGrid =
+  document.getElementById("calendarGrid");
+
+const calendarDetailsDate =
+  document.getElementById("calendarDetailsDate");
+
+const calendarDetailsCount =
+  document.getElementById("calendarDetailsCount");
+
+const calendarDetailsMalas =
+  document.getElementById("calendarDetailsMalas");
+
+const closeCalendarBtn =
+  document.getElementById("closeCalendarBtn");
+
+const selectedDateLabel =
+  document.getElementById("selectedDateLabel");
+
+const calendarStatTotal =
+  document.getElementById("calendarStatTotal");
+
+const calendarStatMalas =
+  document.getElementById("calendarStatMalas");
+
+const calendarStatWeek =
+  document.getElementById("calendarStatWeek");
+
+const calendarStatMonth =
+  document.getElementById("calendarStatMonth");
+
+const calendarStatYear =
+  document.getElementById("calendarStatYear");
+
+/* =====================================
+   DATE HELPERS
+===================================== */
+
+function todayKey() {
+
+  const d = new Date();
+
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
+
+}
+
+function formatDate(dateString) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  return (
+    parts[1] +
+    "/" +
+    parts[2] +
+    "/" +
+    parts[0]
+  );
+
+}
+
+/* =====================================
+   MULTI COLOUR DATA
+===================================== */
+
+const multiColors = [
+  {
+    color: "#ff2020",
+    dark: "#8d0000",
+    light: "#ff7070",
+    glow: "rgba(255,0,0,.8)",
+    center: "#280000"
+  },
+  {
+    color: "#ff8c00",
+    dark: "#a85500",
+    light: "#ffc266",
+    glow: "rgba(255,140,0,.8)",
+    center: "#281500"
+  },
+  {
+    color: "#ffd700",
+    dark: "#a88a00",
+    light: "#fff099",
+    glow: "rgba(255,215,0,.8)",
+    center: "#282400"
+  },
+  {
+    color: "#00d26a",
+    dark: "#007a3d",
+    light: "#66ffad",
+    glow: "rgba(0,210,106,.8)",
+    center: "#002818"
+  },
+  {
+    color: "#168cff",
+    dark: "#07539c",
+    light: "#75baff",
+    glow: "rgba(22,140,255,.8)",
+    center: "#001b35"
+  },
+  {
+    color: "#a855f7",
+    dark: "#63209c",
+    light: "#d29aff",
+    glow: "rgba(168,85,247,.8)",
+    center: "#210b35"
+  },
+  {
+    color: "#ff3b9d",
+    dark: "#a51760",
+    light: "#ff9dcc",
+    glow: "rgba(255,59,157,.8)",
+    center: "#350018"
+  }
+];
+
+/* =====================================
+   APPLY COLOUR
+===================================== */
+
+function applyColorData(data) {
+
+  document.documentElement.style.setProperty(
+    "--mala-color",
+    data.color
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-dark",
+    data.dark
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-light",
+    data.light
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-glow",
+    data.glow
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-center",
+    data.center
+  );
+
+}
+
+/* =====================================
+   COLOR
+===================================== */
+
+function setColor(button) {
+
+  if (!button) {
+    return;
+  }
+
+  if (button.dataset.multi === "true") {
+
+    multiColorEnabled = true;
+
+    localStorage.setItem(
+      "wg_multi_color",
+      "true"
+    );
+
+    const multiColor =
+      multiColors[multiColorIndex];
+
+    applyColorData(
+      multiColor
+    );
+
+    document
+      .querySelectorAll(".color-btn")
+      .forEach(btn => {
+
+        btn.classList.remove("selected");
+
+      });
+
+    button.classList.add("selected");
+
+    savedColor =
+      multiColor.color;
+
+    localStorage.setItem(
+      "wg_color",
+      savedColor
+    );
+
     updateDisplay();
-  </script>
+
+    return;
+
+  }
+
+  multiColorEnabled = false;
+
+  localStorage.setItem(
+    "wg_multi_color",
+    "false"
+  );
+
+  const color =
+    button.dataset.color;
+
+  applyColorData({
+    color: color,
+    dark: button.dataset.dark,
+    light: button.dataset.light,
+    glow: button.dataset.glow,
+    center: button.dataset.center
+  });
+
+  savedColor = color;
+
+  localStorage.setItem(
+    "wg_color",
+    color
+  );
+
+  document
+    .querySelectorAll(".color-btn")
+    .forEach(btn => {
+
+      btn.classList.remove("selected");
+
+    });
+
+  button.classList.add("selected");
+
+}
+
+document
+  .querySelectorAll(".color-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      function(event) {
+
+        event.stopPropagation();
+
+        setColor(this);
+
+        colorBox.classList.remove("open");
+
+      }
+    );
+
+  });
+
+function loadSavedColor() {
+
+  if (multiColorEnabled) {
+
+    const multiButton =
+      document.querySelector(
+        '.color-btn[data-multi="true"]'
+      );
+
+    if (multiButton) {
+
+      setColor(
+        multiButton
+      );
+
+    }
+
+    return;
+
+  }
+
+  const buttons =
+    document.querySelectorAll(".color-btn");
+
+  let selected = null;
+
+  buttons.forEach(button => {
+
+    if (
+      button.dataset.color === savedColor &&
+      button.dataset.multi !== "true"
+    ) {
+
+      selected = button;
+
+    }
+
+  });
+
+  if (!selected) {
+
+    selected =
+      document.querySelector(
+        '.color-btn[data-color="#ff2020"]'
+      );
+
+  }
+
+  if (selected) {
+    setColor(selected);
+  }
+
+}
+
+/* =====================================
+   APPLY MULTI COLOUR
+===================================== */
+
+function applyCurrentMultiColor() {
+
+  if (!multiColorEnabled) {
+    return;
+  }
+
+  const data =
+    multiColors[
+      multiColorIndex
+    ];
+
+  if (!data) {
+    return;
+  }
+
+  applyColorData(data);
+
+  savedColor =
+    data.color;
+
+  localStorage.setItem(
+    "wg_color",
+    savedColor
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
+}
+
+/* =====================================
+   OPEN COLOR PALETTE
+===================================== */
+
+document
+  .getElementById("malaColorBtn")
+  .addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+      colorBox.classList.toggle("open");
+
+      settingsBox.classList.remove("open");
+
+    }
+  );
+
+/* =====================================
+   OPEN SETTINGS
+===================================== */
+
+settingsBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    settingsBox.classList.toggle("open");
+
+    colorBox.classList.remove("open");
+
+  }
+);
+
+colorBox.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+  }
+);
+
+settingsBox.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+  }
+);
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !colorBox.contains(event.target) &&
+      event.target.id !== "malaColorBtn"
+    ) {
+
+      colorBox.classList.remove("open");
+
+    }
+
+    if (
+      !settingsBox.contains(event.target) &&
+      event.target.id !== "settingsBtn"
+    ) {
+
+      settingsBox.classList.remove("open");
+
+    }
+
+  }
+);
+
+/* =====================================
+   DARK MODE
+===================================== */
+
+function applyDarkMode() {
+
+  document.body.classList.toggle(
+    "light",
+    !savedDarkMode
+  );
+
+  darkModeBtn.textContent =
+    savedDarkMode
+      ? "☀️"
+      : "🌙";
+
+  /*
+     Night mode shows the mala.
+     Day mode makes active/current beads blank.
+  */
+
+  updateDisplay();
+
+}
+
+darkModeBtn.addEventListener(
+  "click",
+  () => {
+
+    savedDarkMode =
+      !savedDarkMode;
+
+    localStorage.setItem(
+      "wg_dark",
+      savedDarkMode
+    );
+
+    applyDarkMode();
+
+  }
+);
+
+/* =====================================
+   SETTINGS
+===================================== */
+
+function updateSettingsButtons() {
+
+  soundBtn.textContent =
+    soundEnabled
+      ? "ON"
+      : "OFF";
+
+  vibrationBtn.textContent =
+    vibrationEnabled
+      ? "ON"
+      : "OFF";
+
+}
+
+soundBtn.addEventListener(
+  "click",
+  () => {
+
+    soundEnabled =
+      !soundEnabled;
+
+    localStorage.setItem(
+      "wg_sound",
+      soundEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+vibrationBtn.addEventListener(
+  "click",
+  () => {
+
+    vibrationEnabled =
+      !vibrationEnabled;
+
+    localStorage.setItem(
+      "wg_vibration",
+      vibrationEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+updateSettingsButtons();
+
+/* =====================================
+   CREATE 108 BEADS
+===================================== */
+
+for (
+  let i = 0;
+  i < MALA_SIZE;
+  i++
+) {
+
+  const bead =
+    document.createElement("div");
+
+  bead.className =
+    "bead";
+
+  const angle =
+    (i / MALA_SIZE) *
+    Math.PI * 2 -
+    Math.PI / 2;
+
+  const radius = 45;
+
+  const x =
+    50 +
+    Math.cos(angle) *
+    radius;
+
+  const y =
+    50 +
+    Math.sin(angle) *
+    radius;
+
+  bead.style.left =
+    x + "%";
+
+  bead.style.top =
+    y + "%";
+
+  mala.appendChild(bead);
+
+}
+
+/* =====================================
+   SAVE DATA
+===================================== */
+
+function saveData() {
+
+  localStorage.setItem(
+    "wg_count",
+    count
+  );
+
+  localStorage.setItem(
+    "wg_total",
+    total
+  );
+
+  localStorage.setItem(
+    "wg_malas",
+    completedMalas
+  );
+
+  localStorage.setItem(
+    "wg_current_mala_number",
+    currentMalaNumber
+  );
+
+  localStorage.setItem(
+    "wg_records",
+    JSON.stringify(records)
+  );
+
+  localStorage.setItem(
+    "wg_mala_history",
+    JSON.stringify(malaHistory)
+  );
+
+  localStorage.setItem(
+    "wg_current_date",
+    todayKey()
+  );
+
+  localStorage.setItem(
+    "wg_multi_color",
+    multiColorEnabled
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
+}
+
+/* =====================================
+   CALENDAR STATISTICS
+===================================== */
+
+function getDateFromKey(key) {
+
+  const parts =
+    key.split("-");
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  return new Date(
+    Number(parts[0]),
+    Number(parts[1]) - 1,
+    Number(parts[2])
+  );
+
+}
+
+function getCompletedMalasForPeriod(
+  period
+) {
+
+  const now =
+    new Date();
+
+  return malaHistory.filter(
+    entry => {
+
+      if (
+        !entry ||
+        !entry.date
+      ) {
+
+        return false;
+
+      }
+
+      const d =
+        getDateFromKey(
+          entry.date
+        );
+
+      if (!d) {
+        return false;
+      }
+
+      if (
+        period === "year"
+      ) {
+
+        return (
+          d.getFullYear() ===
+          now.getFullYear()
+        );
+
+      }
+
+      if (
+        period === "month"
+      ) {
+
+        return (
+          d.getFullYear() ===
+            now.getFullYear() &&
+          d.getMonth() ===
+            now.getMonth()
+        );
+
+      }
+
+      if (
+        period === "week"
+      ) {
+
+        const weekStart =
+          new Date(now);
+
+        weekStart.setHours(
+          0, 0, 0, 0
+        );
+
+        weekStart.setDate(
+          now.getDate() -
+          now.getDay()
+        );
+
+        const weekEnd =
+          new Date(weekStart);
+
+        weekEnd.setDate(
+          weekStart.getDate() + 7
+        );
+
+        d.setHours(
+          0, 0, 0, 0
+        );
+
+        return (
+          d >= weekStart &&
+          d < weekEnd
+        );
+
+      }
+
+      return false;
+
+    }
+  ).length;
+
+}
+
+function updateCalendarStats() {
+
+  calendarStatTotal.textContent =
+    total;
+
+  calendarStatMalas.textContent =
+    completedMalas;
+
+  calendarStatWeek.textContent =
+    getCompletedMalasForPeriod(
+      "week"
+    );
+
+  calendarStatMonth.textContent =
+    getCompletedMalasForPeriod(
+      "month"
+    );
+
+  calendarStatYear.textContent =
+    getCompletedMalasForPeriod(
+      "year"
+    );
+
+}
+
+/* =====================================
+   DISPLAY
+===================================== */
+
+function updateDisplay() {
+
+  countEl.textContent =
+    count;
+
+  malaNumberEl.textContent =
+    "Mala #" +
+    currentMalaNumber;
+
+  /*
+     Multi Colour:
+     The colour is changed only when
+     a new mala starts at count 0.
+  */
+
+  if (multiColorEnabled) {
+
+    applyCurrentMultiColor();
+
+  }
+
+  const beads =
+    document.querySelectorAll(".bead");
+
+  beads.forEach(
+    (bead, i) => {
+
+      bead.classList.remove("active");
+      bead.classList.remove("current");
+
+      if (i < count) {
+
+        bead.classList.add("active");
+
+      }
+
+      if (
+        i === count &&
+        count < MALA_SIZE
+      ) {
+
+        bead.classList.add("current");
+
+      }
+
+    }
+  );
+
+  saveData();
+
+  updateCalendarStats();
+
+  updateSelectedDateDisplay();
+
+  if (
+    calendarModal.classList.contains("open")
+  ) {
+
+    renderCalendar();
+
+  }
+
+}
+
+/* =====================================
+   ADD COUNT
+===================================== */
+
+function addCount(amount) {
+
+  amount =
+    Number(amount);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+
+    return;
+
+  }
+
+  amount =
+    Math.floor(amount);
+
+  if (amount <= 0) {
+    return;
+  }
+
+  total += amount;
+
+  const day =
+    todayKey();
+
+  records[day] =
+    (records[day] || 0) +
+    amount;
+
+  count += amount;
+
+  while (
+    count >= MALA_SIZE
+  ) {
+
+    count -= MALA_SIZE;
+
+    completedMalas++;
+
+    currentMalaNumber++;
+
+    malaHistory.push({
+      date: todayKey(),
+      timestamp: Date.now()
+    });
+
+    /*
+       Multi Colour changes ONLY here,
+       after the mala has completed and
+       count has returned to 0.
+    */
+
+    if (multiColorEnabled) {
+
+      multiColorIndex =
+        (
+          multiColorIndex + 1
+        ) %
+        multiColors.length;
+
+      localStorage.setItem(
+        "wg_multi_color_index",
+        multiColorIndex
+      );
+
+      applyCurrentMultiColor();
+
+    }
+
+    malaComplete();
+
+  }
+
+  updateDisplay();
+
+}
+
+/* =====================================
+   MALA COMPLETE
+===================================== */
+
+function malaComplete() {
+
+  if (
+    vibrationEnabled &&
+    "vibrate" in navigator
+  ) {
+
+    try {
+
+      navigator.vibrate(
+        [200, 100, 200]
+      );
+
+    } catch(e) {}
+
+  }
+
+  if (soundEnabled) {
+
+    beep();
+
+  }
+
+}
+
+/* =====================================
+   NORMALIZE SPEECH
+===================================== */
+
+function normalizeText(text) {
+
+  return String(text)
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[.,!?;:()[\]{}"'`]/g, " ")
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+/* =====================================
+   COUNT GURMUKHI
+===================================== */
+
+function countGurmukhi(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  const normalized =
+    String(text)
+      .normalize("NFKC")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const pattern =
+    /ਵਾਹੇ?\s*ਗੁਰੂ|ਵਾਹੇ?\s*ਗੁਰੁ/g;
+
+  const matches =
+    normalized.match(pattern);
+
+  return matches
+    ? matches.length
+    : 0;
+
+}
+
+/* =====================================
+   COUNT ENGLISH
+===================================== */
+
+function countEnglish(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  const normalized =
+    normalizeText(text);
+
+  const englishPattern =
+    /waheguru|waheguroo|waheguro|waheguruu|waheguruji|wahe\s+guru\s+ji|wahe\s+guru|vaheguru|vahiguru|wahi\s+guru|vah\s+guru|wah\s+guru|way\s+guru|wahe\s+gooru|wahe\s+gooro|wahegoru/gi;
+
+  const matches =
+    normalized.match(
+      englishPattern
+    );
+
+  return matches
+    ? matches.length
+    : 0;
+
+}
+
+/* =====================================
+   COUNT WAHEGURU MATCHES
+===================================== */
+
+function countWaheguruMatches(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  return (
+    countGurmukhi(text) +
+    countEnglish(text)
+  );
+
+}
+
+/* =====================================
+   BEEP
+===================================== */
+
+function beep() {
+
+  if (!soundEnabled) {
+    return;
+  }
+
+  try {
+
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioCtx) {
+      return;
+    }
+
+    const ctx =
+      new AudioCtx();
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      880;
+
+    gain.gain.setValueAtTime(
+      0.001,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.25,
+      ctx.currentTime + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      ctx.currentTime + 0.35
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+      ctx.currentTime + 0.35
+    );
+
+    setTimeout(
+      () => {
+
+        try {
+          ctx.close();
+        } catch(e) {}
+
+      },
+      500
+    );
+
+  } catch(e) {}
+
+}
+
+/* =====================================
+   AUDIO MONITOR
+===================================== */
+
+async function startAudioMonitor() {
+
+  try {
+
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
+
+      return;
+
+    }
+
+    if (micStream) {
+      return;
+    }
+
+    micStream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      });
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+    const source =
+      audioContext.createMediaStreamSource(
+        micStream
+      );
+
+    analyser =
+      audioContext.createAnalyser();
+
+    analyser.fftSize =
+      512;
+
+    audioData =
+      new Uint8Array(
+        analyser.fftSize
+      );
+
+    source.connect(
+      analyser
+    );
+
+    if (audioMonitor) {
+
+      cancelAnimationFrame(
+        audioMonitor
+      );
+
+    }
+
+    monitorAudio();
+
+  } catch(e) {
+
+    console.log(
+      "Audio monitor:",
+      e
+    );
+
+  }
+
+}
+
+/* =====================================
+   MONITOR MICROPHONE ACTIVITY
+===================================== */
+
+function monitorAudio() {
+
+  if (!listening) {
+    return;
+  }
+
+  if (
+    !analyser ||
+    !audioData
+  ) {
+
+    return;
+
+  }
+
+  analyser.getByteTimeDomainData(
+    audioData
+  );
+
+  let sum = 0;
+
+  for (
+    let i = 0;
+    i < audioData.length;
+    i++
+  ) {
+
+    const value =
+      (
+        audioData[i] - 128
+      ) / 128;
+
+    sum +=
+      value * value;
+
+  }
+
+  const rms =
+    Math.sqrt(
+      sum /
+      audioData.length
+    );
+
+  const now =
+    performance.now();
+
+  if (
+    rms >= AUDIO_THRESHOLD
+  ) {
+
+    lastActivityAt =
+      now;
+
+  }
+
+  const elapsed =
+    now -
+    lastActivityAt;
+
+  const remaining =
+    Math.max(
+      0,
+      SILENCE_TIME -
+      elapsed
+    );
+
+  timerText.textContent =
+    "Auto mic-off in " +
+    Math.ceil(
+      remaining / 1000
+    ) +
+    " seconds";
+
+  if (
+    remaining <= 0
+  ) {
+
+    autoPause();
+
+    return;
+
+  }
+
+  audioMonitor =
+    requestAnimationFrame(
+      monitorAudio
+    );
+
+}
+
+/* =====================================
+   STOP AUDIO MONITOR
+===================================== */
+
+function stopAudioMonitor() {
+
+  if (audioMonitor) {
+
+    cancelAnimationFrame(
+      audioMonitor
+    );
+
+    audioMonitor =
+      null;
+
+  }
+
+  if (micStream) {
+
+    micStream
+      .getTracks()
+      .forEach(
+        track => {
+
+          try {
+            track.stop();
+          } catch(e) {}
+
+        }
+      );
+
+    micStream =
+      null;
+
+  }
+
+  if (audioContext) {
+
+    try {
+      audioContext.close();
+    } catch(e) {}
+
+    audioContext =
+      null;
+
+  }
+
+  analyser =
+    null;
+
+  audioData =
+    null;
+
+}
+
+/* =====================================
+   CLEAR TIMERS
+===================================== */
+
+function clearTimers() {
+
+  if (recognitionRestartTimer) {
+
+    clearTimeout(
+      recognitionRestartTimer
+    );
+
+    recognitionRestartTimer =
+      null;
+
+  }
+
+  if (audioMonitor) {
+
+    cancelAnimationFrame(
+      audioMonitor
+    );
+
+    audioMonitor =
+      null;
+
+  }
+
+}
+
+/* =====================================
+   AUTO PAUSE
+===================================== */
+
+function autoPause() {
+
+  if (!listening) {
+    return;
+  }
+
+  listening = false;
+
+  clearTimers();
+
+  stopAudioMonitor();
+
+  if (recognition) {
+
+    try {
+      recognition.stop();
+    } catch(e) {}
+
+  }
+
+  recognitionRunning =
+    false;
+
+  recognitionStarting =
+    false;
+
+  processedMatchCounts.clear();
+
+  lastDisplayedTranscript =
+    "";
+
+  beep();
+
+  setPausedStatus(
+    "Mic paused — 45 seconds silent"
+  );
+
+}
+
+/* =====================================
+   STATUS
+===================================== */
+
+function setListeningStatus() {
+
+  status.classList.add(
+    "active"
+  );
+
+  statusText.textContent =
+    "Listening… Say Waheguru";
+
+  startBtn.textContent =
+    "🎙️ Listening";
+
+}
+
+function setPausedStatus(
+  message = "Mic paused"
+) {
+
+  status.classList.remove(
+    "active"
+  );
+
+  statusText.textContent =
+    message;
+
+  startBtn.textContent =
+    "🎙️ Start";
+
+  timerText.textContent =
+    "Timer starts when listening begins.";
+
+}
+
+/* =====================================
+   SPEECH RECOGNITION
+===================================== */
+
+function setupRecognition() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Speech recognition is not supported by this browser. Please use Google Chrome or Microsoft Edge."
+    );
+
+    return null;
+
+  }
+
+  const r =
+    new SpeechRecognition();
+
+  r.continuous =
+    true;
+
+  r.interimResults =
+    true;
+
+  r.maxAlternatives =
+    1;
+
+  r.lang =
+    recognitionLanguage;
+
+  r.onstart = () => {
+
+    recognitionRunning =
+      true;
+
+    recognitionStarting =
+      false;
+
+    if (!listening) {
+
+      try {
+        r.stop();
+      } catch(e) {}
+
+      return;
+
+    }
+
+    processedMatchCounts.clear();
+
+    lastActivityAt =
+      performance.now();
+
+    setListeningStatus();
+
+  };
+
+  r.onspeechstart = () => {
+
+    if (listening) {
+
+      lastActivityAt =
+        performance.now();
+
+    }
+
+  };
+
+  r.onaudiostart = () => {
+
+    if (listening) {
+
+      lastActivityAt =
+        performance.now();
+
+    }
+
+  };
+
+  r.onresult = event => {
+
+    if (!listening) {
+      return;
+    }
+
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+
+      const result =
+        event.results[i];
+
+      if (
+        !result ||
+        !result[0]
+      ) {
+
+        continue;
+
+      }
+
+      const transcript =
+        result[0].transcript.trim();
+
+      if (!transcript) {
+        continue;
+      }
+
+      if (
+        transcript !==
+        lastDisplayedTranscript
+      ) {
+
+        heardText.textContent =
+          "Heard: " +
+          transcript;
+
+        lastDisplayedTranscript =
+          transcript;
+
+      }
+
+      console.log(
+        "V36 Recognized:",
+        transcript,
+        "Final:",
+        result.isFinal
+      );
+
+      const currentMatches =
+        countWaheguruMatches(
+          transcript
+        );
+
+      const previousMatches =
+        processedMatchCounts.get(i) || 0;
+
+      if (
+        currentMatches >
+        previousMatches
+      ) {
+
+        const newMatches =
+          currentMatches -
+          previousMatches;
+
+        addCount(
+          newMatches
+        );
+
+        processedMatchCounts.set(
+          i,
+          currentMatches
+        );
+
+        heardCountSinceReset +=
+          newMatches;
+
+        if (
+          heardCountSinceReset >= 5
+        ) {
+
+          heardCountSinceReset =
+            heardCountSinceReset % 5;
+
+          heardText.textContent =
+            "";
+
+          lastDisplayedTranscript =
+            "";
+
+        }
+
+        lastActivityAt =
+          performance.now();
+
+        console.log(
+          "V36 NEW COUNT:",
+          newMatches,
+          "Current result matches:",
+          currentMatches
+        );
+
+      }
+
+    }
+
+  };
+
+  r.onerror = event => {
+
+    const error =
+      event && event.error
+        ? event.error
+        : "unknown";
+
+    console.log(
+      "V36 Speech recognition:",
+      error
+    );
+
+    if (
+      error === "not-allowed" ||
+      error === "service-not-allowed"
+    ) {
+
+      listening =
+        false;
+
+      clearTimers();
+
+      stopAudioMonitor();
+
+      recognitionRunning =
+        false;
+
+      recognitionStarting =
+        false;
+
+      processedMatchCounts.clear();
+
+      lastDisplayedTranscript =
+        "";
+
+      setPausedStatus(
+        "Microphone permission needed"
+      );
+
+      return;
+
+    }
+
+    if (
+      error === "aborted" ||
+      error === "no-speech"
+    ) {
+
+      return;
+
+    }
+
+    if (listening) {
+
+      scheduleRecognitionRestart();
+
+    }
+
+  };
+
+  r.onend = () => {
+
+    recognitionRunning =
+      false;
+
+    recognitionStarting =
+      false;
+
+    if (!listening) {
+      return;
+    }
+
+    processedMatchCounts.clear();
+
+    lastDisplayedTranscript =
+      "";
+
+    try {
+
+      r.lang =
+        recognitionLanguage;
+
+    } catch(e) {}
+
+    scheduleRecognitionRestart();
+
+  };
+
+  return r;
+
+}
+
+/* =====================================
+   SAFE RESTART
+===================================== */
+
+function scheduleRecognitionRestart() {
+
+  if (!listening) {
+    return;
+  }
+
+  if (recognitionRestartTimer) {
+    return;
+  }
+
+  recognitionRestartTimer =
+    setTimeout(
+      () => {
+
+        recognitionRestartTimer =
+          null;
+
+        startRecognitionSafely();
+
+      },
+      RECOGNITION_RESTART_DELAY
+    );
+
+}
+
+/* =====================================
+   START RECOGNITION SAFELY
+===================================== */
+
+function startRecognitionSafely() {
+
+  if (!listening) {
+    return;
+  }
+
+  if (
+    recognitionRunning ||
+    recognitionStarting
+  ) {
+
+    return;
+
+  }
+
+  if (!recognition) {
+    return;
+  }
+
+  recognitionStarting =
+    true;
+
+  try {
+
+    recognition.lang =
+      recognitionLanguage;
+
+    recognition.continuous =
+      true;
+
+    recognition.interimResults =
+      true;
+
+    recognition.maxAlternatives =
+      1;
+
+    recognition.start();
+
+  } catch(e) {
+
+    recognitionStarting =
+      false;
+
+    console.log(
+      "V36 Recognition start error:",
+      e
+    );
+
+    if (
+      e &&
+      e.name ===
+        "InvalidStateError"
+    ) {
+
+      return;
+
+    }
+
+    if (listening) {
+
+      scheduleRecognitionRestart();
+
+    }
+
+  }
+
+}
+
+/* =====================================
+   START LISTENING
+===================================== */
+
+async function startListening() {
+
+  if (listening) {
+    return;
+  }
+
+  if (!recognition) {
+
+    recognition =
+      setupRecognition();
+
+    if (!recognition) {
+      return;
+    }
+
+  }
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  listening =
+    true;
+
+  lastActivityAt =
+    performance.now();
+
+  heardText.textContent =
+    "";
+
+  setListeningStatus();
+
+  startRecognitionSafely();
+
+  await startAudioMonitor();
+
+}
+
+/* =====================================
+   PAUSE
+===================================== */
+
+function pauseListening() {
+
+  listening =
+    false;
+
+  clearTimers();
+
+  stopAudioMonitor();
+
+  if (recognition) {
+
+    try {
+      recognition.stop();
+    } catch(e) {}
+
+  }
+
+  recognitionRunning =
+    false;
+
+  recognitionStarting =
+    false;
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  setPausedStatus();
+
+}
+
+/* =====================================
+   RESET CURRENT MALA
+===================================== */
+
+function resetCurrentMala() {
+
+  /*
+    Reset only the CURRENT mala.
+
+    Completed mala history stays unchanged.
+    Total Waheguru stays unchanged.
+
+    Multi Colour does not advance because
+    Reset Mala is not a completed mala.
+  */
+
+  count = 0;
+
+  currentMalaNumber = 0;
+
+  if (multiColorEnabled) {
+
+    multiColorIndex = 0;
+
+    localStorage.setItem(
+      "wg_multi_color_index",
+      "0"
+    );
+
+    applyCurrentMultiColor();
+
+  }
+
+  localStorage.setItem(
+    "wg_count",
+    "0"
+  );
+
+  localStorage.setItem(
+    "wg_current_mala_number",
+    "0"
+  );
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  heardText.textContent =
+    "";
+
+  updateDisplay();
+
+}
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+startBtn.addEventListener(
+  "click",
+  startListening
+);
+
+pauseBtn.addEventListener(
+  "click",
+  pauseListening
+);
+
+resetBtn.addEventListener(
+  "click",
+  resetCurrentMala
+);
+
+/* =====================================
+   CALENDAR
+===================================== */
+
+function dateKeyFromParts(
+  year,
+  month,
+  day
+) {
+
+  return (
+    year +
+    "-" +
+    String(month + 1).padStart(2, "0") +
+    "-" +
+    String(day).padStart(2, "0")
+  );
+
+}
+
+function getCompletedMalasForDate(
+  dateKey
+) {
+
+  return malaHistory.filter(
+    entry =>
+      entry &&
+      entry.date === dateKey
+  ).length;
+
+}
+
+function formatLongDate(
+  dateString
+) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  const d =
+    new Date(
+      Number(parts[0]),
+      Number(parts[1]) - 1,
+      Number(parts[2])
+    );
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
+
+}
+
+let calendarViewDate =
+  new Date();
+
+let selectedCalendarDate =
+  todayKey();
+
+function renderCalendar() {
+
+  const year =
+    calendarViewDate.getFullYear();
+
+  const month =
+    calendarViewDate.getMonth();
+
+  const monthName =
+    calendarViewDate.toLocaleDateString(
+      undefined,
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+  calendarMonth.textContent =
+    monthName;
+
+  calendarGrid.innerHTML =
+    "";
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
+
+  const daysInMonth =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "calendar-day empty";
+
+    calendarGrid.appendChild(
+      empty
+    );
+
+  }
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const key =
+      dateKeyFromParts(
+        year,
+        month,
+        day
+      );
+
+    const dayBox =
+      document.createElement(
+        "div"
+      );
+
+    dayBox.className =
+      "calendar-day";
+
+    if (
+      key === todayKey()
+    ) {
+
+      dayBox.classList.add(
+        "today"
+      );
+
+    }
+
+    if (
+      key === selectedCalendarDate
+    ) {
+
+      dayBox.classList.add(
+        "selected"
+      );
+
+    }
+
+    const number =
+      document.createElement(
+        "div"
+      );
+
+    number.className =
+      "day-number";
+
+    number.textContent =
+      day;
+
+    const waheguru =
+      document.createElement(
+        "div"
+      );
+
+    waheguru.className =
+      "day-waheguru";
+
+    const dayCount =
+      records[key] || 0;
+
+    if (dayCount > 0) {
+
+      waheguru.textContent =
+        "🙏 " +
+        dayCount;
+
+    } else {
+
+      waheguru.textContent =
+        "";
+
+    }
+
+    const malaCount =
+      getCompletedMalasForDate(
+        key
+      );
+
+    const mala =
+      document.createElement(
+        "div"
+      );
+
+    mala.className =
+      "day-mala";
+
+    if (malaCount > 0) {
+
+      mala.textContent =
+        "📿 " +
+        malaCount;
+
+    } else {
+
+      mala.textContent =
+        "";
+
+    }
+
+    dayBox.appendChild(
+      number
+    );
+
+    dayBox.appendChild(
+      waheguru
+    );
+
+    dayBox.appendChild(
+      mala
+    );
+
+    dayBox.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        selectedCalendarDate =
+          key;
+
+        updateCalendarDetails();
+
+        updateSelectedDateDisplay();
+
+        renderCalendar();
+
+      }
+    );
+
+    calendarGrid.appendChild(
+      dayBox
+    );
+
+  }
+
+  updateCalendarDetails();
+
+}
+
+function updateCalendarDetails() {
+
+  const selected =
+    selectedCalendarDate;
+
+  calendarDetailsDate.textContent =
+    formatLongDate(selected);
+
+  calendarDetailsCount.textContent =
+    records[selected] || 0;
+
+  calendarDetailsMalas.textContent =
+    getCompletedMalasForDate(
+      selected
+    );
+
+}
+
+function updateSelectedDateDisplay() {
+
+  if (
+    selectedCalendarDate ===
+    todayKey()
+  ) {
+
+    selectedDateLabel.textContent =
+      "Today — " +
+      formatDate(
+        selectedCalendarDate
+      );
+
+  } else {
+
+    selectedDateLabel.textContent =
+      formatDate(
+        selectedCalendarDate
+      );
+
+  }
+
+}
+
+function openCalendar() {
+
+  calendarViewDate =
+    new Date(
+      Number(
+        selectedCalendarDate.split("-")[0]
+      ),
+      Number(
+        selectedCalendarDate.split("-")[1]
+      ) - 1,
+      Number(
+        selectedCalendarDate.split("-")[2]
+      )
+    );
+
+  renderCalendar();
+
+  calendarModal.classList.add(
+    "open"
+  );
+
+}
+
+function closeCalendar() {
+
+  calendarModal.classList.remove(
+    "open"
+  );
+
+}
+
+openCalendarBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    openCalendar();
+
+  }
+);
+
+/*
+   Calendar now opens ONLY when
+   Open Calendar is pressed.
+*/
+
+closeCalendarBtn.addEventListener(
+  "click",
+  closeCalendar
+);
+
+previousMonthBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() - 1
+    );
+
+    renderCalendar();
+
+  }
+);
+
+nextMonthBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() + 1
+    );
+
+    renderCalendar();
+
+  }
+);
+
+calendarModal.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target ===
+      calendarModal
+    ) {
+
+      closeCalendar();
+
+    }
+
+  }
+);
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape" &&
+      calendarModal.classList.contains("open")
+    ) {
+
+      closeCalendar();
+
+    }
+
+  }
+);
+
+/* =====================================
+   MIDNIGHT RESET
+===================================== */
+
+function checkMidnightReset() {
+
+  const currentDate =
+    todayKey();
+
+  const savedDate =
+    localStorage.getItem(
+      "wg_current_date"
+    );
+
+  if (!savedDate) {
+
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
+
+    return;
+
+  }
+
+  if (
+    savedDate !== currentDate
+  ) {
+
+    count = 0;
+
+    currentMalaNumber = 0;
+
+    /*
+       A new day starts the multi-colour
+       sequence again from Red.
+    */
+
+    if (multiColorEnabled) {
+
+      multiColorIndex = 0;
+
+      localStorage.setItem(
+        "wg_multi_color_index",
+        "0"
+      );
+
+      applyCurrentMultiColor();
+
+    }
+
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
+
+    localStorage.setItem(
+      "wg_current_mala_number",
+      "0"
+    );
+
+    updateDisplay();
+
+  }
+
+}
+
+/* =====================================
+   MIDNIGHT CHECK
+===================================== */
+
+setInterval(
+  checkMidnightReset,
+  1000
+);
+
+/* =====================================
+   INITIALIZE
+===================================== */
+
+checkMidnightReset();
+
+loadSavedColor();
+
+if (multiColorEnabled) {
+
+  applyCurrentMultiColor();
+
+}
+
+applyDarkMode();
+
+updateDisplay();
+
+setPausedStatus();
+
+updateSettingsButtons();
+
+updateSelectedDateDisplay();
+
+</script>
+
 </body>
 </html>
