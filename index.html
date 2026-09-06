@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 26</title>
+<title>Waheguru Voice Counter - V 27</title>
 
 <style>
 * {
@@ -603,7 +603,7 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V26</div>
+<div class="subtitle">Digital 108-Bead Mala—V27</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -918,7 +918,7 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V26 VOICE RECOGNITION
+   V27 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
@@ -1548,7 +1548,7 @@ function malaComplete() {
 }
 
 /* =====================================
-   V26 NORMALIZE SPEECH
+   V27 NORMALIZE SPEECH
 ===================================== */
 
 function normalizeText(text) {
@@ -1564,7 +1564,7 @@ function normalizeText(text) {
 }
 
 /* =====================================
-   V26 COUNT GURMUKHI
+   V27 COUNT GURMUKHI
 ===================================== */
 
 function countGurmukhi(text) {
@@ -1592,7 +1592,7 @@ function countGurmukhi(text) {
 }
 
 /* =====================================
-   V26 COUNT ENGLISH
+   V27 COUNT ENGLISH
 ===================================== */
 
 function countEnglish(text) {
@@ -1619,7 +1619,7 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   V26 COUNT WAHEGURU MATCHES
+   V27 COUNT WAHEGURU MATCHES
 ===================================== */
 
 function countWaheguruMatches(text) {
@@ -2046,7 +2046,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V26 SPEECH RECOGNITION
+   V27 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2178,7 +2178,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V26 Recognized:",
+        "V27 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2232,7 +2232,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V26 NEW COUNT:",
+          "V27 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2252,7 +2252,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V26 Speech recognition:",
+      "V27 Speech recognition:",
       error
     );
 
@@ -2337,7 +2337,7 @@ function setupRecognition() {
 }
 
 /* =====================================
-   V26 SAFE RESTART
+   V27 SAFE RESTART
 ===================================== */
 
 function scheduleRecognitionRestart() {
@@ -2366,7 +2366,7 @@ function scheduleRecognitionRestart() {
 }
 
 /* =====================================
-   V26 START RECOGNITION SAFELY
+   V27 START RECOGNITION SAFELY
 ===================================== */
 
 function startRecognitionSafely() {
@@ -2413,7 +2413,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V26 Recognition start error:",
+      "V27 Recognition start error:",
       e
     );
 
@@ -2522,6 +2522,8 @@ function pauseListening() {
 
 /* =====================================
    RESET CURRENT MALA
+   V27 CHANGE:
+   RESET COUNT + MALA NUMBER TO #1
 ===================================== */
 
 function resetCurrentMala() {
@@ -2537,8 +2539,8 @@ function resetCurrentMala() {
 
   }
 
-  count =
-    0;
+  count = 0;
+  completedMalas = 0;
 
   updateDisplay();
 
@@ -2821,6 +2823,8 @@ updateSelectedDateDisplay();
 
 /* =====================================
    MIDNIGHT RESET
+   V27 CHANGE:
+   RESET COUNT + MALA NUMBER TO #1
 ===================================== */
 
 function checkMidnightReset() {
@@ -2848,8 +2852,8 @@ function checkMidnightReset() {
     savedDate !== currentDate
   ) {
 
-    count =
-      0;
+    count = 0;
+    completedMalas = 0;
 
     localStorage.setItem(
       "wg_current_date",
