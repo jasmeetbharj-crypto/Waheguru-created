@@ -6,7 +6,7 @@
 <title>Waheguru Voice Counter - V 23</title>
 
 <style>oo
-* {
+* {o
   box-sizing: border-box;
 }
 
@@ -926,12 +926,37 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V23 VOICE RECOGNITION
+   V24 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
 
 const RECOGNITION_RESTART_DELAY = 500;
+
+/*
+   V24 VOICE BATCH
+
+   Voice counting is collected in batches
+   of maximum 5 Waheguru.
+
+   Example:
+
+   1 → wait
+   2 → wait
+   3 → wait
+   4 → wait
+   5 → ADD 5 and start fresh
+
+   If the user pauses at 1, 2, 3 or 4,
+   the remaining amount is added when
+   the microphone is paused.
+*/
+
+const VOICE_BATCH_SIZE = 5;
+
+let voiceBatchCount = 0;
+
+let voiceResultCounts = new Map();
 
 /* =====================================
    ELEMENTS
@@ -1571,7 +1596,7 @@ function malaComplete() {
 }
 
 /* =====================================
-   V23 NORMALIZE SPEECH
+   V24 NORMALIZE SPEECH
 ===================================== */
 
 function normalizeText(text) {
@@ -1587,7 +1612,7 @@ function normalizeText(text) {
 }
 
 /* =====================================
-   V23 COUNT GURMUKHI
+   V24 COUNT GURMUKHI
 ===================================== */
 
 function countGurmukhi(text) {
@@ -1615,7 +1640,7 @@ function countGurmukhi(text) {
 }
 
 /* =====================================
-   V23 COUNT ENGLISH
+   V24 COUNT ENGLISH
 ===================================== */
 
 function countEnglish(text) {
@@ -1628,9 +1653,7 @@ function countEnglish(text) {
     normalizeText(text);
 
   /*
-     IMPORTANT V23 CHANGE:
-
-     Do NOT require word boundaries.
+     No word boundaries.
 
      This allows:
 
@@ -1638,8 +1661,6 @@ function countEnglish(text) {
        waheguru waheguru
        waheguruwaheguru
        waheguruwaheguruwaheguru
-
-     to be detected correctly.
   */
 
   const englishPattern =
@@ -1657,7 +1678,7 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   V23 COUNT WAHEGURU MATCHES
+   V24 COUNT WAHEGURU MATCHES
 ===================================== */
 
 function countWaheguruMatches(text) {
@@ -1680,6 +1701,114 @@ function countWaheguruMatches(text) {
 }
 
 /* =====================================
+   V24 ADD VOICE BATCH
+===================================== */
+
+function addVoiceBatchMatches(matches) {
+
+  matches =
+    Number(matches);
+
+  if (
+    !Number.isFinite(matches) ||
+    matches <= 0
+  ) {
+
+    return;
+
+  }
+
+  matches =
+    Math.floor(matches);
+
+  while (
+    matches > 0
+  ) {
+
+    const spaceLeft =
+      VOICE_BATCH_SIZE -
+      voiceBatchCount;
+
+    const addNow =
+      Math.min(
+        matches,
+        spaceLeft
+      );
+
+    voiceBatchCount +=
+      addNow;
+
+    matches -=
+      addNow;
+
+    /*
+       Once 5 Waheguru are collected,
+       immediately add exactly 5 to
+       the main counter.
+    */
+
+    if (
+      voiceBatchCount >=
+      VOICE_BATCH_SIZE
+    ) {
+
+      addCount(
+        VOICE_BATCH_SIZE
+      );
+
+      voiceBatchCount =
+        0;
+
+      voiceResultCounts.clear();
+
+      /*
+         Start a completely fresh
+         Heard section.
+      */
+
+      heardText.textContent =
+        "";
+
+    }
+
+  }
+
+}
+
+/* =====================================
+   V24 FLUSH VOICE BATCH
+===================================== */
+
+function flushVoiceBatch() {
+
+  if (
+    voiceBatchCount > 0
+  ) {
+
+    const remaining =
+      voiceBatchCount;
+
+    voiceBatchCount =
+      0;
+
+    voiceResultCounts.clear();
+
+    addCount(
+      remaining
+    );
+
+  } else {
+
+    voiceResultCounts.clear();
+
+  }
+
+  heardText.textContent =
+    "";
+
+}
+
+/* =====================================
    COUNT WAHEGURU
 ===================================== */
 
@@ -1694,7 +1823,9 @@ function countWaheguru(text) {
 
   if (matches > 0) {
 
-    addCount(matches);
+    addVoiceBatchMatches(
+      matches
+    );
 
   }
 
@@ -2047,6 +2178,13 @@ function autoPause() {
     return;
   }
 
+  /*
+     Add any remaining 1–4 Waheguru
+     before pausing.
+  */
+
+  flushVoiceBatch();
+
   listening = false;
 
   clearTimers();
@@ -2115,7 +2253,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V23 SPEECH RECOGNITION
+   V24 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2149,18 +2287,6 @@ function setupRecognition() {
   r.lang =
     recognitionLanguage;
 
-  /*
-     Only remember final RESULT INDEXES.
-
-     We do NOT remember transcript text.
-
-     This means saying the same word again
-     is allowed.
-  */
-
-  const processedFinalResults =
-    new Set();
-
   /* =====================================
      RECOGNITION START
   ===================================== */
@@ -2182,6 +2308,18 @@ function setupRecognition() {
       return;
 
     }
+
+    /*
+       A new browser recognition session
+       starts with fresh result indexes.
+
+       The current voiceBatchCount is NOT
+       cleared because a partially spoken
+       batch must continue across automatic
+       recognition restarts.
+    */
+
+    voiceResultCounts.clear();
 
     lastActivityAt =
       performance.now();
@@ -2256,8 +2394,10 @@ function setupRecognition() {
       }
 
       /*
-         Show exactly what speech recognition
-         heard.
+         Show what the browser heard.
+
+         This will be cleared automatically
+         whenever 5 Waheguru are completed.
       */
 
       heardText.textContent =
@@ -2265,7 +2405,7 @@ function setupRecognition() {
         transcript;
 
       console.log(
-        "V23 Recognized:",
+        "V24 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2273,7 +2413,7 @@ function setupRecognition() {
 
       /*
          Interim results are displayed but
-         NEVER counted.
+         are never counted.
       */
 
       if (!result.isFinal) {
@@ -2283,59 +2423,79 @@ function setupRecognition() {
       }
 
       /*
-         Do not process the exact same
-         recognition result twice.
+         Count only NEW Waheguru occurrences
+         from this result index.
+
+         This prevents:
+
+           waheguru
+           waheguruwaheguru
+
+         from being counted as 1 + 2.
+
+         Instead it becomes:
+
+           first = +1
+           second = +1
+           total = 2
       */
 
-      if (
-        processedFinalResults.has(i)
-      ) {
-
-        continue;
-
-      }
-
-      processedFinalResults.add(i);
-
-      /*
-         Count ALL Waheguru occurrences
-         inside this final result.
-
-         Examples:
-
-         waheguru
-         = 1
-
-         waheguru waheguru
-         = 2
-
-         waheguruwaheguru
-         = 2
-
-         waheguruwaheguruwaheguru
-         = 3
-      */
-
-      const matches =
+      const currentMatches =
         countWaheguruMatches(
           transcript
         );
 
+      const previousMatches =
+        voiceResultCounts.get(i) || 0;
+
+      let newMatches =
+        currentMatches -
+        previousMatches;
+
+      /*
+         Recognition can sometimes correct
+         its transcript. Never subtract an
+         already recognized Waheguru.
+      */
+
       if (
-        matches > 0
+        newMatches < 0
       ) {
 
-        addCount(
-          matches
+        newMatches = 0;
+
+      }
+
+      if (
+        currentMatches >
+        previousMatches
+      ) {
+
+        voiceResultCounts.set(
+          i,
+          currentMatches
+        );
+
+      }
+
+      if (
+        newMatches > 0
+      ) {
+
+        addVoiceBatchMatches(
+          newMatches
         );
 
         lastActivityAt =
           performance.now();
 
         console.log(
-          "V23 COUNTED:",
-          matches,
-          "Waheguru occurrence(s)"
+          "V24 NEW COUNT:",
+          newMatches,
+          "Voice batch:",
+          voiceBatchCount,
+          "/",
+          VOICE_BATCH_SIZE
         );
 
       }
@@ -2356,7 +2516,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V23 Speech recognition:",
+      "V24 Speech recognition:",
       error
     );
 
@@ -2364,6 +2524,14 @@ function setupRecognition() {
       error === "not-allowed" ||
       error === "service-not-allowed"
     ) {
+
+      /*
+         Add any partial voice batch
+         before stopping because permission
+         has been lost.
+      */
+
+      flushVoiceBatch();
 
       listening =
         false;
@@ -2420,11 +2588,19 @@ function setupRecognition() {
     }
 
     /*
-       A new recognition session gets
-       a fresh result-index history.
+       IMPORTANT:
+
+       Do NOT flush the current voice batch
+       here.
+
+       The browser may automatically restart
+       speech recognition. The partial batch
+       must continue.
+
+       Only the result-index history is reset.
     */
 
-    processedFinalResults.clear();
+    voiceResultCounts.clear();
 
     try {
 
@@ -2442,7 +2618,7 @@ function setupRecognition() {
 }
 
 /* =====================================
-   V23 SAFE RESTART
+   V24 SAFE RESTART
 ===================================== */
 
 function scheduleRecognitionRestart() {
@@ -2475,7 +2651,7 @@ function scheduleRecognitionRestart() {
 }
 
 /* =====================================
-   V23 START RECOGNITION SAFELY
+   V24 START RECOGNITION SAFELY
 ===================================== */
 
 function startRecognitionSafely() {
@@ -2522,7 +2698,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V23 Recognition start error:",
+      "V24 Recognition start error:",
       e
     );
 
@@ -2567,6 +2743,17 @@ async function startListening() {
 
   }
 
+  /*
+     Start a completely new voice batch
+     when the user presses Start after
+     being paused.
+  */
+
+  voiceBatchCount =
+    0;
+
+  voiceResultCounts.clear();
+
   listening =
     true;
 
@@ -2589,6 +2776,21 @@ async function startListening() {
 ===================================== */
 
 function pauseListening() {
+
+  /*
+     If the user pauses after:
+
+       1 → add 1
+       2 → add 2
+       3 → add 3
+       4 → add 4
+
+     If 5 was already reached, it was
+     automatically added and the batch
+     is already back at 0.
+  */
+
+  flushVoiceBatch();
 
   listening =
     false;
