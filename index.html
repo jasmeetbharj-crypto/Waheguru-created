@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 43</title>
+<title>Waheguru Simran - V 44</title>
 
 <style>
 * {
@@ -93,6 +93,10 @@ h1 {
   font-size: 12px;
 }
 
+/* =====================================
+   MALA
+===================================== */
+
 .mala-wrapper {
   position: relative;
   width: min(90vw, 390px);
@@ -106,78 +110,507 @@ h1 {
   height: 100%;
 }
 
+/* =====================================
+   V44 REALISTIC WOODEN BEADS
+===================================== */
+
 .bead {
   position: absolute;
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
-  background: #161616;
-  border: 1px solid #444;
-  box-shadow: inset 0 0 5px #000;
-  transform: translate(-50%, -50%);
-  transition: .15s;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #8b7660 0%,
+      #5a4635 18%,
+      #34281f 48%,
+      #17120e 78%,
+      #090706 100%
+    );
+
+  border: 1px solid #665443;
+
+  box-shadow:
+    inset -3px -4px 5px rgba(0,0,0,.75),
+    inset 2px 2px 4px rgba(255,255,255,.16),
+    0 2px 4px rgba(0,0,0,.7);
+
+  transform:
+    translate(-50%, -50%);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease,
+    background .18s ease;
+
+  overflow: hidden;
 }
 
+/* Wood-grain highlight */
+.bead::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 7px;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.18),
+      rgba(0,0,0,.45),
+      rgba(255,255,255,.10),
+      transparent
+    );
+
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  opacity: .75;
+}
+
+/* Active beads */
 .bead.active {
-  background: var(--mala-color);
-  border-color: var(--mala-light);
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #fff2d0 0%,
+      var(--mala-light) 18%,
+      var(--mala-color) 45%,
+      var(--mala-dark) 78%,
+      #120606 100%
+    );
+
+  border-color:
+    var(--mala-light);
+
   box-shadow:
-    0 0 7px var(--mala-color),
-    0 0 18px var(--mala-glow);
+    inset -3px -4px 5px rgba(0,0,0,.55),
+    inset 2px 2px 4px rgba(255,255,255,.35),
+    0 0 8px var(--mala-color),
+    0 0 18px var(--mala-glow),
+    0 0 28px var(--mala-glow);
 }
 
+/* Current bead */
 .bead.current {
-  transform: translate(-50%, -50%) scale(1.35);
+  transform:
+    translate(-50%, -50%)
+    scale(1.45);
+
+  filter:
+    brightness(1.35);
+
   box-shadow:
+    inset -3px -4px 5px rgba(0,0,0,.45),
+    inset 2px 2px 5px rgba(255,255,255,.45),
     0 0 10px white,
-    0 0 22px var(--mala-color);
+    0 0 22px var(--mala-color),
+    0 0 38px var(--mala-glow);
 }
+
+/* =====================================
+   V44 ELECTRIC CENTER
+===================================== */
 
 .center {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  width: 145px;
-  height: 145px;
+
+  transform:
+    translate(-50%, -50%);
+
+  width: 155px;
+  height: 155px;
+
   border-radius: 50%;
+
+  /*
+     No black solid center.
+     The center is transparent with
+     a blue energy glow.
+  */
   background:
     radial-gradient(
       circle,
-      var(--mala-center) 0%,
-      #0b0b0b 65%
+      rgba(20,60,110,.28) 0%,
+      rgba(5,20,45,.20) 35%,
+      rgba(0,0,0,0) 72%
     );
-  border: 2px solid var(--mala-dark);
+
+  border:
+    2px solid rgba(100,190,255,.28);
+
   box-shadow:
-    0 0 20px var(--mala-glow),
-    inset 0 0 25px #000;
+    0 0 18px rgba(0,150,255,.45),
+    0 0 40px rgba(0,110,255,.22),
+    inset 0 0 25px rgba(0,120,255,.18);
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   overflow: visible;
+
+  isolation: isolate;
 }
 
-/* V42: 108 MALA COMPLETION GLOW */
+/* =====================================
+   ELECTRIC ENERGY RINGS
+===================================== */
+
+.electric-energy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 172px;
+  height: 172px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+  z-index: 0;
+
+  filter:
+    drop-shadow(0 0 5px rgba(80,190,255,.9))
+    drop-shadow(0 0 13px rgba(0,120,255,.55));
+}
+
+/* Electric arc layers */
+
+.electric-energy::before,
+.electric-energy::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+
+  border-radius: 50%;
+
+  border:
+    2px solid transparent;
+
+  border-top-color:
+    rgba(100,210,255,.95);
+
+  border-right-color:
+    rgba(255,255,255,.85);
+
+  filter:
+    drop-shadow(0 0 5px #62cfff)
+    drop-shadow(0 0 12px #168cff);
+
+  animation:
+    electricSpin 3.2s linear infinite;
+}
+
+.electric-energy::after {
+  inset: 15px;
+
+  border-top-color:
+    rgba(255,230,170,.95);
+
+  border-left-color:
+    rgba(255,190,70,.9);
+
+  filter:
+    drop-shadow(0 0 5px #ffd27a)
+    drop-shadow(0 0 12px #ff9d00);
+
+  animation:
+    electricSpinReverse 2.4s linear infinite;
+}
+
+/* Additional electric filament rings */
+
+.energy-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 100%;
+  height: 100%;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  border:
+    1px solid transparent;
+
+  opacity: .95;
+}
+
+.energy-ring:nth-child(1) {
+  width: 160px;
+  height: 142px;
+
+  border-top-color:
+    rgba(80,190,255,.95);
+
+  border-bottom-color:
+    rgba(255,255,255,.65);
+
+  filter:
+    drop-shadow(0 0 5px #4dc8ff);
+
+  animation:
+    energyFloatOne 2.7s ease-in-out infinite;
+}
+
+.energy-ring:nth-child(2) {
+  width: 145px;
+  height: 165px;
+
+  border-left-color:
+    rgba(255,215,130,.95);
+
+  border-right-color:
+    rgba(255,245,210,.75);
+
+  filter:
+    drop-shadow(0 0 6px #ffbd45);
+
+  animation:
+    energyFloatTwo 3.4s ease-in-out infinite;
+}
+
+.energy-ring:nth-child(3) {
+  width: 175px;
+  height: 150px;
+
+  border-top-color:
+    rgba(150,220,255,.9);
+
+  border-left-color:
+    rgba(255,255,255,.7);
+
+  filter:
+    drop-shadow(0 0 7px #65cfff);
+
+  animation:
+    energyFloatThree 4s ease-in-out infinite;
+}
+
+/* Electric sparks */
+
+.energy-spark {
+  position: absolute;
+
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background:
+    white;
+
+  box-shadow:
+    0 0 5px white,
+    0 0 12px #58caff,
+    0 0 20px #168cff;
+
+  pointer-events: none;
+
+  animation:
+    sparkPulse 1.4s ease-in-out infinite;
+}
+
+.spark1 {
+  left: 25%;
+  top: 22%;
+  animation-delay: .1s;
+}
+
+.spark2 {
+  left: 72%;
+  top: 27%;
+  animation-delay: .45s;
+}
+
+.spark3 {
+  left: 79%;
+  top: 62%;
+  animation-delay: .8s;
+}
+
+.spark4 {
+  left: 27%;
+  top: 76%;
+  animation-delay: .25s;
+}
+
+.spark5 {
+  left: 17%;
+  top: 49%;
+  animation-delay: .65s;
+}
+
+.spark6 {
+  left: 60%;
+  top: 82%;
+  animation-delay: 1s;
+}
+
+/* =====================================
+   ELECTRIC ANIMATIONS
+===================================== */
+
+@keyframes electricSpin {
+
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      rotate(180deg)
+      scale(1.035);
+  }
+
+  100% {
+    transform:
+      rotate(360deg)
+      scale(1);
+  }
+
+}
+
+@keyframes electricSpinReverse {
+
+  0% {
+    transform:
+      rotate(360deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      rotate(180deg)
+      scale(.96);
+  }
+
+  100% {
+    transform:
+      rotate(0deg)
+      scale(1);
+  }
+
+}
+
+@keyframes energyFloatOne {
+
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(25deg)
+      scale(1.06);
+  }
+
+}
+
+@keyframes energyFloatTwo {
+
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(320deg)
+      scale(1.05);
+  }
+
+}
+
+@keyframes energyFloatThree {
+
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(-30deg)
+      scale(.94);
+  }
+
+}
+
+@keyframes sparkPulse {
+
+  0% {
+    opacity: .25;
+    transform: scale(.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+
+  100% {
+    opacity: .25;
+    transform: scale(.6);
+  }
+
+}
+
+/* =====================================
+   MALA COMPLETION GLOW
+===================================== */
+
 @keyframes malaCompletionPulse {
 
   0% {
     box-shadow:
-      0 0 20px var(--mala-glow),
-      inset 0 0 25px #000;
+      0 0 18px rgba(0,150,255,.45),
+      0 0 40px rgba(0,110,255,.22);
   }
 
   50% {
     box-shadow:
-      0 0 35px var(--mala-glow),
-      0 0 60px var(--mala-glow),
-      inset 0 0 25px #000;
+      0 0 35px rgba(100,220,255,.95),
+      0 0 70px rgba(0,150,255,.85),
+      0 0 100px rgba(255,190,80,.45);
   }
 
   100% {
     box-shadow:
-      0 0 20px var(--mala-glow),
-      inset 0 0 25px #000;
+      0 0 18px rgba(0,150,255,.45),
+      0 0 40px rgba(0,110,255,.22);
   }
 
 }
@@ -187,35 +620,100 @@ h1 {
     malaCompletionPulse .65s ease-out;
 }
 
+/* =====================================
+   EK ONKAR
+===================================== */
+
 .ik-onkar {
   position: absolute;
+
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 260px;
+
+  transform:
+    translate(-50%, -50%);
+
+  font-size: 82px;
   line-height: 1;
-  color: var(--mala-color);
-  opacity: .10;
+
+  color: white;
+
+  opacity: 1;
+
+  text-shadow:
+    0 0 5px white,
+    0 0 12px #8bdcff,
+    0 0 25px #168cff,
+    0 0 40px rgba(22,140,255,.8);
+
   pointer-events: none;
   user-select: none;
-  z-index: 0;
+
+  z-index: 2;
+
+  animation:
+    ikGlow 2.5s ease-in-out infinite;
 }
+
+@keyframes ikGlow {
+
+  0%,
+  100% {
+    filter:
+      brightness(1);
+    text-shadow:
+      0 0 5px white,
+      0 0 12px #8bdcff,
+      0 0 25px #168cff;
+  }
+
+  50% {
+    filter:
+      brightness(1.25);
+    text-shadow:
+      0 0 8px white,
+      0 0 18px #b7edff,
+      0 0 35px #168cff,
+      0 0 55px rgba(22,140,255,.75);
+  }
+
+}
+
+/* =====================================
+   COUNT
+===================================== */
 
 .center-count {
   position: relative;
-  z-index: 2;
-  font-size: 40px;
+
+  z-index: 4;
+
+  margin-top: 58px;
+
+  font-size: 38px;
   font-weight: bold;
-  color: var(--mala-color);
-  text-shadow: 0 0 15px var(--mala-color);
+
+  color: white;
+
+  text-shadow:
+    0 0 8px white,
+    0 0 18px var(--mala-color),
+    0 0 30px var(--mala-glow);
 }
 
 .mala-number {
   position: relative;
-  z-index: 2;
-  color: #aaa;
+
+  z-index: 4;
+
+  color: #ddd;
+
   font-size: 12px;
-  margin-top: 6px;
+
+  margin-top: 4px;
+
+  text-shadow:
+    0 0 8px rgba(255,255,255,.35);
 }
 
 .mala-color-btn:hover {
@@ -225,14 +723,22 @@ h1 {
 .right-side-btn {
   position: fixed;
   right: 14px;
+
   width: 42px;
   height: 42px;
+
   padding: 0;
+
   border-radius: 50%;
+
   background: #191919;
+
   border: 1px solid #444;
+
   font-size: 19px;
+
   z-index: 100;
+
   cursor: pointer;
 }
 
@@ -246,15 +752,23 @@ h1 {
 
 .dark-mode-btn {
   position: fixed;
+
   top: 14px;
   right: 14px;
+
   width: 42px;
   height: 42px;
+
   padding: 0;
+
   border-radius: 50%;
+
   background: #191919;
+
   border: 1px solid #444;
+
   font-size: 19px;
+
   z-index: 100;
 }
 
@@ -262,15 +776,25 @@ h1 {
 
 .top-panel {
   display: none;
+
   position: fixed;
+
   right: 14px;
+
   width: 205px;
+
   padding: 10px;
+
   background: #101010;
+
   border: 1px solid #333;
+
   border-radius: 10px;
+
   z-index: 200;
-  box-shadow: 0 8px 25px rgba(0,0,0,.5);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.5);
 }
 
 .top-panel.open {
@@ -287,23 +811,32 @@ h1 {
 
 .color-title {
   color: #aaa;
+
   font-size: 11px;
+
   margin-bottom: 8px;
 }
 
 .colors {
   display: flex;
+
   justify-content: center;
+
   gap: 8px;
+
   flex-wrap: wrap;
 }
 
 .color-btn {
   width: 27px;
   height: 27px;
+
   padding: 0;
+
   border-radius: 50%;
+
   border: 2px solid #555;
+
   cursor: pointer;
 }
 
@@ -313,16 +846,38 @@ h1 {
 
 .color-btn.selected {
   border-color: white;
-  box-shadow: 0 0 10px white;
+
+  box-shadow:
+    0 0 10px white;
 }
 
-.red { background: #ff2020; }
-.orange { background: #ff8c00; }
-.yellow { background: #ffd700; }
-.green { background: #00d26a; }
-.blue { background: #168cff; }
-.purple { background: #a855f7; }
-.pink { background: #ff3b9d; }
+.red {
+  background: #ff2020;
+}
+
+.orange {
+  background: #ff8c00;
+}
+
+.yellow {
+  background: #ffd700;
+}
+
+.green {
+  background: #00d26a;
+}
+
+.blue {
+  background: #168cff;
+}
+
+.purple {
+  background: #a855f7;
+}
+
+.pink {
+  background: #ff3b9d;
+}
 
 .multi {
   background:
@@ -340,19 +895,29 @@ h1 {
 
 .controls {
   display: flex;
+
   gap: 8px;
+
   justify-content: center;
+
   margin: 12px 0;
 }
 
 button {
   border: 1px solid #444;
+
   border-radius: 10px;
+
   padding: 13px 15px;
+
   font-size: 14px;
+
   font-weight: bold;
+
   cursor: pointer;
+
   background: #191919;
+
   color: white;
 }
 
@@ -362,32 +927,46 @@ button:hover {
 
 .start {
   background: var(--mala-dark);
-  border-color: var(--mala-color);
+
+  border-color:
+    var(--mala-color);
 }
 
 .start:hover {
-  background: var(--mala-color);
+  background:
+    var(--mala-color);
 }
 
 .timeout-box {
   margin: 10px auto 15px;
+
   padding: 10px;
+
   max-width: 340px;
+
   background: #101010;
+
   border: 1px solid #292929;
+
   border-radius: 10px;
+
   color: #999;
+
   font-size: 13px;
 }
 
 .timeout-value {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-weight: bold;
 }
 
 .timer {
   margin-top: 5px;
+
   color: #777;
+
   font-size: 12px;
 }
 
@@ -395,33 +974,46 @@ button:hover {
 
 .calendar-box {
   margin-top: 12px;
+
   padding: 10px 12px;
+
   background: #101010;
+
   border: 1px solid #292929;
+
   border-radius: 10px;
 }
 
 .calendar-title {
   color: #aaa;
+
   font-size: 13px;
+
   font-weight: bold;
+
   margin-bottom: 8px;
 }
 
 .calendar-open-btn {
   width: 100%;
+
   padding: 9px 12px;
+
   font-size: 12px;
 }
 
 .selected-day {
   margin-top: 7px;
+
   color: #666;
+
   font-size: 11px;
 }
 
 #selectedDateLabel {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-weight: bold;
 }
 
@@ -429,28 +1021,41 @@ button:hover {
 
 .calendar-stats {
   margin-top: 12px;
+
   padding: 13px;
+
   background: #101010;
+
   border: 1px solid #292929;
+
   border-radius: 10px;
+
   text-align: left;
 }
 
 .calendar-stat-row {
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
   padding: 6px 2px;
+
   color: #aaa;
+
   font-size: 13px;
 }
 
 .calendar-stat-row + .calendar-stat-row {
-  border-top: 1px solid #292929;
+  border-top:
+    1px solid #292929;
 }
 
 .calendar-stat-value {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-weight: bold;
 }
 
@@ -458,12 +1063,20 @@ button:hover {
 
 .calendar-modal {
   display: none;
+
   position: fixed;
+
   inset: 0;
-  background: rgba(0,0,0,.78);
+
+  background:
+    rgba(0,0,0,.78);
+
   z-index: 500;
+
   justify-content: center;
+
   align-items: center;
+
   padding: 15px;
 }
 
@@ -473,69 +1086,109 @@ button:hover {
 
 .calendar-panel {
   width: 100%;
+
   max-width: 430px;
+
   max-height: 90vh;
+
   overflow-y: auto;
+
   background: #101010;
+
   border: 1px solid #333;
+
   border-radius: 16px;
+
   padding: 16px;
-  box-shadow: 0 15px 50px rgba(0,0,0,.7);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.7);
 }
 
 .calendar-header {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 10px;
+
   margin-bottom: 14px;
 }
 
 .calendar-month {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-size: 18px;
+
   font-weight: bold;
 }
 
 .calendar-nav {
   width: 42px;
+
   height: 38px;
+
   padding: 0;
+
   font-size: 25px;
+
   line-height: 1;
 }
 
 .calendar-weekdays {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
   gap: 4px;
+
   margin-bottom: 5px;
 }
 
 .calendar-weekday {
   color: #666;
+
   font-size: 9px;
+
   font-weight: bold;
+
   text-align: center;
+
   padding: 5px 0;
 }
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
   gap: 5px;
 }
 
 .calendar-day {
   min-height: 68px;
+
   padding: 5px 2px;
+
   border: 1px solid #292929;
+
   border-radius: 8px;
+
   background: #171717;
+
   cursor: pointer;
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
 }
 
@@ -545,36 +1198,51 @@ button:hover {
 
 .calendar-day.empty {
   background: transparent;
+
   border-color: transparent;
+
   cursor: default;
 }
 
 .calendar-day.today {
-  border-color: var(--mala-color);
+  border-color:
+    var(--mala-color);
 }
 
 .calendar-day.selected {
-  background: var(--mala-dark);
-  border-color: var(--mala-color);
+  background:
+    var(--mala-dark);
+
+  border-color:
+    var(--mala-color);
 }
 
 .day-number {
   font-size: 14px;
+
   font-weight: bold;
+
   color: #ddd;
 }
 
 .day-waheguru {
   margin-top: 3px;
+
   font-size: 8px;
-  color: var(--mala-color);
+
+  color:
+    var(--mala-color);
+
   line-height: 1.2;
 }
 
 .day-mala {
   margin-top: 2px;
+
   font-size: 8px;
+
   color: #aaa;
+
   line-height: 1.2;
 }
 
@@ -582,56 +1250,82 @@ button:hover {
 
 .calendar-details {
   margin-top: 15px;
+
   padding: 13px;
+
   background: #171717;
+
   border: 1px solid #292929;
+
   border-radius: 10px;
 }
 
 .calendar-details-title {
   color: #777;
+
   font-size: 11px;
+
   margin-bottom: 5px;
 }
 
 .calendar-details-date {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-size: 15px;
+
   font-weight: bold;
+
   margin-bottom: 10px;
 }
 
 .calendar-detail-row {
   display: flex;
+
   justify-content: space-between;
+
   padding: 7px 0;
-  border-top: 1px solid #292929;
+
+  border-top:
+    1px solid #292929;
+
   color: #aaa;
+
   font-size: 13px;
 }
 
 .calendar-detail-value {
-  color: var(--mala-color);
+  color:
+    var(--mala-color);
+
   font-weight: bold;
 }
 
 .calendar-close {
   width: 100%;
+
   margin-top: 12px;
 }
 
 .setting-row {
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
   padding: 7px 2px;
+
   color: #aaa;
+
   font-size: 13px;
 }
 
 .setting-row button {
   padding: 7px 12px;
+
   font-size: 12px;
+
   min-width: 65px;
 }
 
@@ -639,18 +1333,28 @@ button:hover {
 
 .reset-history-row {
   margin-top: 5px;
+
   padding-top: 9px;
-  border-top: 1px solid #292929;
+
+  border-top:
+    1px solid #292929;
+
   display: flex;
+
   flex-direction: column;
+
   gap: 7px;
 }
 
 .reset-history-btn {
   width: 100%;
+
   padding: 8px 10px;
+
   font-size: 12px;
+
   border-color: #661111;
+
   color: #ff7070;
 }
 
@@ -660,8 +1364,11 @@ button:hover {
 
 .note {
   margin-top: 18px;
+
   color: #555;
+
   font-size: 11px;
+
   line-height: 1.5;
 }
 
@@ -696,13 +1403,35 @@ body.light .calendar-stat-row + .calendar-stat-row {
   border-color: #ddd;
 }
 
+/*
+   V44 CENTER:
+   Keep electric center visible
+   in day mode too.
+*/
+
 body.light .center {
   background:
     radial-gradient(
       circle,
-      var(--mala-center) 0%,
-      #222 65%
+      rgba(80,170,255,.20) 0%,
+      rgba(255,255,255,0) 72%
     );
+
+  border-color:
+    rgba(22,140,255,.35);
+
+  box-shadow:
+    0 0 18px rgba(22,140,255,.45),
+    0 0 40px rgba(22,140,255,.20);
+}
+
+body.light .ik-onkar {
+  color: #ffffff;
+
+  text-shadow:
+    0 0 4px #168cff,
+    0 0 12px #168cff,
+    0 0 25px rgba(22,140,255,.7);
 }
 
 /*
@@ -711,13 +1440,17 @@ body.light .center {
 */
 body.light .bead.active {
   background: transparent;
+
   border-color: transparent;
+
   box-shadow: none;
 }
 
 body.light .bead.current {
   background: transparent;
+
   border-color: transparent;
+
   box-shadow: none;
 }
 
@@ -731,6 +1464,7 @@ body.light .bead.current {
 
   .app {
     padding-left: 10px;
+
     padding-right: 10px;
   }
 
@@ -740,16 +1474,30 @@ body.light .bead.current {
 
   .mala-wrapper {
     width: min(92vw, 370px);
+
     height: min(92vw, 370px);
   }
 
   .center {
-    width: 140px;
-    height: 140px;
+    width: 145px;
+
+    height: 145px;
+  }
+
+  .electric-energy {
+    width: 160px;
+
+    height: 160px;
   }
 
   .ik-onkar {
-    font-size: 170px;
+    font-size: 72px;
+  }
+
+  .center-count {
+    font-size: 36px;
+
+    margin-top: 54px;
   }
 
   .controls {
@@ -758,6 +1506,7 @@ body.light .bead.current {
 
   .controls button {
     padding: 12px 10px;
+
     font-size: 12px;
   }
 
@@ -881,7 +1630,7 @@ body.light .bead.current {
 </div>
 
 <h1>Waheguru Simran</h1>
-<div class="subtitle">Digital 108-Bead Mala—V43</div>
+<div class="subtitle">Digital 108-Bead Mala—V44</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -893,6 +1642,23 @@ body.light .bead.current {
 <div class="mala-wrapper">
 
   <div id="mala" class="mala">
+
+    <!-- V44 ELECTRIC CENTER ENERGY -->
+
+    <div class="electric-energy">
+
+      <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+
+      <div class="energy-spark spark1"></div>
+      <div class="energy-spark spark2"></div>
+      <div class="energy-spark spark3"></div>
+      <div class="energy-spark spark4"></div>
+      <div class="energy-spark spark5"></div>
+      <div class="energy-spark spark6"></div>
+
+    </div>
 
     <div class="ik-onkar">ੴ</div>
 
@@ -2244,7 +3010,7 @@ function addCount(amount) {
 }
 
 /* =====================================
-   MALA COMPLETE - V42
+   MALA COMPLETE - V44
 ===================================== */
 
 function malaComplete() {
@@ -2275,7 +3041,7 @@ function malaComplete() {
 }
 
 /* =====================================
-   V42 COMPLETION GLOW
+   V44 COMPLETION GLOW
 ===================================== */
 
 function triggerCompletionGlow() {
@@ -2300,7 +3066,7 @@ function triggerCompletionGlow() {
 }
 
 /* =====================================
-   V42 SOFT COMPLETION CHIME
+   V44 SOFT COMPLETION CHIME
 ===================================== */
 
 function completionChime() {
