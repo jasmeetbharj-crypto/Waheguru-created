@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 40</title>
+<title>Waheguru Simran - V 41</title>
 
 <style>
 * {
@@ -41,8 +41,24 @@ body.light {
   text-align: center;
 }
 
+/* =====================================
+   V41 UNIFIED HEADER CARD
+===================================== */
+
+.header-card {
+  margin: 0 auto 15px;
+  padding: 14px 14px 13px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 14px;
+}
+
+body.light .header-card {
+  background: #fff;
+}
+
 h1 {
-  margin: 5px 0 2px;
+  margin: 0 0 2px;
   font-size: 28px;
   color: var(--mala-color);
   text-shadow: 0 0 15px var(--mala-glow);
@@ -51,7 +67,12 @@ h1 {
 .subtitle {
   color: #888;
   font-size: 13px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+}
+
+.header-start {
+  width: 100%;
+  margin-top: 2px;
 }
 
 .status {
@@ -156,6 +177,38 @@ h1 {
   justify-content: center;
   align-items: center;
   overflow: visible;
+}
+
+/* =====================================
+   V41 COMPLETION GLOW
+===================================== */
+
+.center.completion-pulse {
+  animation: completionGlow .7s ease-out;
+}
+
+@keyframes completionGlow {
+
+  0% {
+    box-shadow:
+      0 0 20px var(--mala-glow),
+      inset 0 0 25px #000;
+  }
+
+  35% {
+    box-shadow:
+      0 0 28px var(--mala-color),
+      0 0 55px var(--mala-glow),
+      0 0 80px var(--mala-glow),
+      inset 0 0 25px #000;
+  }
+
+  100% {
+    box-shadow:
+      0 0 20px var(--mala-glow),
+      inset 0 0 25px #000;
+  }
+
 }
 
 .ik-onkar {
@@ -362,7 +415,18 @@ button:hover {
   font-size: 12px;
 }
 
-/* COMPACT CALENDAR */
+/* =====================================
+   CALENDAR / HISTORY HIDDEN
+   Existing calendar/history functionality
+   and saved data remain intact.
+===================================== */
+
+.calendar-box,
+.calendar-stats {
+  display: none;
+}
+
+/* CALENDAR COMPACT */
 
 .calendar-box {
   margin-top: 12px;
@@ -814,8 +878,23 @@ body.light .bead.current {
 
 </div>
 
-<h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V40</div>
+<!-- V41 UNIFIED HEADER -->
+
+<div class="header-card">
+
+  <h1>Waheguru Simran</h1>
+
+  <div class="subtitle">
+    Digital 108-Bead Mala—V41
+  </div>
+
+  <button
+    id="startBtn"
+    class="start header-start">
+    🎙️ Start
+  </button>
+
+</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -832,7 +911,7 @@ body.light .bead.current {
 
   </div>
 
-  <div class="center">
+  <div id="center" class="center">
 
     <div id="count" class="center-count">0</div>
 
@@ -859,10 +938,6 @@ body.light .bead.current {
 
 <div class="controls">
 
-  <button id="startBtn" class="start">
-    🎙️ Start
-  </button>
-
   <button id="pauseBtn">
     ⏸ Pause
   </button>
@@ -873,77 +948,9 @@ body.light .bead.current {
 
 </div>
 
-<!-- CALENDAR & HISTORY - SEPARATE -->
+<!-- CALENDAR & HISTORY VISIBLE SECTIONS REMOVED -->
 
-<div id="calendarBox" class="calendar-box">
-
-  <div class="calendar-title">
-    📅 Calendar & History
-  </div>
-
-  <button
-    id="openCalendarBtn"
-    class="calendar-open-btn">
-    📅 Open Calendar
-  </button>
-
-  <div class="selected-day">
-    Selected date:
-    <span id="selectedDateLabel">Today</span>
-  </div>
-
-</div>
-
-<div class="calendar-stats">
-
-  <div class="calendar-stat-row">
-    <span>🙏 Total Waheguru</span>
-    <span
-      id="calendarStatTotal"
-      class="calendar-stat-value">
-      0
-    </span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>📿 Completed Mala</span>
-    <span
-      id="calendarStatMalas"
-      class="calendar-stat-value">
-      0
-    </span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>📿 Malas This Week</span>
-    <span
-      id="calendarStatWeek"
-      class="calendar-stat-value">
-      0
-    </span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>📿 Malas This Month</span>
-    <span
-      id="calendarStatMonth"
-      class="calendar-stat-value">
-      0
-    </span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>📿 Malas This Year</span>
-    <span
-      id="calendarStatYear"
-      class="calendar-stat-value">
-      0
-    </span>
-  </div>
-
-</div>
-
-<!-- CALENDAR POPUP -->
+<!-- CALENDAR POPUP REMAINS AVAILABLE THROUGH EXISTING LOGIC -->
 
 <div
   id="calendarModal"
@@ -1101,21 +1108,6 @@ let vibrationEnabled =
 let multiColorEnabled =
   localStorage.getItem("wg_multi_color") === "true";
 
-/*
-   The colour belongs to the CURRENT mala.
-
-   0 = Red
-   1 = Orange
-   2 = Yellow
-   3 = Green
-   4 = Blue
-   5 = Purple
-   6 = Pink
-
-   It changes ONLY after a complete
-   108-count mala.
-*/
-
 let multiColorIndex =
   Number(
     localStorage.getItem(
@@ -1227,6 +1219,9 @@ const countEl =
 
 const malaNumberEl =
   document.getElementById("malaNumber");
+
+const centerEl =
+  document.getElementById("center");
 
 const status =
   document.getElementById("status");
@@ -1743,11 +1738,6 @@ function applyDarkMode() {
       ? "☀️"
       : "🌙";
 
-  /*
-     Night mode shows the mala.
-     Day mode makes active/current beads blank.
-  */
-
   updateDisplay();
 
 }
@@ -2035,6 +2025,10 @@ function getCompletedMalasForPeriod(
 
 function updateCalendarStats() {
 
+  if (!calendarStatTotal) {
+    return;
+  }
+
   calendarStatTotal.textContent =
     total;
 
@@ -2070,12 +2064,6 @@ function updateDisplay() {
   malaNumberEl.textContent =
     "Mala #" +
     currentMalaNumber;
-
-  /*
-     Multi Colour:
-     The colour is changed only when
-     a new mala starts at count 0.
-  */
 
   if (multiColorEnabled) {
 
@@ -2117,6 +2105,7 @@ function updateDisplay() {
   updateSelectedDateDisplay();
 
   if (
+    calendarModal &&
     calendarModal.classList.contains("open")
   ) {
 
@@ -2177,12 +2166,6 @@ function addCount(amount) {
       timestamp: Date.now()
     });
 
-    /*
-       Multi Colour changes ONLY here,
-       after the mala has completed and
-       count has returned to 0.
-    */
-
     if (multiColorEnabled) {
 
       multiColorIndex =
@@ -2200,6 +2183,12 @@ function addCount(amount) {
 
     }
 
+    /*
+       V41:
+       One completion effect for
+       each completed 108-bead mala.
+    */
+
     malaComplete();
 
   }
@@ -2209,10 +2198,24 @@ function addCount(amount) {
 }
 
 /* =====================================
-   MALA COMPLETE
+   V41 MALA COMPLETE
 ===================================== */
 
 function malaComplete() {
+
+  /*
+     Soft ambient chime
+  */
+
+  if (soundEnabled) {
+
+    completionChime();
+
+  }
+
+  /*
+     Short vibration
+  */
 
   if (
     vibrationEnabled &&
@@ -2222,18 +2225,124 @@ function malaComplete() {
     try {
 
       navigator.vibrate(
-        [200, 100, 200]
+        120
       );
 
     } catch(e) {}
 
   }
 
-  if (soundEnabled) {
+  /*
+     Soft glow pulse around
+     the central counter.
+  */
 
-    beep();
+  if (centerEl) {
+
+    centerEl.classList.remove(
+      "completion-pulse"
+    );
+
+    void centerEl.offsetWidth;
+
+    centerEl.classList.add(
+      "completion-pulse"
+    );
+
+    setTimeout(
+      () => {
+
+        centerEl.classList.remove(
+          "completion-pulse"
+        );
+
+      },
+      750
+    );
 
   }
+
+}
+
+/* =====================================
+   V41 COMPLETION CHIME
+===================================== */
+
+function completionChime() {
+
+  try {
+
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioCtx) {
+      return;
+    }
+
+    const ctx =
+      new AudioCtx();
+
+    const now =
+      ctx.currentTime;
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.setValueAtTime(
+      659.25,
+      now
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+      880,
+      now + 0.18
+    );
+
+    gain.gain.setValueAtTime(
+      0.001,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.12,
+      now + 0.03
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      now + 0.55
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start(
+      now
+    );
+
+    oscillator.stop(
+      now + 0.55
+    );
+
+    setTimeout(
+      () => {
+
+        try {
+          ctx.close();
+        } catch(e) {}
+
+      },
+      750
+    );
+
+  } catch(e) {}
 
 }
 
@@ -2327,6 +2436,7 @@ function countWaheguruMatches(text) {
 
 /* =====================================
    BEEP
+   Used for existing auto-pause behavior.
 ===================================== */
 
 function beep() {
@@ -3213,16 +3323,6 @@ function pauseListening() {
 
 function resetCurrentMala() {
 
-  /*
-    Reset only the CURRENT mala.
-
-    Completed mala history stays unchanged.
-    Total Waheguru stays unchanged.
-
-    Multi Colour does not advance because
-    Reset Mala is not a completed mala.
-  */
-
   count = 0;
 
   currentMalaNumber = 0;
@@ -3574,6 +3674,10 @@ function updateCalendarDetails() {
 
 function updateSelectedDateDisplay() {
 
+  if (!selectedDateLabel) {
+    return;
+  }
+
   if (
     selectedCalendarDate ===
     todayKey()
@@ -3627,21 +3731,20 @@ function closeCalendar() {
 
 }
 
-openCalendarBtn.addEventListener(
-  "click",
-  event => {
+if (openCalendarBtn) {
 
-    event.stopPropagation();
+  openCalendarBtn.addEventListener(
+    "click",
+    event => {
 
-    openCalendar();
+      event.stopPropagation();
 
-  }
-);
+      openCalendar();
 
-/*
-   Calendar now opens ONLY when
-   Open Calendar is pressed.
-*/
+    }
+  );
+
+}
 
 closeCalendarBtn.addEventListener(
   "click",
@@ -3742,11 +3845,6 @@ function checkMidnightReset() {
     count = 0;
 
     currentMalaNumber = 0;
-
-    /*
-       A new day starts the multi-colour
-       sequence again from Red.
-    */
 
     if (multiColorEnabled) {
 
