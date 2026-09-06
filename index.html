@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 28</title>
+<title>Waheguru Voice Counter - V 29</title>
 
 <style>
 * {
@@ -415,6 +415,214 @@ button:hover {
   margin-top: 4px;
 }
 
+/* =====================================
+   V29 CALENDAR BUTTON
+===================================== */
+
+.calendar-box {
+  margin: 12px 0;
+  padding: 12px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.calendar-box:hover {
+  border-color: var(--mala-dark);
+}
+
+.calendar-title {
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.calendar-open-btn {
+  width: 100%;
+  max-width: 260px;
+  background: #080808;
+  border: 1px solid #444;
+  color: white;
+  padding: 11px;
+  border-radius: 8px;
+}
+
+.calendar-open-btn:hover {
+  background: #191919;
+}
+
+.selected-day {
+  margin-top: 7px;
+  color: #777;
+  font-size: 11px;
+}
+
+.selected-day span {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* =====================================
+   V29 CALENDAR POPUP
+===================================== */
+
+.calendar-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+
+.calendar-modal.open {
+  display: flex;
+}
+
+.calendar-panel {
+  width: 100%;
+  max-width: 470px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 15px 45px rgba(0,0,0,.7);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.calendar-month {
+  color: var(--mala-color);
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.calendar-nav {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-weekdays {
+  margin-bottom: 6px;
+}
+
+.calendar-weekday {
+  color: #777;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.calendar-day {
+  min-height: 55px;
+  padding: 5px 2px;
+  border: 1px solid #292929;
+  border-radius: 8px;
+  background: #080808;
+  color: #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.calendar-day:hover {
+  border-color: var(--mala-dark);
+}
+
+.calendar-day.empty {
+  visibility: hidden;
+  cursor: default;
+}
+
+.calendar-day.today {
+  border-color: var(--mala-color);
+}
+
+.calendar-day.selected {
+  box-shadow: 0 0 10px var(--mala-glow);
+  border-color: var(--mala-light);
+}
+
+.day-number {
+  font-size: 12px;
+  color: #ddd;
+  margin-bottom: 4px;
+}
+
+.day-count {
+  width: 100%;
+  color: var(--mala-color);
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.calendar-details {
+  margin-top: 15px;
+  padding: 12px;
+  background: #080808;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.calendar-details-title {
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.calendar-details-date {
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.calendar-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 7px;
+  color: #888;
+  font-size: 12px;
+}
+
+.calendar-detail-value {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+.calendar-close {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* =====================================
+   DAILY RECORDS
+===================================== */
+
 .records {
   margin-top: 18px;
   text-align: left;
@@ -441,50 +649,6 @@ button:hover {
 }
 
 .record-count {
-  color: var(--mala-color);
-  font-weight: bold;
-}
-
-.calendar-box {
-  margin: 12px 0;
-  padding: 12px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.calendar-title {
-  color: #aaa;
-  font-size: 12px;
-  margin-bottom: 7px;
-}
-
-.calendar-box input {
-  width: 100%;
-  max-width: 220px;
-  padding: 10px;
-  background: #080808;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 8px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.calendar-box input:focus {
-  outline: none;
-  border-color: var(--mala-color);
-  box-shadow: 0 0 8px var(--mala-glow);
-}
-
-.selected-day {
-  margin-top: 7px;
-  color: #777;
-  font-size: 11px;
-}
-
-.selected-day span {
   color: var(--mala-color);
   font-weight: bold;
 }
@@ -531,12 +695,24 @@ body.light .manual,
 body.light .stat,
 body.light .record,
 body.light .calendar-box,
-body.light .settings {
+body.light .settings,
+body.light .calendar-panel {
   background: #fff;
 }
 
-body.light .manual-row input,
-body.light .calendar-box input {
+body.light .calendar-open-btn,
+body.light .calendar-day,
+body.light .calendar-details {
+  background: #f7f7f7;
+  color: #111;
+}
+
+body.light .calendar-day .day-number,
+body.light .calendar-details-date {
+  color: #111;
+}
+
+body.light .manual-row input {
   background: #f7f7f7;
   color: #111;
 }
@@ -590,6 +766,14 @@ body.light .settings-title {
     font-size: 12px;
   }
 
+  .calendar-day {
+    min-height: 51px;
+  }
+
+  .day-count {
+    font-size: 8px;
+  }
+
 }
 </style>
 </head>
@@ -603,7 +787,7 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V28</div>
+<div class="subtitle">Digital 108-Bead Mala—V29</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -788,15 +972,23 @@ body.light .settings-title {
 
 </div>
 
-<div class="calendar-box">
+<!-- =====================================
+     V29 CALENDAR SECTION
+===================================== -->
+
+<div
+  id="calendarBox"
+  class="calendar-box">
 
   <div class="calendar-title">
-    📅 Select Date
+    📅 Calendar & History
   </div>
 
-  <input
-    id="calendarDate"
-    type="date">
+  <button
+    id="openCalendarBtn"
+    class="calendar-open-btn">
+    📅 Open Calendar
+  </button>
 
   <div class="selected-day">
     Selected date:
@@ -805,11 +997,100 @@ body.light .settings-title {
 
 </div>
 
-<div class="records">
+<!-- =====================================
+     V29 CALENDAR POPUP
+===================================== -->
 
-  <h2>📅 Daily Records</h2>
+<div
+  id="calendarModal"
+  class="calendar-modal">
 
-  <div id="recordsList"></div>
+  <div class="calendar-panel">
+
+    <div class="calendar-header">
+
+      <button
+        id="previousMonthBtn"
+        class="calendar-nav">
+        ‹
+      </button>
+
+      <div
+        id="calendarMonth"
+        class="calendar-month">
+        September 2026
+      </div>
+
+      <button
+        id="nextMonthBtn"
+        class="calendar-nav">
+        ›
+      </button>
+
+    </div>
+
+    <div class="calendar-weekdays">
+
+      <div class="calendar-weekday">SUN</div>
+      <div class="calendar-weekday">MON</div>
+      <div class="calendar-weekday">TUE</div>
+      <div class="calendar-weekday">WED</div>
+      <div class="calendar-weekday">THU</div>
+      <div class="calendar-weekday">FRI</div>
+      <div class="calendar-weekday">SAT</div>
+
+    </div>
+
+    <div
+      id="calendarGrid"
+      class="calendar-grid">
+    </div>
+
+    <div class="calendar-details">
+
+      <div class="calendar-details-title">
+        Selected Date
+      </div>
+
+      <div
+        id="calendarDetailsDate"
+        class="calendar-details-date">
+        Today
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>🙏 Waheguru</span>
+
+        <span
+          id="calendarDetailsCount"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>📿 Completed Malas</span>
+
+        <span
+          id="calendarDetailsMalas"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+    </div>
+
+    <button
+      id="closeCalendarBtn"
+      class="calendar-close">
+      Close Calendar
+    </button>
+
+  </div>
 
 </div>
 
@@ -1011,9 +1292,6 @@ const colorBox =
 const darkModeBtn =
   document.getElementById("darkModeBtn");
 
-const calendarDate =
-  document.getElementById("calendarDate");
-
 const selectedDateLabel =
   document.getElementById("selectedDateLabel");
 
@@ -1022,6 +1300,43 @@ const soundBtn =
 
 const vibrationBtn =
   document.getElementById("vibrationBtn");
+
+/* =====================================
+   V29 CALENDAR ELEMENTS
+===================================== */
+
+const calendarBox =
+  document.getElementById("calendarBox");
+
+const openCalendarBtn =
+  document.getElementById("openCalendarBtn");
+
+const calendarModal =
+  document.getElementById("calendarModal");
+
+const closeCalendarBtn =
+  document.getElementById("closeCalendarBtn");
+
+const previousMonthBtn =
+  document.getElementById("previousMonthBtn");
+
+const nextMonthBtn =
+  document.getElementById("nextMonthBtn");
+
+const calendarMonth =
+  document.getElementById("calendarMonth");
+
+const calendarGrid =
+  document.getElementById("calendarGrid");
+
+const calendarDetailsDate =
+  document.getElementById("calendarDetailsDate");
+
+const calendarDetailsCount =
+  document.getElementById("calendarDetailsCount");
+
+const calendarDetailsMalas =
+  document.getElementById("calendarDetailsMalas");
 
 /* =====================================
    DATE HELPERS
@@ -1060,6 +1375,85 @@ function formatDate(dateString) {
     parts[2] +
     "/" +
     parts[0]
+  );
+
+}
+
+/* =====================================
+   V29 CALENDAR DATE HELPERS
+===================================== */
+
+function dateKeyFromParts(
+  year,
+  month,
+  day
+) {
+
+  return (
+    year +
+    "-" +
+    String(month + 1).padStart(2, "0") +
+    "-" +
+    String(day).padStart(2, "0")
+  );
+
+}
+
+function getCompletedMalasForDate(
+  dateKey
+) {
+
+  let result = 0;
+
+  malaHistory.forEach(
+    entry => {
+
+      if (
+        entry &&
+        entry.date === dateKey
+      ) {
+
+        result++;
+
+      }
+
+    }
+  );
+
+  return result;
+
+}
+
+function formatLongDate(
+  dateString
+) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  const d =
+    new Date(
+      Number(parts[0]),
+      Number(parts[1]) - 1,
+      Number(parts[2])
+    );
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
   );
 
 }
@@ -1491,6 +1885,10 @@ function updateDisplay() {
   updateRecords();
   updateSelectedDateDisplay();
 
+  if (calendarModal.classList.contains("open")) {
+    renderCalendar();
+  }
+
 }
 
 /* =====================================
@@ -1536,10 +1934,6 @@ function addCount(amount) {
     count -= MALA_SIZE;
 
     completedMalas++;
-
-    /* =====================================
-       V28: SAVE EACH COMPLETED MALA
-    ===================================== */
 
     malaHistory.push({
       date: todayKey(),
@@ -2317,7 +2711,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V28 Recognized:",
+        "V29 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2371,7 +2765,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V28 NEW COUNT:",
+          "V29 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2391,7 +2785,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V28 Speech recognition:",
+      "V29 Speech recognition:",
       error
     );
 
@@ -2552,7 +2946,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V28 Recognition start error:",
+      "V29 Recognition start error:",
       e
     );
 
@@ -2661,9 +3055,6 @@ function pauseListening() {
 
 /* =====================================
    RESET CURRENT MALA
-   V28 FIX:
-   ONLY RESET CURRENT COUNT
-   DO NOT RESET COMPLETED MALAS
 ===================================== */
 
 function resetCurrentMala() {
@@ -2680,9 +3071,6 @@ function resetCurrentMala() {
   }
 
   count = 0;
-
-  /* V28:
-     completedMalas is intentionally NOT changed. */
 
   updateDisplay();
 
@@ -2760,11 +3148,10 @@ resetBtn.addEventListener(
 
 function updateExtraStats() {
 
-  /* =====================================
-     V28:
+  /*
      WEEK = COMPLETED MALAS THIS WEEK
      MONTH = COMPLETED MALAS THIS MONTH
-  ===================================== */
+  */
 
   const weekly =
     countCompletedMalasForPeriod(
@@ -2865,22 +3252,203 @@ function updateRecords() {
 }
 
 /* =====================================
-   CALENDAR
+   V29 CALENDAR
 ===================================== */
+
+let calendarViewDate =
+  new Date();
+
+let selectedCalendarDate =
+  todayKey();
+
+function renderCalendar() {
+
+  const year =
+    calendarViewDate.getFullYear();
+
+  const month =
+    calendarViewDate.getMonth();
+
+  const monthName =
+    calendarViewDate.toLocaleDateString(
+      undefined,
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+  calendarMonth.textContent =
+    monthName;
+
+  calendarGrid.innerHTML =
+    "";
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
+
+  const daysInMonth =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "calendar-day empty";
+
+    calendarGrid.appendChild(
+      empty
+    );
+
+  }
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const key =
+      dateKeyFromParts(
+        year,
+        month,
+        day
+      );
+
+    const dayButton =
+      document.createElement(
+        "div"
+      );
+
+    dayButton.className =
+      "calendar-day";
+
+    if (
+      key === todayKey()
+    ) {
+
+      dayButton.classList.add(
+        "today"
+      );
+
+    }
+
+    if (
+      key === selectedCalendarDate
+    ) {
+
+      dayButton.classList.add(
+        "selected"
+      );
+
+    }
+
+    const number =
+      document.createElement(
+        "div"
+      );
+
+    number.className =
+      "day-number";
+
+    number.textContent =
+      day;
+
+    const count =
+      document.createElement(
+        "div"
+      );
+
+    count.className =
+      "day-count";
+
+    const dailyCount =
+      records[key] || 0;
+
+    count.textContent =
+      dailyCount > 0
+        ? Number(dailyCount).toLocaleString()
+        : "";
+
+    dayButton.appendChild(
+      number
+    );
+
+    dayButton.appendChild(
+      count
+    );
+
+    dayButton.addEventListener(
+      "click",
+      () => {
+
+        selectedCalendarDate =
+          key;
+
+        updateCalendarDetails();
+
+        renderCalendar();
+
+        updateSelectedDateDisplay();
+
+      }
+    );
+
+    calendarGrid.appendChild(
+      dayButton
+    );
+
+  }
+
+  updateCalendarDetails();
+
+}
+
+function updateCalendarDetails() {
+
+  const key =
+    selectedCalendarDate;
+
+  const amount =
+    Number(records[key] || 0);
+
+  const malas =
+    getCompletedMalasForDate(
+      key
+    );
+
+  calendarDetailsDate.textContent =
+    formatLongDate(key);
+
+  calendarDetailsCount.textContent =
+    amount.toLocaleString();
+
+  calendarDetailsMalas.textContent =
+    malas.toLocaleString();
+
+}
 
 function updateSelectedDateDisplay() {
 
   const selected =
-    calendarDate.value;
-
-  if (!selected) {
-
-    selectedDateLabel.textContent =
-      "Today";
-
-    return;
-
-  }
+    selectedCalendarDate ||
+    todayKey();
 
   if (
     selected === todayKey()
@@ -2899,50 +3467,150 @@ function updateSelectedDateDisplay() {
 
 }
 
-calendarDate.addEventListener(
-  "change",
-  () => {
+/* =====================================
+   OPEN CALENDAR
+===================================== */
 
-    const selected =
-      calendarDate.value;
+function openCalendar() {
 
-    if (!selected) {
-      return;
-    }
-
-    const amount =
-      records[selected] || 0;
-
-    selectedDateLabel.textContent =
-      selected === todayKey()
-        ? "Today — " +
-          formatDate(selected)
-        : formatDate(selected);
-
-    console.log(
-      "Record for " +
-      selected +
-      ": " +
-      amount
+  calendarViewDate =
+    new Date(
+      selectedCalendarDate + "T00:00:00"
     );
+
+  calendarModal.classList.add(
+    "open"
+  );
+
+  renderCalendar();
+
+}
+
+openCalendarBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    openCalendar();
+
+  }
+);
+
+calendarBox.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target !==
+      openCalendarBtn
+    ) {
+
+      openCalendar();
+
+    }
 
   }
 );
 
 /* =====================================
-   SET CALENDAR TO TODAY
+   CLOSE CALENDAR
 ===================================== */
 
-calendarDate.value =
+function closeCalendar() {
+
+  calendarModal.classList.remove(
+    "open"
+  );
+
+}
+
+closeCalendarBtn.addEventListener(
+  "click",
+  closeCalendar
+);
+
+calendarModal.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target ===
+      calendarModal
+    ) {
+
+      closeCalendar();
+
+    }
+
+  }
+);
+
+/* =====================================
+   PREVIOUS MONTH
+===================================== */
+
+previousMonthBtn.addEventListener(
+  "click",
+  () => {
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() - 1
+    );
+
+    renderCalendar();
+
+  }
+);
+
+/* =====================================
+   NEXT MONTH
+===================================== */
+
+nextMonthBtn.addEventListener(
+  "click",
+  () => {
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() + 1
+    );
+
+    renderCalendar();
+
+  }
+);
+
+/* =====================================
+   ESCAPE CLOSE
+===================================== */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape" &&
+      calendarModal.classList.contains("open")
+    ) {
+
+      closeCalendar();
+
+    }
+
+  }
+);
+
+/* =====================================
+   INITIALIZE CALENDAR
+===================================== */
+
+selectedCalendarDate =
   todayKey();
 
 updateSelectedDateDisplay();
 
 /* =====================================
    MIDNIGHT RESET
-   V28 FIX:
-   ONLY RESET CURRENT MALA COUNT
-   COMPLETED MALAS STAY SAVED
 ===================================== */
 
 function checkMidnightReset() {
@@ -2970,18 +3638,15 @@ function checkMidnightReset() {
     savedDate !== currentDate
   ) {
 
-    /* V28:
-       Only the current mala resets. */
-
     count = 0;
-
-    /* V28:
-       completedMalas is intentionally NOT reset. */
 
     localStorage.setItem(
       "wg_current_date",
       currentDate
     );
+
+    selectedCalendarDate =
+      currentDate;
 
     updateDisplay();
 
