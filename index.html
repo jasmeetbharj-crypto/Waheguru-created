@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Waheguru Voice Counter - V 22</title>
 
-<style>
+<style>oo
 * {
   box-sizing: border-box;
 }
@@ -931,26 +931,7 @@ let audioMonitor = null;
 
 const recognitionLanguage = "en-IN";
 
-/*
-   V22 uses a longer restart delay than V21.
-   This helps prevent Safari from receiving
-   repeated start() calls too quickly.
-*/
-
 const RECOGNITION_RESTART_DELAY = 500;
-
-/*
-   V22 keeps a small history of recently
-   processed FINAL transcripts.
-
-   This protects against some browsers
-   sending the same final phrase again
-   immediately after a recognition restart.
-*/
-
-const recentFinalTranscripts = [];
-
-const MAX_RECENT_FINALS = 12;
 
 /* =====================================
    ELEMENTS
@@ -1621,12 +1602,6 @@ function countGurmukhi(text) {
       .replace(/\s+/g, " ")
       .trim();
 
-  /*
-     The longer forms are checked first.
-     This makes recognition more tolerant
-     of spacing variations.
-  */
-
   const pattern =
     /ਵਾਹੇ?\s*ਗੁਰੂ|ਵਾਹੇ?\s*ਗੁਰੁ/g;
 
@@ -1651,31 +1626,6 @@ function countEnglish(text) {
 
   const normalized =
     normalizeText(text);
-
-  /*
-     V22 accepts additional common
-     speech-to-text variations.
-
-     Examples:
-
-       waheguru
-       wahe guru
-       wahe-guru
-       waheguroo
-       waheguro
-       waheguruu
-       waheguruji
-       wahe guru ji
-       vaheguru
-       vahiguru
-       wahi guru
-       vah guru
-       wah guru
-       way guru
-       wahe gooru
-       wahe gooro
-       wahegoru
-  */
 
   const englishPattern =
     /\b(?:waheguru|wahe\s+guru|waheguroo|waheguro|waheguruu|waheguruji|wahe\s+guru\s+ji|vaheguru|vahiguru|wahi\s+guru|vah\s+guru|wah\s+guru|way\s+guru|wahe\s+gooru|wahe\s+gooro|wahegoru)\b/gi;
@@ -2150,7 +2100,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V22 SPEECH RECOGNITION
+   V23 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2175,18 +2125,6 @@ function setupRecognition() {
   r.continuous =
     true;
 
-  /*
-     V22 uses interim results only for
-     displaying what was heard.
-
-     Counting is performed from FINAL
-     recognition results.
-
-     This is intentionally safer than
-     repeatedly counting changing interim
-     transcripts on iPhone/Safari.
-  */
-
   r.interimResults =
     true;
 
@@ -2198,56 +2136,31 @@ function setupRecognition() {
 
 
   /*
-     Each recognition session has its own
-     processed-final-result tracking.
+     Track only FINAL result indexes
+     inside the current recognition
+     session.
+
+     IMPORTANT:
+
+     We do NOT store previous transcripts.
+
+     Therefore, if the user says:
+
+       Waheguru
+       Waheguru
+       Waheguru
+
+     each new recognition result can
+     be counted.
   */
 
   const processedFinalResults =
     new Set();
 
 
-  /*
-     Used to prevent the exact same final
-     transcript from being immediately
-     counted twice after a browser restart.
-  */
-
-  function isRecentDuplicate(transcript) {
-
-    const normalized =
-      normalizeText(transcript);
-
-    if (!normalized) {
-      return false;
-    }
-
-    if (
-      recentFinalTranscripts.includes(
-        normalized
-      )
-    ) {
-
-      return true;
-
-    }
-
-    recentFinalTranscripts.push(
-      normalized
-    );
-
-    while (
-      recentFinalTranscripts.length >
-      MAX_RECENT_FINALS
-    ) {
-
-      recentFinalTranscripts.shift();
-
-    }
-
-    return false;
-
-  }
-
+  /* =====================================
+     RECOGNITION START
+  ===================================== */
 
   r.onstart = () => {
 
@@ -2267,11 +2180,6 @@ function setupRecognition() {
 
     }
 
-    /*
-       Recognition itself is also treated
-       as activity when it starts.
-    */
-
     lastActivityAt =
       performance.now();
 
@@ -2280,13 +2188,9 @@ function setupRecognition() {
   };
 
 
-  /*
-     V22 speech start.
-
-     Some browsers provide these events
-     even when the audio analyser does not
-     immediately detect enough RMS activity.
-  */
+  /* =====================================
+     SPEECH START
+  ===================================== */
 
   r.onspeechstart = () => {
 
@@ -2300,6 +2204,10 @@ function setupRecognition() {
   };
 
 
+  /* =====================================
+     AUDIO START
+  ===================================== */
+
   r.onaudiostart = () => {
 
     if (listening) {
@@ -2311,6 +2219,10 @@ function setupRecognition() {
 
   };
 
+
+  /* =====================================
+     RECOGNITION RESULT
+  ===================================== */
 
   r.onresult = event => {
 
@@ -2349,11 +2261,7 @@ function setupRecognition() {
 
 
       /*
-         Display what the browser currently
-         hears.
-
-         This does NOT automatically count
-         interim speech.
+         Display the current speech.
       */
 
       heardText.textContent =
@@ -2362,7 +2270,7 @@ function setupRecognition() {
 
 
       console.log(
-        "V22 Recognized:",
+        "V23 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2370,15 +2278,7 @@ function setupRecognition() {
 
 
       /*
-         =================================
-         INTERIM RESULT
-         =================================
-
-         Interim results are displayed only.
-
-         We do not add counts here because
-         Safari can repeatedly revise the
-         same phrase.
+         Do not count interim results.
       */
 
       if (!result.isFinal) {
@@ -2389,13 +2289,11 @@ function setupRecognition() {
 
 
       /*
-         =================================
-         FINAL RESULT
-         =================================
+         Process this final result index
+         only once.
 
-         Process a final result only once
-         during the current recognition
-         session.
+         This protects against the browser
+         firing the same result event again.
       */
 
       if (
@@ -2410,34 +2308,18 @@ function setupRecognition() {
 
 
       /*
-         Check whether this exact final
-         transcript was already received
-         immediately before a browser
-         recognition restart.
-      */
+         Count every occurrence inside
+         this NEW final result.
 
-      if (
-        isRecentDuplicate(transcript)
-      ) {
+         Examples:
 
-        console.log(
-          "V22 duplicate final ignored:",
-          transcript
-        );
+         "Waheguru"
+         = 1
 
-        continue;
-
-      }
-
-
-      /*
-         Count all Waheguru occurrences
-         inside the final transcript.
-
-         Example:
+         "Waheguru Waheguru"
+         = 2
 
          "Waheguru Waheguru Waheguru"
-
          = 3
       */
 
@@ -2455,12 +2337,14 @@ function setupRecognition() {
           matches
         );
 
-        /*
-           Voice activity happened.
-        */
-
         lastActivityAt =
           performance.now();
+
+        console.log(
+          "V23 COUNTED:",
+          matches,
+          "Waheguru occurrence(s)"
+        );
 
       }
 
@@ -2469,11 +2353,9 @@ function setupRecognition() {
   };
 
 
-  /*
-     =====================================
+  /* =====================================
      SPEECH ERROR
-     =====================================
-  */
+  ===================================== */
 
   r.onerror = event => {
 
@@ -2484,15 +2366,13 @@ function setupRecognition() {
 
 
     console.log(
-      "V22 Speech recognition:",
+      "V23 Speech recognition:",
       error
     );
 
 
     /*
-       Permission errors should stop
-       listening because the browser will
-       not allow another recognition start.
+       Permission errors.
     */
 
     if (
@@ -2523,12 +2403,7 @@ function setupRecognition() {
 
 
     /*
-       These errors can happen normally
-       when Safari closes a recognition
-       session.
-
-       We keep listening active and allow
-       onend to restart recognition.
+       Normal temporary errors.
     */
 
     if (
@@ -2542,11 +2417,7 @@ function setupRecognition() {
 
 
     /*
-       Network/audio/service errors can
-       also be temporary.
-
-       Restart safely if the user has
-       not pressed Pause.
+       Restart for temporary errors.
     */
 
     if (listening) {
@@ -2558,11 +2429,9 @@ function setupRecognition() {
   };
 
 
-  /*
-     =====================================
+  /* =====================================
      SPEECH END
-     =====================================
-  */
+  ===================================== */
 
   r.onend = () => {
 
@@ -2579,20 +2448,27 @@ function setupRecognition() {
 
 
     /*
-       Recognition result indexes belong
-       to the old recognition session.
+       Result indexes belong to the old
+       recognition session.
 
-       Clear them before starting a new
-       session.
+       Clear them before the new session.
+
+       There is NO transcript history.
+
+       Therefore:
+
+       Session 1:
+       "Waheguru" = counted
+
+       Session 2:
+       "Waheguru" = counted again
+
+       Session 3:
+       "Waheguru" = counted again
     */
 
     processedFinalResults.clear();
 
-
-    /*
-       Make sure the language remains set
-       after Safari creates the next session.
-    */
 
     try {
 
@@ -2612,7 +2488,7 @@ function setupRecognition() {
 }
 
 /* =====================================
-   V22 SAFE RESTART
+   V23 SAFE RESTART
 ===================================== */
 
 function scheduleRecognitionRestart() {
@@ -2645,7 +2521,7 @@ function scheduleRecognitionRestart() {
 }
 
 /* =====================================
-   V22 START RECOGNITION SAFELY
+   V23 START RECOGNITION SAFELY
 ===================================== */
 
 function startRecognitionSafely() {
@@ -2692,26 +2568,16 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V22 Recognition start error:",
+      "V23 Recognition start error:",
       e
     );
 
-
-    /*
-       If Safari says recognition is
-       already running, wait for onend
-       instead of repeatedly calling
-       start().
-    */
 
     if (
       e &&
       e.name ===
         "InvalidStateError"
     ) {
-
-      recognitionStarting =
-        false;
 
       return;
 
