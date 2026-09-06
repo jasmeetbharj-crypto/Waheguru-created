@@ -342,93 +342,7 @@ button:hover {
   font-size: 12px;
 }
 
-.manual {
-  margin: 15px 0;
-  padding: 15px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 12px;
-}
-
-.manual-title {
-  font-size: 15px;
-  color: #ddd;
-  margin-bottom: 10px;
-}
-
-.manual-row {
-  display: flex;
-  gap: 8px;
-}
-
-.manual-row input {
-  width: 100%;
-  background: #080808;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 9px;
-  padding: 13px;
-  font-size: 16px;
-  text-align: center;
-  outline: none;
-}
-
-.manual-row input:focus {
-  border-color: var(--mala-color);
-  box-shadow: 0 0 8px var(--mala-glow);
-}
-
-.manual-add-btn {
-  min-width: 105px;
-  background: var(--mala-dark);
-  border-color: var(--mala-color);
-  color: white;
-}
-
-.manual-add-btn:hover {
-  background: var(--mala-color);
-}
-
-/* =====================================
-   V34 CALENDAR
-===================================== */
-
-.calendar-box {
-  margin: 12px 0;
-  padding: 12px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.calendar-title {
-  color: #aaa;
-  font-size: 12px;
-  margin-bottom: 7px;
-}
-
-.calendar-open-btn {
-  margin-top: 2px;
-  padding: 10px 16px;
-  background: #191919;
-  border: 1px solid #444;
-  color: white;
-}
-
-.selected-day {
-  margin-top: 7px;
-  color: #777;
-  font-size: 11px;
-}
-
-.selected-day span {
-  color: var(--mala-color);
-  font-weight: bold;
-}
-
-/* V34 CALENDAR STATISTICS */
+/* V34 CHANTING STATISTICS */
 
 .calendar-stats {
   margin-top: 12px;
@@ -661,7 +575,6 @@ button:hover {
 
 body.light .status,
 body.light .timeout-box,
-body.light .manual,
 body.light .calendar-box,
 body.light .calendar-panel,
 body.light .calendar-details,
@@ -675,7 +588,6 @@ body.light .calendar-day.empty {
   background: transparent;
 }
 
-body.light .manual-title,
 body.light .settings-title {
   color: #333;
 }
@@ -763,7 +675,6 @@ body.light .center {
   <span id="statusText">Mic paused</span>
 </div>
 
-<!-- HEARD SECTION HIDDEN -->
 <div id="heardText" class="heard-text"></div>
 
 <div class="mala-wrapper">
@@ -779,7 +690,7 @@ body.light .center {
     <div id="count" class="center-count">0</div>
 
     <div id="malaNumber" class="mala-number">
-      Mala #1
+      Mala #0
     </div>
 
     <div id="colorBox" class="color-box">
@@ -881,33 +792,63 @@ body.light .center {
 
 </div>
 
-<div class="manual">
+<!-- V34 CHANTING STATISTICS -->
 
-  <div class="manual-title">
-    ➕ Manual Count
+<div class="calendar-stats">
+
+  <div class="calendar-stat-row">
+    <span>🙏 Chanting Count Today</span>
+    <span id="chantCountToday" class="calendar-stat-value">0</span>
   </div>
 
-  <div class="manual-row">
+  <div class="calendar-stat-row">
+    <span>🙏 Chanting Count This Week</span>
+    <span id="chantCountWeek" class="calendar-stat-value">0</span>
+  </div>
 
-    <input
-      id="manualInput"
-      type="number"
-      min="1"
-      step="1"
-      inputmode="numeric"
-      placeholder="Enter count">
+  <div class="calendar-stat-row">
+    <span>🙏 Chanting Count This Month</span>
+    <span id="chantCountMonth" class="calendar-stat-value">0</span>
+  </div>
 
-    <button
-      id="manualAddBtn"
-      class="manual-add-btn">
-      ➕ Add Count
-    </button>
+  <div class="calendar-stat-row">
+    <span>🙏 Chanting Count This Year</span>
+    <span id="chantCountYear" class="calendar-stat-value">0</span>
+  </div>
 
+  <div class="calendar-stat-row">
+    <span>🙏 Total Chanting Count</span>
+    <span id="chantCountTotal" class="calendar-stat-value">0</span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>⏱ Chanting Duration Today</span>
+    <span id="durationToday" class="calendar-stat-value">0:00</span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>⏱ Chanting Duration This Week</span>
+    <span id="durationWeek" class="calendar-stat-value">0:00</span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>⏱ Chanting Duration This Month</span>
+    <span id="durationMonth" class="calendar-stat-value">0:00</span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>⏱ Chanting Duration This Year</span>
+    <span id="durationYear" class="calendar-stat-value">0:00</span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>⏱ Total Chanting Duration</span>
+    <span id="durationTotal" class="calendar-stat-value">0:00</span>
   </div>
 
 </div>
 
-<!-- V34 CALENDAR -->
+<!-- CALENDAR -->
 
 <div
   id="calendarBox"
@@ -929,8 +870,6 @@ body.light .center {
   </div>
 
 </div>
-
-<!-- V34 CALENDAR STATISTICS -->
 
 <div class="calendar-stats">
 
@@ -981,7 +920,7 @@ body.light .center {
 
 </div>
 
-<!-- V34 CALENDAR POPUP -->
+<!-- CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1077,6 +1016,7 @@ body.light .center {
 </div>
 
 <!-- SETTINGS -->
+
 <div id="settingsBox" class="color-box">
 
   <div class="color-title">
@@ -1097,8 +1037,7 @@ body.light .center {
 
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
-  recognized occurrences. You can also enter a manual count
-  and press Add Count. The microphone automatically turns
+  recognized occurrences. The microphone automatically turns
   off after 45 seconds of continuous silence. The current
   mala resets automatically at midnight while completed
   malas and saved totals remain.
@@ -1154,6 +1093,41 @@ try {
   records = {};
 
 }
+
+/* =====================================
+   CHANTING DURATION DATA
+===================================== */
+
+let durationRecords;
+
+try {
+
+  durationRecords =
+    JSON.parse(
+      localStorage.getItem("wg_duration_records") || "{}"
+    );
+
+  if (
+    !durationRecords ||
+    typeof durationRecords !== "object"
+  ) {
+    durationRecords = {};
+  }
+
+} catch {
+
+  durationRecords = {};
+
+}
+
+let totalChantDuration =
+  Number(
+    localStorage.getItem(
+      "wg_total_chant_duration"
+    ) || 0
+  );
+
+let chantingSessionStart = null;
 
 /* =====================================
    MALA COMPLETION HISTORY
@@ -1247,12 +1221,6 @@ const pauseBtn =
 const resetBtn =
   document.getElementById("resetBtn");
 
-const manualInput =
-  document.getElementById("manualInput");
-
-const manualAddBtn =
-  document.getElementById("manualAddBtn");
-
 const colorBox =
   document.getElementById("colorBox");
 
@@ -1264,6 +1232,40 @@ const soundBtn =
 
 const vibrationBtn =
   document.getElementById("vibrationBtn");
+
+/* =====================================
+   V34 CHANTING STATISTICS ELEMENTS
+===================================== */
+
+const chantCountToday =
+  document.getElementById("chantCountToday");
+
+const chantCountWeek =
+  document.getElementById("chantCountWeek");
+
+const chantCountMonth =
+  document.getElementById("chantCountMonth");
+
+const chantCountYear =
+  document.getElementById("chantCountYear");
+
+const chantCountTotal =
+  document.getElementById("chantCountTotal");
+
+const durationToday =
+  document.getElementById("durationToday");
+
+const durationWeek =
+  document.getElementById("durationWeek");
+
+const durationMonth =
+  document.getElementById("durationMonth");
+
+const durationYear =
+  document.getElementById("durationYear");
+
+const durationTotal =
+  document.getElementById("durationTotal");
 
 /* =====================================
    V34 CALENDAR ELEMENTS
@@ -1362,6 +1364,340 @@ function formatDate(dateString) {
 }
 
 /* =====================================
+   DURATION FORMAT
+===================================== */
+
+function formatDuration(seconds) {
+
+  seconds =
+    Math.max(
+      0,
+      Math.floor(
+        Number(seconds) || 0
+      )
+    );
+
+  const hours =
+    Math.floor(
+      seconds / 3600
+    );
+
+  const minutes =
+    Math.floor(
+      (seconds % 3600) / 60
+    );
+
+  const secs =
+    seconds % 60;
+
+  if (hours > 0) {
+
+    return (
+      hours +
+      ":" +
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secs).padStart(2, "0")
+    );
+
+  }
+
+  return (
+    minutes +
+    ":" +
+    String(secs).padStart(2, "0")
+  );
+
+}
+
+/* =====================================
+   DURATION SAVE
+===================================== */
+
+function saveDurationData() {
+
+  localStorage.setItem(
+    "wg_duration_records",
+    JSON.stringify(durationRecords)
+  );
+
+  localStorage.setItem(
+    "wg_total_chant_duration",
+    totalChantDuration
+  );
+
+}
+
+/* =====================================
+   RECORD CURRENT SESSION DURATION
+===================================== */
+
+function recordChantingDuration() {
+
+  if (
+    chantingSessionStart === null
+  ) {
+
+    return;
+
+  }
+
+  const elapsed =
+    Math.max(
+      0,
+      Math.floor(
+        (
+          Date.now() -
+          chantingSessionStart
+        ) / 1000
+      )
+    );
+
+  if (elapsed <= 0) {
+
+    chantingSessionStart = null;
+
+    return;
+
+  }
+
+  const day =
+    todayKey();
+
+  durationRecords[day] =
+    (Number(durationRecords[day]) || 0) +
+    elapsed;
+
+  totalChantDuration +=
+    elapsed;
+
+  chantingSessionStart =
+    null;
+
+  saveDurationData();
+
+  updateChantingStatistics();
+
+}
+
+/* =====================================
+   GET PERIOD TOTAL
+===================================== */
+
+function getPeriodTotal(
+  data,
+  period
+) {
+
+  const now =
+    new Date();
+
+  let result = 0;
+
+  Object.keys(data).forEach(
+    key => {
+
+      const parts =
+        key.split("-");
+
+      if (parts.length !== 3) {
+        return;
+      }
+
+      const d =
+        new Date(
+          Number(parts[0]),
+          Number(parts[1]) - 1,
+          Number(parts[2])
+        );
+
+      const value =
+        Number(data[key]) || 0;
+
+      if (
+        period === "year"
+      ) {
+
+        if (
+          d.getFullYear() ===
+          now.getFullYear()
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+      if (
+        period === "month"
+      ) {
+
+        if (
+          d.getFullYear() ===
+            now.getFullYear() &&
+          d.getMonth() ===
+            now.getMonth()
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+      if (
+        period === "week"
+      ) {
+
+        const weekStart =
+          new Date(now);
+
+        weekStart.setHours(
+          0, 0, 0, 0
+        );
+
+        weekStart.setDate(
+          now.getDate() -
+          now.getDay()
+        );
+
+        const weekEnd =
+          new Date(weekStart);
+
+        weekEnd.setDate(
+          weekStart.getDate() + 7
+        );
+
+        if (
+          d >= weekStart &&
+          d < weekEnd
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+      if (
+        period === "today"
+      ) {
+
+        if (
+          key === todayKey()
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+    }
+  );
+
+  return result;
+
+}
+
+/* =====================================
+   V34 CHANTING STATISTICS
+===================================== */
+
+function updateChantingStatistics() {
+
+  chantCountToday.textContent =
+    getPeriodTotal(
+      records,
+      "today"
+    );
+
+  chantCountWeek.textContent =
+    getPeriodTotal(
+      records,
+      "week"
+    );
+
+  chantCountMonth.textContent =
+    getPeriodTotal(
+      records,
+      "month"
+    );
+
+  chantCountYear.textContent =
+    getPeriodTotal(
+      records,
+      "year"
+    );
+
+  chantCountTotal.textContent =
+    total;
+
+  let currentSessionSeconds = 0;
+
+  if (
+    chantingSessionStart !== null
+  ) {
+
+    currentSessionSeconds =
+      Math.max(
+        0,
+        Math.floor(
+          (
+            Date.now() -
+            chantingSessionStart
+          ) / 1000
+        )
+      );
+
+  }
+
+  durationToday.textContent =
+    formatDuration(
+      getPeriodTotal(
+        durationRecords,
+        "today"
+      ) +
+      currentSessionSeconds
+    );
+
+  durationWeek.textContent =
+    formatDuration(
+      getPeriodTotal(
+        durationRecords,
+        "week"
+      ) +
+      currentSessionSeconds
+    );
+
+  durationMonth.textContent =
+    formatDuration(
+      getPeriodTotal(
+        durationRecords,
+        "month"
+      ) +
+      currentSessionSeconds
+    );
+
+  durationYear.textContent =
+    formatDuration(
+      getPeriodTotal(
+        durationRecords,
+        "year"
+      ) +
+      currentSessionSeconds
+    );
+
+  durationTotal.textContent =
+    formatDuration(
+      totalChantDuration +
+      currentSessionSeconds
+    );
+
+}
+
+/* =====================================
    COLOR
 ===================================== */
 
@@ -1417,10 +1753,6 @@ function setColor(button) {
   button.classList.add("selected");
 
 }
-
-/* =====================================
-   COLOR BUTTONS
-===================================== */
 
 document
   .querySelectorAll(".color-btn")
@@ -1729,6 +2061,8 @@ function saveData() {
     todayKey()
   );
 
+  saveDurationData();
+
 }
 
 /* =====================================
@@ -1758,9 +2092,6 @@ function getTotalForPeriod(
 
   const now =
     new Date();
-
-  const today =
-    todayKey();
 
   let result = 0;
 
@@ -1887,9 +2218,19 @@ function updateDisplay() {
   countEl.textContent =
     count;
 
+  /*
+    Mala number is the saved completed-mala
+    number itself.
+
+    After Reset Mala:
+    completedMalas = 0
+    therefore:
+    Mala #0
+  */
+
   malaNumberEl.textContent =
     "Mala #" +
-    (completedMalas + 1);
+    completedMalas;
 
   const beads =
     document.querySelectorAll(".bead");
@@ -1921,6 +2262,8 @@ function updateDisplay() {
   saveData();
 
   updateCalendarStats();
+
+  updateChantingStatistics();
 
   updateSelectedDateDisplay();
 
@@ -2017,127 +2360,6 @@ function malaComplete() {
     beep();
 
   }
-
-}
-
-/* =====================================
-   COUNT COMPLETED MALAS
-===================================== */
-
-function countCompletedMalasForPeriod(
-  period
-) {
-
-  const now =
-    new Date();
-
-  let result = 0;
-
-  malaHistory.forEach(
-    entry => {
-
-      if (
-        !entry ||
-        !entry.date
-      ) {
-
-        return;
-
-      }
-
-      const parts =
-        entry.date.split("-");
-
-      if (parts.length !== 3) {
-        return;
-      }
-
-      const year =
-        Number(parts[0]);
-
-      const month =
-        Number(parts[1]) - 1;
-
-      const day =
-        Number(parts[2]);
-
-      const d =
-        new Date(
-          year,
-          month,
-          day
-        );
-
-      if (
-        period === "year"
-      ) {
-
-        if (
-          d.getFullYear() ===
-          now.getFullYear()
-        ) {
-
-          result++;
-
-        }
-
-      }
-
-      if (
-        period === "month"
-      ) {
-
-        if (
-          d.getFullYear() ===
-            now.getFullYear() &&
-          d.getMonth() ===
-            now.getMonth()
-        ) {
-
-          result++;
-
-        }
-
-      }
-
-      if (
-        period === "week"
-      ) {
-
-        const weekStart =
-          new Date(now);
-
-        weekStart.setHours(
-          0, 0, 0, 0
-        );
-
-        weekStart.setDate(
-          now.getDate() -
-          now.getDay()
-        );
-
-        const weekEnd =
-          new Date(weekStart);
-
-        weekEnd.setDate(
-          weekStart.getDate() + 7
-        );
-
-        if (
-          d >= weekStart &&
-          d < weekEnd
-        ) {
-
-          result++;
-
-        }
-
-      }
-
-    }
-  );
-
-  return result;
 
 }
 
@@ -2457,6 +2679,8 @@ function monitorAudio() {
     ) +
     " seconds";
 
+  updateChantingStatistics();
+
   if (
     remaining <= 0
   ) {
@@ -2568,6 +2792,8 @@ function autoPause() {
   if (!listening) {
     return;
   }
+
+  recordChantingDuration();
 
   listening = false;
 
@@ -2769,7 +2995,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V33 Recognized:",
+        "V34 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2823,7 +3049,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V33 NEW COUNT:",
+          "V34 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2843,7 +3069,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V33 Speech recognition:",
+      "V34 Speech recognition:",
       error
     );
 
@@ -2851,6 +3077,8 @@ function setupRecognition() {
       error === "not-allowed" ||
       error === "service-not-allowed"
     ) {
+
+      recordChantingDuration();
 
       listening =
         false;
@@ -3004,7 +3232,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V33 Recognition start error:",
+      "V34 Recognition start error:",
       e
     );
 
@@ -3059,6 +3287,9 @@ async function startListening() {
   listening =
     true;
 
+  chantingSessionStart =
+    Date.now();
+
   lastActivityAt =
     performance.now();
 
@@ -3066,6 +3297,8 @@ async function startListening() {
     "";
 
   setListeningStatus();
+
+  updateChantingStatistics();
 
   startRecognitionSafely();
 
@@ -3078,6 +3311,12 @@ async function startListening() {
 ===================================== */
 
 function pauseListening() {
+
+  if (listening) {
+
+    recordChantingDuration();
+
+  }
 
   listening =
     false;
@@ -3109,19 +3348,28 @@ function pauseListening() {
 
   setPausedStatus();
 
+  updateChantingStatistics();
+
 }
 
 /* =====================================
    V34 RESET CURRENT MALA
-   RESET ONLY CURRENT MALA COUNT
+   RESET MALA NUMBER AND COUNT TO 0
 ===================================== */
 
 function resetCurrentMala() {
 
   count = 0;
 
+  completedMalas = 0;
+
   localStorage.setItem(
     "wg_count",
+    "0"
+  );
+
+  localStorage.setItem(
+    "wg_malas",
     "0"
   );
 
@@ -3138,53 +3386,6 @@ function resetCurrentMala() {
   updateDisplay();
 
 }
-
-/* =====================================
-   MANUAL COUNT
-===================================== */
-
-function addManualCount() {
-
-  const value =
-    Number(
-      manualInput.value
-    );
-
-  if (
-    !Number.isFinite(value) ||
-    value <= 0
-  ) {
-
-    return;
-
-  }
-
-  addCount(value);
-
-  manualInput.value =
-    "";
-
-}
-
-manualAddBtn.addEventListener(
-  "click",
-  addManualCount
-);
-
-manualInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter"
-    ) {
-
-      addManualCount();
-
-    }
-
-  }
-);
 
 /* =====================================
    BUTTONS
@@ -3688,6 +3889,23 @@ function checkMidnightReset() {
 }
 
 /* =====================================
+   LIVE DURATION UPDATE
+===================================== */
+
+setInterval(
+  () => {
+
+    if (listening) {
+
+      updateChantingStatistics();
+
+    }
+
+  },
+  1000
+);
+
+/* =====================================
    MIDNIGHT CHECK
 ===================================== */
 
@@ -3711,6 +3929,8 @@ setPausedStatus();
 updateSettingsButtons();
 
 updateSelectedDateDisplay();
+
+updateChantingStatistics();
 
 </script>
 
