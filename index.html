@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 36</title>
+<title>Waheguru Voice Counter - V 37</title>
 
 <style>
 * {o
@@ -342,7 +342,41 @@ button:hover {
   font-size: 12px;
 }
 
-/* V36 TIME / DURATION */
+/* V37 COMPACT CALENDAR */
+
+.calendar-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.calendar-title {
+  color: #aaa;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.calendar-open-btn {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.selected-day {
+  margin-top: 7px;
+  color: #666;
+  font-size: 11px;
+}
+
+#selectedDateLabel {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* CALENDAR STATS */
 
 .calendar-stats {
   margin-top: 12px;
@@ -668,7 +702,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V36</div>
+<div class="subtitle">Digital 108-Bead Mala—V37</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -690,7 +724,7 @@ body.light .center {
     <div id="count" class="center-count">0</div>
 
     <div id="malaNumber" class="mala-number">
-      Mala #0 — 0/108
+      Mala #0
     </div>
 
     <div id="colorBox" class="color-box">
@@ -792,38 +826,7 @@ body.light .center {
 
 </div>
 
-<!-- V36 TIME / DURATION -->
-
-<div class="calendar-stats">
-
-  <div class="calendar-stat-row">
-    <span>⏱ Time / Duration Today</span>
-    <span id="durationToday" class="calendar-stat-value">0:00</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>⏱ Time / Duration This Week</span>
-    <span id="durationWeek" class="calendar-stat-value">0:00</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>⏱ Time / Duration This Month</span>
-    <span id="durationMonth" class="calendar-stat-value">0:00</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>⏱ Time / Duration This Year</span>
-    <span id="durationYear" class="calendar-stat-value">0:00</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>⏱ Total Time / Duration</span>
-    <span id="durationTotal" class="calendar-stat-value">0:00</span>
-  </div>
-
-</div>
-
-<!-- CALENDAR -->
+<!-- COMPACT CALENDAR -->
 
 <div
   id="calendarBox"
@@ -1012,13 +1015,10 @@ body.light .center {
 
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
-  recognized occurrences. Time / Duration counts only
-  while chanting activity is detected after “Waheguru”
-  is recognized. Silence while the mic is listening does
-  not add time. The microphone automatically turns off
-  after 45 seconds of continuous silence. The current
-  mala resets automatically at midnight while completed
-  malas and saved totals remain.
+  recognized occurrences. The microphone automatically
+  turns off after 45 seconds of continuous silence.
+  The current mala resets automatically at midnight
+  while completed malas and saved totals remain.
 </div>
 
 </div>
@@ -1041,11 +1041,6 @@ let completedMalas =
 /*
    Current Mala Number is separate from
    completed-mala history.
-
-   This allows Reset Mala to show:
-   Mala #0 — 0/108
-
-   while completedMalas remains unchanged.
 */
 
 const savedCurrentMalaNumber =
@@ -1100,54 +1095,6 @@ try {
   records = {};
 
 }
-
-/* =====================================
-   TIME / DURATION DATA
-===================================== */
-
-let durationRecords;
-
-try {
-
-  durationRecords =
-    JSON.parse(
-      localStorage.getItem("wg_duration_records") || "{}"
-    );
-
-  if (
-    !durationRecords ||
-    typeof durationRecords !== "object"
-  ) {
-    durationRecords = {};
-  }
-
-} catch {
-
-  durationRecords = {};
-
-}
-
-let totalChantDuration =
-  Number(
-    localStorage.getItem(
-      "wg_total_chant_duration"
-    ) || 0
-  );
-
-/*
-   Time starts only after a recognized
-   Waheguru match.
-
-   It accumulates microphone activity
-   rather than microphone listening time.
-*/
-
-let chantingSessionActive = false;
-let chantingAccumulatedMs = 0;
-let chantingLastAudioAt = 0;
-let chantingLastAudioFrameAt = null;
-
-const CHANTING_SILENCE_TIME = 1500;
 
 /* =====================================
    MALA COMPLETION HISTORY
@@ -1254,26 +1201,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V36 TIME / DURATION ELEMENTS
-===================================== */
-
-const durationToday =
-  document.getElementById("durationToday");
-
-const durationWeek =
-  document.getElementById("durationWeek");
-
-const durationMonth =
-  document.getElementById("durationMonth");
-
-const durationYear =
-  document.getElementById("durationYear");
-
-const durationTotal =
-  document.getElementById("durationTotal");
-
-/* =====================================
-   V36 CALENDAR ELEMENTS
+   V37 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1365,319 +1293,6 @@ function formatDate(dateString) {
     "/" +
     parts[0]
   );
-
-}
-
-/* =====================================
-   DURATION FORMAT
-===================================== */
-
-function formatDuration(seconds) {
-
-  seconds =
-    Math.max(
-      0,
-      Math.floor(
-        Number(seconds) || 0
-      )
-    );
-
-  const hours =
-    Math.floor(
-      seconds / 3600
-    );
-
-  const minutes =
-    Math.floor(
-      (seconds % 3600) / 60
-    );
-
-  const secs =
-    seconds % 60;
-
-  if (hours > 0) {
-
-    return (
-      hours +
-      ":" +
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(secs).padStart(2, "0")
-    );
-
-  }
-
-  return (
-    minutes +
-    ":" +
-    String(secs).padStart(2, "0")
-  );
-
-}
-
-/* =====================================
-   SAVE DURATION DATA
-===================================== */
-
-function saveDurationData() {
-
-  localStorage.setItem(
-    "wg_duration_records",
-    JSON.stringify(durationRecords)
-  );
-
-  localStorage.setItem(
-    "wg_total_chant_duration",
-    totalChantDuration
-  );
-
-}
-
-/* =====================================
-   START CHANTING TIME
-===================================== */
-
-function startChantingTime() {
-
-  if (chantingSessionActive) {
-    return;
-  }
-
-  chantingSessionActive = true;
-
-  chantingAccumulatedMs = 0;
-
-  chantingLastAudioAt =
-    performance.now();
-
-  chantingLastAudioFrameAt =
-    null;
-
-}
-
-/* =====================================
-   RECORD CHANTING TIME
-===================================== */
-
-function recordChantingDuration() {
-
-  if (!chantingSessionActive) {
-    return;
-  }
-
-  const elapsedSeconds =
-    Math.floor(
-      chantingAccumulatedMs / 1000
-    );
-
-  if (elapsedSeconds > 0) {
-
-    const day =
-      todayKey();
-
-    durationRecords[day] =
-      (Number(durationRecords[day]) || 0) +
-      elapsedSeconds;
-
-    totalChantDuration +=
-      elapsedSeconds;
-
-  }
-
-  chantingSessionActive = false;
-
-  chantingAccumulatedMs = 0;
-
-  chantingLastAudioAt = 0;
-
-  chantingLastAudioFrameAt =
-    null;
-
-  saveDurationData();
-
-  updateChantingStatistics();
-
-}
-
-/* =====================================
-   GET PERIOD TOTAL
-===================================== */
-
-function getPeriodTotal(
-  data,
-  period
-) {
-
-  const now =
-    new Date();
-
-  let result = 0;
-
-  Object.keys(data).forEach(
-    key => {
-
-      const parts =
-        key.split("-");
-
-      if (parts.length !== 3) {
-        return;
-      }
-
-      const d =
-        new Date(
-          Number(parts[0]),
-          Number(parts[1]) - 1,
-          Number(parts[2])
-        );
-
-      const value =
-        Number(data[key]) || 0;
-
-      if (
-        period === "year"
-      ) {
-
-        if (
-          d.getFullYear() ===
-          now.getFullYear()
-        ) {
-
-          result += value;
-
-        }
-
-      }
-
-      if (
-        period === "month"
-      ) {
-
-        if (
-          d.getFullYear() ===
-            now.getFullYear() &&
-          d.getMonth() ===
-            now.getMonth()
-        ) {
-
-          result += value;
-
-        }
-
-      }
-
-      if (
-        period === "week"
-      ) {
-
-        const weekStart =
-          new Date(now);
-
-        weekStart.setHours(
-          0, 0, 0, 0
-        );
-
-        weekStart.setDate(
-          now.getDate() -
-          now.getDay()
-        );
-
-        const weekEnd =
-          new Date(weekStart);
-
-        weekEnd.setDate(
-          weekStart.getDate() + 7
-        );
-
-        if (
-          d >= weekStart &&
-          d < weekEnd
-        ) {
-
-          result += value;
-
-        }
-
-      }
-
-      if (
-        period === "today"
-      ) {
-
-        if (
-          key === todayKey()
-        ) {
-
-          result += value;
-
-        }
-
-      }
-
-    }
-  );
-
-  return result;
-
-}
-
-/* =====================================
-   V36 TIME / DURATION STATISTICS
-===================================== */
-
-function updateChantingStatistics() {
-
-  let currentSessionSeconds = 0;
-
-  if (chantingSessionActive) {
-
-    currentSessionSeconds =
-      Math.floor(
-        chantingAccumulatedMs / 1000
-      );
-
-  }
-
-  durationToday.textContent =
-    formatDuration(
-      getPeriodTotal(
-        durationRecords,
-        "today"
-      ) +
-      currentSessionSeconds
-    );
-
-  durationWeek.textContent =
-    formatDuration(
-      getPeriodTotal(
-        durationRecords,
-        "week"
-      ) +
-      currentSessionSeconds
-    );
-
-  durationMonth.textContent =
-    formatDuration(
-      getPeriodTotal(
-        durationRecords,
-        "month"
-      ) +
-      currentSessionSeconds
-    );
-
-  durationYear.textContent =
-    formatDuration(
-      getPeriodTotal(
-        durationRecords,
-        "year"
-      ) +
-      currentSessionSeconds
-    );
-
-  durationTotal.textContent =
-    formatDuration(
-      totalChantDuration +
-      currentSessionSeconds
-    );
 
 }
 
@@ -2050,12 +1665,10 @@ function saveData() {
     todayKey()
   );
 
-  saveDurationData();
-
 }
 
 /* =====================================
-   V36 CALENDAR STATISTICS
+   V37 CALENDAR STATISTICS
 ===================================== */
 
 function getDateFromKey(key) {
@@ -2209,10 +1822,7 @@ function updateDisplay() {
 
   malaNumberEl.textContent =
     "Mala #" +
-    currentMalaNumber +
-    " — " +
-    count +
-    "/108";
+    currentMalaNumber;
 
   const beads =
     document.querySelectorAll(".bead");
@@ -2244,8 +1854,6 @@ function updateDisplay() {
   saveData();
 
   updateCalendarStats();
-
-  updateChantingStatistics();
 
   updateSelectedDateDisplay();
 
@@ -2636,79 +2244,12 @@ function monitorAudio() {
   const now =
     performance.now();
 
-  /* =====================================
-     NORMAL MIC ACTIVITY
-     Keeps the existing 45-second
-     auto-pause behavior unchanged.
-  ===================================== */
-
   if (
     rms >= AUDIO_THRESHOLD
   ) {
 
     lastActivityAt =
       now;
-
-  }
-
-  /* =====================================
-     V36 CHANTING TIME
-
-     Time starts only after a recognized
-     Waheguru match.
-
-     Only microphone activity is added.
-     Silence is not added.
-  ===================================== */
-
-  if (chantingSessionActive) {
-
-    if (
-      rms >= AUDIO_THRESHOLD
-    ) {
-
-      if (
-        chantingLastAudioFrameAt !== null
-      ) {
-
-        const frameElapsed =
-          now -
-          chantingLastAudioFrameAt;
-
-        chantingAccumulatedMs +=
-          Math.min(
-            100,
-            Math.max(
-              0,
-              frameElapsed
-            )
-          );
-
-      }
-
-      chantingLastAudioFrameAt =
-        now;
-
-      chantingLastAudioAt =
-        now;
-
-    } else {
-
-      chantingLastAudioFrameAt =
-        null;
-
-      if (
-        chantingLastAudioAt > 0 &&
-        now -
-          chantingLastAudioAt >=
-          CHANTING_SILENCE_TIME
-      ) {
-
-        recordChantingDuration();
-
-      }
-
-    }
 
   }
 
@@ -2729,8 +2270,6 @@ function monitorAudio() {
       remaining / 1000
     ) +
     " seconds";
-
-  updateChantingStatistics();
 
   if (
     remaining <= 0
@@ -2843,8 +2382,6 @@ function autoPause() {
   if (!listening) {
     return;
   }
-
-  recordChantingDuration();
 
   listening = false;
 
@@ -3069,13 +2606,6 @@ function setupRecognition() {
           currentMatches -
           previousMatches;
 
-        /*
-          Start Time / Duration only when
-          Waheguru is actually recognized.
-        */
-
-        startChantingTime();
-
         addCount(
           newMatches
         );
@@ -3135,8 +2665,6 @@ function setupRecognition() {
       error === "not-allowed" ||
       error === "service-not-allowed"
     ) {
-
-      recordChantingDuration();
 
       listening =
         false;
@@ -3345,23 +2873,6 @@ async function startListening() {
   listening =
     true;
 
-  /*
-    IMPORTANT:
-    No chanting time starts here.
-
-    Time starts only after a recognized
-    Waheguru match.
-  */
-
-  chantingSessionActive = false;
-
-  chantingAccumulatedMs = 0;
-
-  chantingLastAudioAt = 0;
-
-  chantingLastAudioFrameAt =
-    null;
-
   lastActivityAt =
     performance.now();
 
@@ -3369,8 +2880,6 @@ async function startListening() {
     "";
 
   setListeningStatus();
-
-  updateChantingStatistics();
 
   startRecognitionSafely();
 
@@ -3383,12 +2892,6 @@ async function startListening() {
 ===================================== */
 
 function pauseListening() {
-
-  if (listening) {
-
-    recordChantingDuration();
-
-  }
 
   listening =
     false;
@@ -3420,12 +2923,10 @@ function pauseListening() {
 
   setPausedStatus();
 
-  updateChantingStatistics();
-
 }
 
 /* =====================================
-   V36 RESET CURRENT MALA
+   V37 RESET CURRENT MALA
 ===================================== */
 
 function resetCurrentMala() {
@@ -3485,7 +2986,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   V36 CALENDAR
+   V37 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
@@ -3974,23 +3475,6 @@ function checkMidnightReset() {
 }
 
 /* =====================================
-   LIVE DURATION UPDATE
-===================================== */
-
-setInterval(
-  () => {
-
-    if (listening) {
-
-      updateChantingStatistics();
-
-    }
-
-  },
-  1000
-);
-
-/* =====================================
    MIDNIGHT CHECK
 ===================================== */
 
@@ -4014,8 +3498,6 @@ setPausedStatus();
 updateSettingsButtons();
 
 updateSelectedDateDisplay();
-
-updateChantingStatistics();
 
 </script>
 
