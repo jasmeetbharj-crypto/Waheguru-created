@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 22</title>
+<title>Waheguru Voice Counter - V 23</title>
 
 <style>oo
 * {
@@ -602,7 +602,7 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V22</div>
+<div class="subtitle">Digital 108-Bead Mala—V23</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -926,7 +926,7 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V22 VOICE RECOGNITION
+   V23 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
@@ -1571,7 +1571,7 @@ function malaComplete() {
 }
 
 /* =====================================
-   V22 NORMALIZE SPEECH
+   V23 NORMALIZE SPEECH
 ===================================== */
 
 function normalizeText(text) {
@@ -1587,7 +1587,7 @@ function normalizeText(text) {
 }
 
 /* =====================================
-   V22 COUNT GURMUKHI
+   V23 COUNT GURMUKHI
 ===================================== */
 
 function countGurmukhi(text) {
@@ -1615,7 +1615,7 @@ function countGurmukhi(text) {
 }
 
 /* =====================================
-   V22 COUNT ENGLISH
+   V23 COUNT ENGLISH
 ===================================== */
 
 function countEnglish(text) {
@@ -1627,8 +1627,23 @@ function countEnglish(text) {
   const normalized =
     normalizeText(text);
 
+  /*
+     IMPORTANT V23 CHANGE:
+
+     Do NOT require word boundaries.
+
+     This allows:
+
+       waheguru
+       waheguru waheguru
+       waheguruwaheguru
+       waheguruwaheguruwaheguru
+
+     to be detected correctly.
+  */
+
   const englishPattern =
-    /\b(?:waheguru|wahe\s+guru|waheguroo|waheguro|waheguruu|waheguruji|wahe\s+guru\s+ji|vaheguru|vahiguru|wahi\s+guru|vah\s+guru|wah\s+guru|way\s+guru|wahe\s+gooru|wahe\s+gooro|wahegoru)\b/gi;
+    /waheguru|waheguroo|waheguro|waheguruu|waheguruji|wahe\s+guru\s+ji|wahe\s+guru|vaheguru|vahiguru|wahi\s+guru|vah\s+guru|wah\s+guru|way\s+guru|wahe\s+gooru|wahe\s+gooro|wahegoru/gi;
 
   const matches =
     normalized.match(
@@ -1642,7 +1657,7 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   V22 COUNT WAHEGURU MATCHES
+   V23 COUNT WAHEGURU MATCHES
 ===================================== */
 
 function countWaheguruMatches(text) {
@@ -2134,29 +2149,17 @@ function setupRecognition() {
   r.lang =
     recognitionLanguage;
 
-
   /*
-     Track only FINAL result indexes
-     inside the current recognition
-     session.
+     Only remember final RESULT INDEXES.
 
-     IMPORTANT:
+     We do NOT remember transcript text.
 
-     We do NOT store previous transcripts.
-
-     Therefore, if the user says:
-
-       Waheguru
-       Waheguru
-       Waheguru
-
-     each new recognition result can
-     be counted.
+     This means saying the same word again
+     is allowed.
   */
 
   const processedFinalResults =
     new Set();
-
 
   /* =====================================
      RECOGNITION START
@@ -2187,7 +2190,6 @@ function setupRecognition() {
 
   };
 
-
   /* =====================================
      SPEECH START
   ===================================== */
@@ -2202,7 +2204,6 @@ function setupRecognition() {
     }
 
   };
-
 
   /* =====================================
      AUDIO START
@@ -2219,7 +2220,6 @@ function setupRecognition() {
 
   };
 
-
   /* =====================================
      RECOGNITION RESULT
   ===================================== */
@@ -2230,7 +2230,6 @@ function setupRecognition() {
       return;
     }
 
-
     for (
       let i = event.resultIndex;
       i < event.results.length;
@@ -2239,7 +2238,6 @@ function setupRecognition() {
 
       const result =
         event.results[i];
-
 
       if (
         !result ||
@@ -2250,24 +2248,21 @@ function setupRecognition() {
 
       }
 
-
       const transcript =
         result[0].transcript.trim();
-
 
       if (!transcript) {
         continue;
       }
 
-
       /*
-         Display the current speech.
+         Show exactly what speech recognition
+         heard.
       */
 
       heardText.textContent =
         "Heard: " +
         transcript;
-
 
       console.log(
         "V23 Recognized:",
@@ -2276,9 +2271,9 @@ function setupRecognition() {
         result.isFinal
       );
 
-
       /*
-         Do not count interim results.
+         Interim results are displayed but
+         NEVER counted.
       */
 
       if (!result.isFinal) {
@@ -2287,13 +2282,9 @@ function setupRecognition() {
 
       }
 
-
       /*
-         Process this final result index
-         only once.
-
-         This protects against the browser
-         firing the same result event again.
+         Do not process the exact same
+         recognition result twice.
       */
 
       if (
@@ -2306,20 +2297,22 @@ function setupRecognition() {
 
       processedFinalResults.add(i);
 
-
       /*
-         Count every occurrence inside
-         this NEW final result.
+         Count ALL Waheguru occurrences
+         inside this final result.
 
          Examples:
 
-         "Waheguru"
+         waheguru
          = 1
 
-         "Waheguru Waheguru"
+         waheguru waheguru
          = 2
 
-         "Waheguru Waheguru Waheguru"
+         waheguruwaheguru
+         = 2
+
+         waheguruwaheguruwaheguru
          = 3
       */
 
@@ -2327,7 +2320,6 @@ function setupRecognition() {
         countWaheguruMatches(
           transcript
         );
-
 
       if (
         matches > 0
@@ -2352,7 +2344,6 @@ function setupRecognition() {
 
   };
 
-
   /* =====================================
      SPEECH ERROR
   ===================================== */
@@ -2364,16 +2355,10 @@ function setupRecognition() {
         ? event.error
         : "unknown";
 
-
     console.log(
       "V23 Speech recognition:",
       error
     );
-
-
-    /*
-       Permission errors.
-    */
 
     if (
       error === "not-allowed" ||
@@ -2401,11 +2386,6 @@ function setupRecognition() {
 
     }
 
-
-    /*
-       Normal temporary errors.
-    */
-
     if (
       error === "aborted" ||
       error === "no-speech"
@@ -2415,11 +2395,6 @@ function setupRecognition() {
 
     }
 
-
-    /*
-       Restart for temporary errors.
-    */
-
     if (listening) {
 
       scheduleRecognitionRestart();
@@ -2427,7 +2402,6 @@ function setupRecognition() {
     }
 
   };
-
 
   /* =====================================
      SPEECH END
@@ -2441,34 +2415,16 @@ function setupRecognition() {
     recognitionStarting =
       false;
 
-
     if (!listening) {
       return;
     }
 
-
     /*
-       Result indexes belong to the old
-       recognition session.
-
-       Clear them before the new session.
-
-       There is NO transcript history.
-
-       Therefore:
-
-       Session 1:
-       "Waheguru" = counted
-
-       Session 2:
-       "Waheguru" = counted again
-
-       Session 3:
-       "Waheguru" = counted again
+       A new recognition session gets
+       a fresh result-index history.
     */
 
     processedFinalResults.clear();
-
 
     try {
 
@@ -2477,11 +2433,9 @@ function setupRecognition() {
 
     } catch(e) {}
 
-
     scheduleRecognitionRestart();
 
   };
-
 
   return r;
 
@@ -2572,7 +2526,6 @@ function startRecognitionSafely() {
       e
     );
 
-
     if (
       e &&
       e.name ===
@@ -2582,7 +2535,6 @@ function startRecognitionSafely() {
       return;
 
     }
-
 
     if (listening) {
 
