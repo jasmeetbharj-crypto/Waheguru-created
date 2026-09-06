@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 30</title>
+<title>Waheguru Voice Counter - V 31</title>
 
 <style>
 * {
@@ -446,7 +446,7 @@ button:hover {
 }
 
 /* =====================================
-   V30 CALENDAR
+   V31 CALENDAR
 ===================================== */
 
 .calendar-box {
@@ -481,6 +481,32 @@ button:hover {
 
 .selected-day span {
   color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* V31 HISTORY TOTALS */
+
+.calendar-history-totals {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.calendar-history-total {
+  padding: 9px;
+  background: #080808;
+  border: 1px solid #292929;
+  border-radius: 8px;
+  color: #888;
+  font-size: 11px;
+}
+
+.calendar-history-value {
+  display: block;
+  margin-top: 4px;
+  color: var(--mala-color);
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -557,7 +583,7 @@ button:hover {
 }
 
 .calendar-day {
-  min-height: 52px;
+  min-height: 68px;
   padding: 5px 2px;
   border: 1px solid #292929;
   border-radius: 8px;
@@ -594,11 +620,21 @@ button:hover {
   color: #ddd;
 }
 
-.day-count {
-  margin-top: 4px;
-  font-size: 9px;
+.day-waheguru {
+  margin-top: 3px;
+  font-size: 8px;
   color: var(--mala-color);
+  line-height: 1.2;
 }
+
+.day-mala {
+  margin-top: 2px;
+  font-size: 8px;
+  color: #aaa;
+  line-height: 1.2;
+}
+
+/* CALENDAR DETAILS */
 
 .calendar-details {
   margin-top: 15px;
@@ -689,6 +725,10 @@ body.light .settings {
   background: #fff;
 }
 
+body.light .calendar-history-total {
+  background: #f7f7f7;
+}
+
 body.light .calendar-day.empty {
   background: transparent;
 }
@@ -755,7 +795,7 @@ body.light .center {
   }
 
   .calendar-day {
-    min-height: 48px;
+    min-height: 64px;
   }
 
 }
@@ -771,7 +811,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V30</div>
+<div class="subtitle">Digital 108-Bead Mala—V31</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -957,7 +997,7 @@ body.light .center {
 </div>
 
 <!-- =====================================
-     V30 CALENDAR
+     V31 CALENDAR
 ===================================== -->
 
 <div
@@ -979,10 +1019,59 @@ body.light .center {
     <span id="selectedDateLabel">Today</span>
   </div>
 
+  <div class="calendar-history-totals">
+
+    <div class="calendar-history-total">
+      🙏 Total Waheguru
+      <span
+        id="calendarTotalWaheguru"
+        class="calendar-history-value">
+        0
+      </span>
+    </div>
+
+    <div class="calendar-history-total">
+      📿 Completed Mala
+      <span
+        id="calendarTotalMalas"
+        class="calendar-history-value">
+        0
+      </span>
+    </div>
+
+    <div class="calendar-history-total">
+      📿 Total This Week
+      <span
+        id="calendarWeekTotal"
+        class="calendar-history-value">
+        0
+      </span>
+    </div>
+
+    <div class="calendar-history-total">
+      📿 Total This Month
+      <span
+        id="calendarMonthTotal"
+        class="calendar-history-value">
+        0
+      </span>
+    </div>
+
+    <div class="calendar-history-total">
+      📿 Total This Year
+      <span
+        id="calendarYearTotal"
+        class="calendar-history-value">
+        0
+      </span>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- =====================================
-     V30 CALENDAR POPUP
+     V31 CALENDAR POPUP
 ===================================== -->
 
 <div
@@ -1291,7 +1380,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V30 CALENDAR ELEMENTS
+   V31 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1329,6 +1418,31 @@ const closeCalendarBtn =
 
 const selectedDateLabel =
   document.getElementById("selectedDateLabel");
+
+const calendarTotalWaheguru =
+  document.getElementById(
+    "calendarTotalWaheguru"
+  );
+
+const calendarTotalMalas =
+  document.getElementById(
+    "calendarTotalMalas"
+  );
+
+const calendarWeekTotal =
+  document.getElementById(
+    "calendarWeekTotal"
+  );
+
+const calendarMonthTotal =
+  document.getElementById(
+    "calendarMonthTotal"
+  );
+
+const calendarYearTotal =
+  document.getElementById(
+    "calendarYearTotal"
+  );
 
 /* =====================================
    DATE HELPERS
@@ -1797,6 +1911,7 @@ function updateDisplay() {
   saveData();
   updateRecords();
   updateSelectedDateDisplay();
+  updateCalendarHistoryTotals();
 
   if (
     calendarModal.classList.contains("open")
@@ -1941,6 +2056,21 @@ function countCompletedMalasForPeriod(
           month,
           day
         );
+
+      if (
+        period === "year"
+      ) {
+
+        if (
+          d.getFullYear() ===
+          now.getFullYear()
+        ) {
+
+          result++;
+
+        }
+
+      }
 
       if (
         period === "month"
@@ -2628,7 +2758,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V30 Recognized:",
+        "V31 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2682,7 +2812,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V30 NEW COUNT:",
+          "V31 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2702,7 +2832,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V30 Speech recognition:",
+      "V31 Speech recognition:",
       error
     );
 
@@ -2863,7 +2993,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V30 Recognition start error:",
+      "V31 Recognition start error:",
       e
     );
 
@@ -2971,7 +3101,7 @@ function pauseListening() {
 }
 
 /* =====================================
-   V30 RESET CURRENT MALA
+   V31 RESET CURRENT MALA
    ONLY RESET CURRENT COUNT
 ===================================== */
 
@@ -3154,7 +3284,66 @@ function updateRecords() {
 }
 
 /* =====================================
-   V30 CALENDAR
+   V31 CALENDAR TOTALS
+===================================== */
+
+function updateCalendarHistoryTotals() {
+
+  if (
+    calendarTotalWaheguru
+  ) {
+
+    calendarTotalWaheguru.textContent =
+      total;
+
+  }
+
+  if (
+    calendarTotalMalas
+  ) {
+
+    calendarTotalMalas.textContent =
+      completedMalas;
+
+  }
+
+  if (
+    calendarWeekTotal
+  ) {
+
+    calendarWeekTotal.textContent =
+      countCompletedMalasForPeriod(
+        "week"
+      );
+
+  }
+
+  if (
+    calendarMonthTotal
+  ) {
+
+    calendarMonthTotal.textContent =
+      countCompletedMalasForPeriod(
+        "month"
+      );
+
+  }
+
+  if (
+    calendarYearTotal
+  ) {
+
+    calendarYearTotal.textContent =
+      countCompletedMalasForPeriod(
+        "year"
+      );
+
+  }
+
+}
+
+/* =====================================
+   V31 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
@@ -3334,39 +3523,52 @@ function renderCalendar() {
     number.textContent =
       day;
 
-    const count =
+    const waheguru =
       document.createElement(
         "div"
       );
 
-    count.className =
-      "day-count";
+    waheguru.className =
+      "day-waheguru";
 
     const dayCount =
       records[key] || 0;
+
+    if (dayCount > 0) {
+
+      waheguru.textContent =
+        "🙏 " +
+        dayCount;
+
+    } else {
+
+      waheguru.textContent =
+        "";
+
+    }
 
     const malaCount =
       getCompletedMalasForDate(
         key
       );
 
-    if (dayCount > 0) {
+    const mala =
+      document.createElement(
+        "div"
+      );
 
-      count.textContent =
-        dayCount +
-        " Waheguru";
+    mala.className =
+      "day-mala";
 
-    } else if (
-      malaCount > 0
-    ) {
+    if (malaCount > 0) {
 
-      count.textContent =
-        malaCount +
-        " Mala";
+      mala.textContent =
+        "📿 " +
+        malaCount;
 
     } else {
 
-      count.textContent =
+      mala.textContent =
         "";
 
     }
@@ -3376,7 +3578,11 @@ function renderCalendar() {
     );
 
     dayBox.appendChild(
-      count
+      waheguru
+    );
+
+    dayBox.appendChild(
+      mala
     );
 
     dayBox.addEventListener(
