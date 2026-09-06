@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 32</title>
+<title>Waheguru Voice Counter - V 33</title>
 
 <style>
-* {
+* {o
   box-sizing: border-box;
 }
 
@@ -389,34 +389,8 @@ button:hover {
   background: var(--mala-color);
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin: 18px 0;
-}
-
-.stat {
-  background: #101010;
-  border: 1px solid #282828;
-  border-radius: 12px;
-  padding: 13px;
-}
-
-.stat-number {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--mala-color);
-}
-
-.stat-label {
-  color: #777;
-  font-size: 11px;
-  margin-top: 4px;
-}
-
 /* =====================================
-   V32 CALENDAR
+   V33 CALENDAR
 ===================================== */
 
 .calendar-box {
@@ -659,7 +633,6 @@ button:hover {
 body.light .status,
 body.light .timeout-box,
 body.light .manual,
-body.light .stat,
 body.light .calendar-box,
 body.light .calendar-panel,
 body.light .calendar-details,
@@ -749,7 +722,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V32</div>
+<div class="subtitle">Digital 108-Bead Mala—V33</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -900,41 +873,7 @@ body.light .center {
 
 </div>
 
-<div class="stats">
-
-<div class="stat">
-<div id="weekly" class="stat-number">0</div>
-<div class="stat-label">THIS WEEK</div>
-</div>
-
-<div class="stat">
-<div id="monthly" class="stat-number">0</div>
-<div class="stat-label">THIS MONTH</div>
-</div>
-
-<div class="stat">
-<div id="completedMalas" class="stat-number">0</div>
-<div class="stat-label">COMPLETED MALAS</div>
-</div>
-
-<div class="stat">
-<div id="total" class="stat-number">0</div>
-<div class="stat-label">SAVED TOTAL</div>
-</div>
-
-<div class="stat">
-<div id="today" class="stat-number">0</div>
-<div class="stat-label">TODAY</div>
-</div>
-
-<div class="stat">
-<div id="current" class="stat-number">0</div>
-<div class="stat-label">CURRENT MALA</div>
-</div>
-
-</div>
-
-<!-- V32 CALENDAR -->
+<!-- V33 CALENDAR -->
 
 <div
   id="calendarBox"
@@ -957,7 +896,7 @@ body.light .center {
 
 </div>
 
-<!-- V32 CALENDAR POPUP -->
+<!-- V33 CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1254,7 +1193,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V32 CALENDAR ELEMENTS
+   V33 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1756,7 +1695,6 @@ function updateDisplay() {
     }
   );
 
-  updateExtraStats();
   saveData();
   updateSelectedDateDisplay();
 
@@ -2605,7 +2543,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V32 Recognized:",
+        "V33 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2659,7 +2597,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V32 NEW COUNT:",
+          "V33 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2679,7 +2617,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V32 Speech recognition:",
+      "V33 Speech recognition:",
       error
     );
 
@@ -2840,7 +2778,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V32 Recognition start error:",
+      "V33 Recognition start error:",
       e
     );
 
@@ -2948,13 +2886,18 @@ function pauseListening() {
 }
 
 /* =====================================
-   V32 RESET CURRENT MALA
+   V33 RESET CURRENT MALA
    RESET ONLY CURRENT MALA COUNT
 ===================================== */
 
 function resetCurrentMala() {
 
   count = 0;
+
+  localStorage.setItem(
+    "wg_count",
+    "0"
+  );
 
   processedMatchCounts.clear();
 
@@ -3037,35 +2980,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   WEEK / MONTH
-===================================== */
-
-function updateExtraStats() {
-
-  const weekly =
-    countCompletedMalasForPeriod(
-      "week"
-    );
-
-  const monthly =
-    countCompletedMalasForPeriod(
-      "month"
-    );
-
-  document.getElementById(
-    "weekly"
-  ).textContent =
-    weekly;
-
-  document.getElementById(
-    "monthly"
-  ).textContent =
-    monthly;
-
-}
-
-/* =====================================
-   V32 CALENDAR
+   V33 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
