@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 33</title>
+<title>Waheguru Voice Counter - V 34</title>
 
 <style>
 * {o
@@ -390,7 +390,7 @@ button:hover {
 }
 
 /* =====================================
-   V33 CALENDAR
+   V34 CALENDAR
 ===================================== */
 
 .calendar-box {
@@ -424,6 +424,35 @@ button:hover {
 }
 
 .selected-day span {
+  color: var(--mala-color);
+  font-weight: bold;
+}
+
+/* V34 CALENDAR STATISTICS */
+
+.calendar-stats {
+  margin-top: 12px;
+  padding: 13px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.calendar-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 2px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.calendar-stat-row + .calendar-stat-row {
+  border-top: 1px solid #292929;
+}
+
+.calendar-stat-value {
   color: var(--mala-color);
   font-weight: bold;
 }
@@ -637,6 +666,7 @@ body.light .calendar-box,
 body.light .calendar-panel,
 body.light .calendar-details,
 body.light .calendar-day,
+body.light .calendar-stats,
 body.light .settings {
   background: #fff;
 }
@@ -659,6 +689,10 @@ body.light .calendar-details {
 }
 
 body.light .calendar-detail-row {
+  border-color: #ddd;
+}
+
+body.light .calendar-stat-row + .calendar-stat-row {
   border-color: #ddd;
 }
 
@@ -722,7 +756,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V33</div>
+<div class="subtitle">Digital 108-Bead Mala—V34</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -873,7 +907,7 @@ body.light .center {
 
 </div>
 
-<!-- V33 CALENDAR -->
+<!-- V34 CALENDAR -->
 
 <div
   id="calendarBox"
@@ -896,7 +930,58 @@ body.light .center {
 
 </div>
 
-<!-- V33 CALENDAR POPUP -->
+<!-- V34 CALENDAR STATISTICS -->
+
+<div class="calendar-stats">
+
+  <div class="calendar-stat-row">
+    <span>🙏 Total Waheguru</span>
+    <span
+      id="calendarStatTotal"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Completed Mala</span>
+    <span
+      id="calendarStatMalas"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Total This Week</span>
+    <span
+      id="calendarStatWeek"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Total This Month</span>
+    <span
+      id="calendarStatMonth"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Total This Year</span>
+    <span
+      id="calendarStatYear"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+</div>
+
+<!-- V34 CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1138,18 +1223,6 @@ const mala =
 const countEl =
   document.getElementById("count");
 
-const totalEl =
-  document.getElementById("total");
-
-const todayEl =
-  document.getElementById("today");
-
-const currentEl =
-  document.getElementById("current");
-
-const completedEl =
-  document.getElementById("completedMalas");
-
 const malaNumberEl =
   document.getElementById("malaNumber");
 
@@ -1193,7 +1266,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V33 CALENDAR ELEMENTS
+   V34 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1231,6 +1304,21 @@ const closeCalendarBtn =
 
 const selectedDateLabel =
   document.getElementById("selectedDateLabel");
+
+const calendarStatTotal =
+  document.getElementById("calendarStatTotal");
+
+const calendarStatMalas =
+  document.getElementById("calendarStatMalas");
+
+const calendarStatWeek =
+  document.getElementById("calendarStatWeek");
+
+const calendarStatMonth =
+  document.getElementById("calendarStatMonth");
+
+const calendarStatYear =
+  document.getElementById("calendarStatYear");
 
 /* =====================================
    DATE HELPERS
@@ -1644,6 +1732,153 @@ function saveData() {
 }
 
 /* =====================================
+   V34 CALENDAR STATISTICS
+===================================== */
+
+function getDateFromKey(key) {
+
+  const parts =
+    key.split("-");
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  return new Date(
+    Number(parts[0]),
+    Number(parts[1]) - 1,
+    Number(parts[2])
+  );
+
+}
+
+function getTotalForPeriod(
+  period
+) {
+
+  const now =
+    new Date();
+
+  const today =
+    todayKey();
+
+  let result = 0;
+
+  Object.keys(records).forEach(
+    key => {
+
+      const value =
+        Number(records[key] || 0);
+
+      if (
+        !Number.isFinite(value) ||
+        value <= 0
+      ) {
+
+        return;
+
+      }
+
+      const d =
+        getDateFromKey(key);
+
+      if (!d) {
+        return;
+      }
+
+      if (
+        period === "year"
+      ) {
+
+        if (
+          d.getFullYear() ===
+          now.getFullYear()
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+      if (
+        period === "month"
+      ) {
+
+        if (
+          d.getFullYear() ===
+            now.getFullYear() &&
+          d.getMonth() ===
+            now.getMonth()
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+      if (
+        period === "week"
+      ) {
+
+        const weekStart =
+          new Date(now);
+
+        weekStart.setHours(
+          0, 0, 0, 0
+        );
+
+        weekStart.setDate(
+          now.getDate() -
+          now.getDay()
+        );
+
+        const weekEnd =
+          new Date(weekStart);
+
+        weekEnd.setDate(
+          weekStart.getDate() + 7
+        );
+
+        if (
+          d >= weekStart &&
+          d < weekEnd
+        ) {
+
+          result += value;
+
+        }
+
+      }
+
+    }
+  );
+
+  return result;
+
+}
+
+function updateCalendarStats() {
+
+  calendarStatTotal.textContent =
+    total;
+
+  calendarStatMalas.textContent =
+    completedMalas;
+
+  calendarStatWeek.textContent =
+    getTotalForPeriod("week");
+
+  calendarStatMonth.textContent =
+    getTotalForPeriod("month");
+
+  calendarStatYear.textContent =
+    getTotalForPeriod("year");
+
+}
+
+/* =====================================
    DISPLAY
 ===================================== */
 
@@ -1652,21 +1887,9 @@ function updateDisplay() {
   countEl.textContent =
     count;
 
-  totalEl.textContent =
-    total;
-
-  completedEl.textContent =
-    completedMalas;
-
-  currentEl.textContent =
-    count;
-
   malaNumberEl.textContent =
     "Mala #" +
     (completedMalas + 1);
-
-  todayEl.textContent =
-    records[todayKey()] || 0;
 
   const beads =
     document.querySelectorAll(".bead");
@@ -1696,6 +1919,9 @@ function updateDisplay() {
   );
 
   saveData();
+
+  updateCalendarStats();
+
   updateSelectedDateDisplay();
 
   if (
@@ -2886,7 +3112,7 @@ function pauseListening() {
 }
 
 /* =====================================
-   V33 RESET CURRENT MALA
+   V34 RESET CURRENT MALA
    RESET ONLY CURRENT MALA COUNT
 ===================================== */
 
@@ -2980,7 +3206,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   V33 CALENDAR
+   V34 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
