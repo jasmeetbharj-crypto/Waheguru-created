@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 27</title>
+<title>Waheguru Voice Counter - V 28</title>
 
 <style>
 * {
@@ -603,15 +603,14 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V27</div>
+<div class="subtitle">Digital 108-Bead Mala—V28</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
   <span id="statusText">Mic paused</span>
 </div>
 
-<!-- Heard section remains in the code for voice recognition,
-     but is hidden from the screen -->
+<!-- HEARD SECTION HIDDEN -->
 <div id="heardText" class="heard-text"></div>
 
 <div class="mala-wrapper">
@@ -838,8 +837,8 @@ body.light .settings-title {
   recognized occurrences. You can also enter a manual count
   and press Add Count. The microphone automatically turns
   off after 45 seconds of continuous silence. The current
-  mala resets automatically at midnight while saved totals
-  and daily records remain.
+  mala resets automatically at midnight while completed
+  malas, saved totals and daily records remain.
 </div>
 
 </div>
@@ -894,6 +893,29 @@ try {
 }
 
 /* =====================================
+   V28 MALA COMPLETION HISTORY
+===================================== */
+
+let malaHistory;
+
+try {
+
+  malaHistory =
+    JSON.parse(
+      localStorage.getItem("wg_mala_history") || "[]"
+    );
+
+  if (!Array.isArray(malaHistory)) {
+    malaHistory = [];
+  }
+
+} catch {
+
+  malaHistory = [];
+
+}
+
+/* =====================================
    CONSTANTS
 ===================================== */
 
@@ -918,7 +940,7 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V27 VOICE RECOGNITION
+   V28 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
@@ -1401,6 +1423,11 @@ function saveData() {
   );
 
   localStorage.setItem(
+    "wg_mala_history",
+    JSON.stringify(malaHistory)
+  );
+
+  localStorage.setItem(
     "wg_current_date",
     todayKey()
   );
@@ -1510,6 +1537,15 @@ function addCount(amount) {
 
     completedMalas++;
 
+    /* =====================================
+       V28: SAVE EACH COMPLETED MALA
+    ===================================== */
+
+    malaHistory.push({
+      date: todayKey(),
+      timestamp: Date.now()
+    });
+
     malaComplete();
 
   }
@@ -1548,7 +1584,113 @@ function malaComplete() {
 }
 
 /* =====================================
-   V27 NORMALIZE SPEECH
+   V28 COUNT COMPLETED MALAS
+===================================== */
+
+function countCompletedMalasForPeriod(
+  period
+) {
+
+  const now =
+    new Date();
+
+  let result = 0;
+
+  malaHistory.forEach(
+    entry => {
+
+      if (
+        !entry ||
+        !entry.date
+      ) {
+
+        return;
+
+      }
+
+      const parts =
+        entry.date.split("-");
+
+      if (parts.length !== 3) {
+        return;
+      }
+
+      const year =
+        Number(parts[0]);
+
+      const month =
+        Number(parts[1]) - 1;
+
+      const day =
+        Number(parts[2]);
+
+      const d =
+        new Date(
+          year,
+          month,
+          day
+        );
+
+      if (
+        period === "month"
+      ) {
+
+        if (
+          d.getFullYear() ===
+            now.getFullYear() &&
+          d.getMonth() ===
+            now.getMonth()
+        ) {
+
+          result++;
+
+        }
+
+      }
+
+      if (
+        period === "week"
+      ) {
+
+        const weekStart =
+          new Date(now);
+
+        weekStart.setHours(
+          0, 0, 0, 0
+        );
+
+        weekStart.setDate(
+          now.getDate() -
+          now.getDay()
+        );
+
+        const weekEnd =
+          new Date(weekStart);
+
+        weekEnd.setDate(
+          weekStart.getDate() + 7
+        );
+
+        if (
+          d >= weekStart &&
+          d < weekEnd
+        ) {
+
+          result++;
+
+        }
+
+      }
+
+    }
+  );
+
+  return result;
+
+}
+
+/* =====================================
+   NORMALIZE SPEECH
 ===================================== */
 
 function normalizeText(text) {
@@ -1564,7 +1706,7 @@ function normalizeText(text) {
 }
 
 /* =====================================
-   V27 COUNT GURMUKHI
+   COUNT GURMUKHI
 ===================================== */
 
 function countGurmukhi(text) {
@@ -1592,7 +1734,7 @@ function countGurmukhi(text) {
 }
 
 /* =====================================
-   V27 COUNT ENGLISH
+   COUNT ENGLISH
 ===================================== */
 
 function countEnglish(text) {
@@ -1619,7 +1761,7 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   V27 COUNT WAHEGURU MATCHES
+   COUNT WAHEGURU MATCHES
 ===================================== */
 
 function countWaheguruMatches(text) {
@@ -2046,7 +2188,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V27 SPEECH RECOGNITION
+   SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2160,9 +2302,6 @@ function setupRecognition() {
         continue;
       }
 
-      /* Heard text is hidden,
-         but recognition still works. */
-
       if (
         transcript !==
         lastDisplayedTranscript
@@ -2178,7 +2317,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V27 Recognized:",
+        "V28 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2232,7 +2371,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V27 NEW COUNT:",
+          "V28 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2252,7 +2391,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V27 Speech recognition:",
+      "V28 Speech recognition:",
       error
     );
 
@@ -2337,7 +2476,7 @@ function setupRecognition() {
 }
 
 /* =====================================
-   V27 SAFE RESTART
+   SAFE RESTART
 ===================================== */
 
 function scheduleRecognitionRestart() {
@@ -2366,7 +2505,7 @@ function scheduleRecognitionRestart() {
 }
 
 /* =====================================
-   V27 START RECOGNITION SAFELY
+   START RECOGNITION SAFELY
 ===================================== */
 
 function startRecognitionSafely() {
@@ -2413,7 +2552,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V27 Recognition start error:",
+      "V28 Recognition start error:",
       e
     );
 
@@ -2522,8 +2661,9 @@ function pauseListening() {
 
 /* =====================================
    RESET CURRENT MALA
-   V27 CHANGE:
-   RESET COUNT + MALA NUMBER TO #1
+   V28 FIX:
+   ONLY RESET CURRENT COUNT
+   DO NOT RESET COMPLETED MALAS
 ===================================== */
 
 function resetCurrentMala() {
@@ -2531,7 +2671,7 @@ function resetCurrentMala() {
   if (
     !confirm(
       "Reset the current mala to 0?\n\n" +
-      "Your saved total and daily records will remain unchanged."
+      "Completed malas, saved total and daily records will remain unchanged."
     )
   ) {
 
@@ -2540,7 +2680,9 @@ function resetCurrentMala() {
   }
 
   count = 0;
-  completedMalas = 0;
+
+  /* V28:
+     completedMalas is intentionally NOT changed. */
 
   updateDisplay();
 
@@ -2613,51 +2755,26 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   DAILY RECORDS
+   DAILY RECORDS + WEEK/MONTH
 ===================================== */
 
 function updateExtraStats() {
 
-  let weekly = 0;
-  let monthly = 0;
+  /* =====================================
+     V28:
+     WEEK = COMPLETED MALAS THIS WEEK
+     MONTH = COMPLETED MALAS THIS MONTH
+  ===================================== */
 
-  const now = new Date();
+  const weekly =
+    countCompletedMalasForPeriod(
+      "week"
+    );
 
-  const weekStart =
-    new Date(now);
-
-  weekStart.setDate(
-    now.getDate() -
-    now.getDay()
-  );
-
-  Object.entries(records).forEach(
-    ([date, value]) => {
-
-      const d =
-        new Date(date);
-
-      if (d >= weekStart) {
-
-        weekly +=
-          Number(value) || 0;
-
-      }
-
-      if (
-        d.getMonth() ===
-          now.getMonth() &&
-        d.getFullYear() ===
-          now.getFullYear()
-      ) {
-
-        monthly +=
-          Number(value) || 0;
-
-      }
-
-    }
-  );
+  const monthly =
+    countCompletedMalasForPeriod(
+      "month"
+    );
 
   document.getElementById(
     "weekly"
@@ -2823,8 +2940,9 @@ updateSelectedDateDisplay();
 
 /* =====================================
    MIDNIGHT RESET
-   V27 CHANGE:
-   RESET COUNT + MALA NUMBER TO #1
+   V28 FIX:
+   ONLY RESET CURRENT MALA COUNT
+   COMPLETED MALAS STAY SAVED
 ===================================== */
 
 function checkMidnightReset() {
@@ -2852,8 +2970,13 @@ function checkMidnightReset() {
     savedDate !== currentDate
   ) {
 
+    /* V28:
+       Only the current mala resets. */
+
     count = 0;
-    completedMalas = 0;
+
+    /* V28:
+       completedMalas is intentionally NOT reset. */
 
     localStorage.setItem(
       "wg_current_date",
