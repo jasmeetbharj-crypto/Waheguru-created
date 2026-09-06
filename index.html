@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 24</title>
+<title>Waheguru Voice Counter - V 25</title>
 
 <style>oo
 * {oo
@@ -602,7 +602,7 @@ body.light .settings-title {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V24</div>
+<div class="subtitle">Digital 108-Bead Mala—V25</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -926,7 +926,7 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V24 VOICE RECOGNITION
+   V25 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
@@ -934,7 +934,7 @@ const recognitionLanguage = "en-IN";
 const RECOGNITION_RESTART_DELAY = 500;
 
 /*
-   V24 counts Waheguru immediately.
+   V25 counts Waheguru immediately.
 
    Examples:
 
@@ -955,6 +955,15 @@ const RECOGNITION_RESTART_DELAY = 500;
 */
 
 let processedMatchCounts = new Map();
+
+/*
+   Heard display counter.
+
+   The Heard section starts fresh after
+   every 5 newly counted Waheguru.
+*/
+
+let heardCountSinceReset = 0;
 
 /* =====================================
    ELEMENTS
@@ -1594,7 +1603,7 @@ function malaComplete() {
 }
 
 /* =====================================
-   V24 NORMALIZE SPEECH
+   V25 NORMALIZE SPEECH
 ===================================== */
 
 function normalizeText(text) {
@@ -1610,7 +1619,7 @@ function normalizeText(text) {
 }
 
 /* =====================================
-   V24 COUNT GURMUKHI
+   V25 COUNT GURMUKHI
 ===================================== */
 
 function countGurmukhi(text) {
@@ -1638,7 +1647,7 @@ function countGurmukhi(text) {
 }
 
 /* =====================================
-   V24 COUNT ENGLISH
+   V25 COUNT ENGLISH
 ===================================== */
 
 function countEnglish(text) {
@@ -1676,7 +1685,7 @@ function countEnglish(text) {
 }
 
 /* =====================================
-   V24 COUNT WAHEGURU MATCHES
+   V25 COUNT WAHEGURU MATCHES
 ===================================== */
 
 function countWaheguruMatches(text) {
@@ -1699,7 +1708,7 @@ function countWaheguruMatches(text) {
 }
 
 /* =====================================
-   V24 COUNT WAHEGURU IMMEDIATELY
+   V25 COUNT WAHEGURU IMMEDIATELY
 ===================================== */
 
 function countWaheguru(text) {
@@ -2136,7 +2145,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V24 SPEECH RECOGNITION
+   V25 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2280,7 +2289,7 @@ function setupRecognition() {
         transcript;
 
       console.log(
-        "V24 Recognized:",
+        "V25 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2334,11 +2343,32 @@ function setupRecognition() {
           currentMatches
         );
 
+        /*
+           Heard section starts fresh
+           after every 5 newly counted
+           Waheguru.
+        */
+
+        heardCountSinceReset +=
+          newMatches;
+
+        if (
+          heardCountSinceReset >= 5
+        ) {
+
+          heardCountSinceReset %=
+            5;
+
+          heardText.textContent =
+            "";
+
+        }
+
         lastActivityAt =
           performance.now();
 
         console.log(
-          "V24 NEW COUNT:",
+          "V25 NEW COUNT:",
           newMatches,
           "Total matches in result:",
           currentMatches
@@ -2362,7 +2392,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V24 Speech recognition:",
+      "V25 Speech recognition:",
       error
     );
 
@@ -2453,7 +2483,7 @@ function setupRecognition() {
 }
 
 /* =====================================
-   V24 SAFE RESTART
+   V25 SAFE RESTART
 ===================================== */
 
 function scheduleRecognitionRestart() {
@@ -2486,7 +2516,7 @@ function scheduleRecognitionRestart() {
 }
 
 /* =====================================
-   V24 START RECOGNITION SAFELY
+   V25 START RECOGNITION SAFELY
 ===================================== */
 
 function startRecognitionSafely() {
@@ -2533,7 +2563,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V24 Recognition start error:",
+      "V25 Recognition start error:",
       e
     );
 
@@ -2588,6 +2618,8 @@ async function startListening() {
 
   processedMatchCounts.clear();
 
+  heardCountSinceReset = 0;
+
   listening =
     true;
 
@@ -2635,6 +2667,8 @@ function pauseListening() {
     false;
 
   processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
 
   setPausedStatus();
 
