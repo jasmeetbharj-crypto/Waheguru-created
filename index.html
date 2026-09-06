@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 37</title>
+<title>Waheguru Voice Counter - V 39</title>
 
 <style>
-* {o
+* {
   box-sizing: border-box;
 }
 
@@ -163,7 +163,6 @@ h1 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
   font-size: 260px;
   line-height: 1;
   color: var(--mala-color);
@@ -230,23 +229,31 @@ h1 {
   z-index: 100;
 }
 
-.color-box {
+/* SEPARATE COLOUR / SETTINGS PANELS */
+
+.top-panel {
   display: none;
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 8px);
-  transform: translateX(-50%);
-  width: 185px;
+  position: fixed;
+  right: 14px;
+  width: 205px;
   padding: 10px;
   background: #101010;
   border: 1px solid #333;
   border-radius: 10px;
-  z-index: 20;
+  z-index: 200;
   box-shadow: 0 8px 25px rgba(0,0,0,.5);
 }
 
-.color-box.open {
+.top-panel.open {
   display: block;
+}
+
+#colorBox {
+  top: 118px;
+}
+
+#settingsBox {
+  top: 172px;
 }
 
 .color-title {
@@ -342,7 +349,7 @@ button:hover {
   font-size: 12px;
 }
 
-/* V37 COMPACT CALENDAR */
+/* COMPACT CALENDAR */
 
 .calendar-box {
   margin-top: 12px;
@@ -571,20 +578,6 @@ button:hover {
   margin-top: 12px;
 }
 
-.settings {
-  margin-top: 15px;
-  padding: 12px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 10px;
-}
-
-.settings-title {
-  color: #ddd;
-  font-size: 14px;
-  margin-bottom: 9px;
-}
-
 .setting-row {
   display: flex;
   justify-content: space-between;
@@ -614,16 +607,12 @@ body.light .calendar-panel,
 body.light .calendar-details,
 body.light .calendar-day,
 body.light .calendar-stats,
-body.light .settings {
+body.light .top-panel {
   background: #fff;
 }
 
 body.light .calendar-day.empty {
   background: transparent;
-}
-
-body.light .settings-title {
-  color: #333;
 }
 
 body.light .calendar-day {
@@ -701,8 +690,98 @@ body.light .center {
 <button id="malaColorBtn" class="right-side-btn">🎨</button>
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
+<!-- SEPARATE COLOUR PANEL -->
+
+<div id="colorBox" class="top-panel">
+
+  <div class="color-title">
+    Mala Color
+  </div>
+
+  <div class="colors">
+
+    <button class="color-btn red"
+      data-color="#ff2020"
+      data-dark="#8d0000"
+      data-light="#ff7070"
+      data-glow="rgba(255,0,0,.8)"
+      data-center="#280000"></button>
+
+    <button class="color-btn orange"
+      data-color="#ff8c00"
+      data-dark="#a85500"
+      data-light="#ffc266"
+      data-glow="rgba(255,140,0,.8)"
+      data-center="#281500"></button>
+
+    <button class="color-btn yellow"
+      data-color="#ffd700"
+      data-dark="#a88a00"
+      data-light="#fff099"
+      data-glow="rgba(255,215,0,.8)"
+      data-center="#282400"></button>
+
+    <button class="color-btn green"
+      data-color="#00d26a"
+      data-dark="#007a3d"
+      data-light="#66ffad"
+      data-glow="rgba(0,210,106,.8)"
+      data-center="#002818"></button>
+
+    <button class="color-btn blue"
+      data-color="#168cff"
+      data-dark="#07539c"
+      data-light="#75baff"
+      data-glow="rgba(22,140,255,.8)"
+      data-center="#001b35"></button>
+
+    <button class="color-btn purple"
+      data-color="#a855f7"
+      data-dark="#63209c"
+      data-light="#d29aff"
+      data-glow="rgba(168,85,247,.8)"
+      data-center="#210b35"></button>
+
+    <button class="color-btn pink"
+      data-color="#ff3b9d"
+      data-dark="#a51760"
+      data-light="#ff9dcc"
+      data-glow="rgba(255,59,157,.8)"
+      data-center="#350018"></button>
+
+    <button class="color-btn white"
+      data-color="#ffffff"
+      data-dark="#888888"
+      data-light="#ffffff"
+      data-glow="rgba(255,255,255,.8)"
+      data-center="#222222"></button>
+
+  </div>
+
+</div>
+
+<!-- SEPARATE SETTINGS PANEL -->
+
+<div id="settingsBox" class="top-panel">
+
+  <div class="color-title">
+    Settings
+  </div>
+
+  <div class="setting-row">
+    <span>🔊 Sound</span>
+    <button id="soundBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>📳 Vibration</span>
+    <button id="vibrationBtn">ON</button>
+  </div>
+
+</div>
+
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V37</div>
+<div class="subtitle">Digital 108-Bead Mala—V39</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -713,13 +792,13 @@ body.light .center {
 
 <div class="mala-wrapper">
 
-<div id="mala" class="mala">
+  <div id="mala" class="mala">
 
-  <div class="ik-onkar">ੴ</div>
+    <div class="ik-onkar">ੴ</div>
 
-</div>
+  </div>
 
-<div class="center">
+  <div class="center">
 
     <div id="count" class="center-count">0</div>
 
@@ -727,74 +806,8 @@ body.light .center {
       Mala #0
     </div>
 
-    <div id="colorBox" class="color-box">
-
-      <div class="color-title">
-        Mala Color
-      </div>
-
-      <div class="colors">
-
-        <button class="color-btn red"
-          data-color="#ff2020"
-          data-dark="#8d0000"
-          data-light="#ff7070"
-          data-glow="rgba(255,0,0,.8)"
-          data-center="#280000"></button>
-
-        <button class="color-btn orange"
-          data-color="#ff8c00"
-          data-dark="#a85500"
-          data-light="#ffc266"
-          data-glow="rgba(255,140,0,.8)"
-          data-center="#281500"></button>
-
-        <button class="color-btn yellow"
-          data-color="#ffd700"
-          data-dark="#a88a00"
-          data-light="#fff099"
-          data-glow="rgba(255,215,0,.8)"
-          data-center="#282400"></button>
-
-        <button class="color-btn green"
-          data-color="#00d26a"
-          data-dark="#007a3d"
-          data-light="#66ffad"
-          data-glow="rgba(0,210,106,.8)"
-          data-center="#002818"></button>
-
-        <button class="color-btn blue"
-          data-color="#168cff"
-          data-dark="#07539c"
-          data-light="#75baff"
-          data-glow="rgba(22,140,255,.8)"
-          data-center="#001b35"></button>
-
-        <button class="color-btn purple"
-          data-color="#a855f7"
-          data-dark="#63209c"
-          data-light="#d29aff"
-          data-glow="rgba(168,85,247,.8)"
-          data-center="#210b35"></button>
-
-        <button class="color-btn pink"
-          data-color="#ff3b9d"
-          data-dark="#a51760"
-          data-light="#ff9dcc"
-          data-glow="rgba(255,59,157,.8)"
-          data-center="#350018"></button>
-
-        <button class="color-btn white"
-          data-color="#ffffff"
-          data-dark="#888888"
-          data-light="#ffffff"
-          data-glow="rgba(255,255,255,.8)"
-          data-center="#222222"></button>
-
-      </div>
-    </div>
-
   </div>
+
 </div>
 
 <div class="timeout-box">
@@ -826,11 +839,9 @@ body.light .center {
 
 </div>
 
-<!-- COMPACT CALENDAR -->
+<!-- CALENDAR & HISTORY - SEPARATE -->
 
-<div
-  id="calendarBox"
-  class="calendar-box">
+<div id="calendarBox" class="calendar-box">
 
   <div class="calendar-title">
     📅 Calendar & History
@@ -870,7 +881,7 @@ body.light .center {
   </div>
 
   <div class="calendar-stat-row">
-    <span>📿 Total This Week</span>
+    <span>📿 Malas This Week</span>
     <span
       id="calendarStatWeek"
       class="calendar-stat-value">
@@ -879,7 +890,7 @@ body.light .center {
   </div>
 
   <div class="calendar-stat-row">
-    <span>📿 Total This Month</span>
+    <span>📿 Malas This Month</span>
     <span
       id="calendarStatMonth"
       class="calendar-stat-value">
@@ -888,7 +899,7 @@ body.light .center {
   </div>
 
   <div class="calendar-stat-row">
-    <span>📿 Total This Year</span>
+    <span>📿 Malas This Year</span>
     <span
       id="calendarStatYear"
       class="calendar-stat-value">
@@ -989,26 +1000,6 @@ body.light .center {
       Close Calendar
     </button>
 
-  </div>
-
-</div>
-
-<!-- SETTINGS -->
-
-<div id="settingsBox" class="color-box">
-
-  <div class="color-title">
-    Settings
-  </div>
-
-  <div class="setting-row">
-    <span>🔊 Sound</span>
-    <button id="soundBtn">ON</button>
-  </div>
-
-  <div class="setting-row">
-    <span>📳 Vibration</span>
-    <button id="vibrationBtn">ON</button>
   </div>
 
 </div>
@@ -1201,7 +1192,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V37 CALENDAR ELEMENTS
+   CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1422,6 +1413,8 @@ document
 
       colorBox.classList.toggle("open");
 
+      settingsBox.classList.remove("open");
+
     }
   );
 
@@ -1442,6 +1435,8 @@ settingsBtn.addEventListener(
     event.stopPropagation();
 
     settingsBox.classList.toggle("open");
+
+    colorBox.classList.remove("open");
 
   }
 );
@@ -1668,7 +1663,7 @@ function saveData() {
 }
 
 /* =====================================
-   V37 CALENDAR STATISTICS
+   CALENDAR STATISTICS
 ===================================== */
 
 function getDateFromKey(key) {
@@ -1688,49 +1683,47 @@ function getDateFromKey(key) {
 
 }
 
-function getTotalForPeriod(
+/*
+   Week / Month / Year statistics
+   count COMPLETED MALAS only.
+*/
+
+function getCompletedMalasForPeriod(
   period
 ) {
 
   const now =
     new Date();
 
-  let result = 0;
-
-  Object.keys(records).forEach(
-    key => {
-
-      const value =
-        Number(records[key] || 0);
+  return malaHistory.filter(
+    entry => {
 
       if (
-        !Number.isFinite(value) ||
-        value <= 0
+        !entry ||
+        !entry.date
       ) {
 
-        return;
+        return false;
 
       }
 
       const d =
-        getDateFromKey(key);
+        getDateFromKey(
+          entry.date
+        );
 
       if (!d) {
-        return;
+        return false;
       }
 
       if (
         period === "year"
       ) {
 
-        if (
+        return (
           d.getFullYear() ===
           now.getFullYear()
-        ) {
-
-          result += value;
-
-        }
+        );
 
       }
 
@@ -1738,16 +1731,12 @@ function getTotalForPeriod(
         period === "month"
       ) {
 
-        if (
+        return (
           d.getFullYear() ===
             now.getFullYear() &&
           d.getMonth() ===
             now.getMonth()
-        ) {
-
-          result += value;
-
-        }
+        );
 
       }
 
@@ -1774,21 +1763,21 @@ function getTotalForPeriod(
           weekStart.getDate() + 7
         );
 
-        if (
+        d.setHours(
+          0, 0, 0, 0
+        );
+
+        return (
           d >= weekStart &&
           d < weekEnd
-        ) {
-
-          result += value;
-
-        }
+        );
 
       }
 
-    }
-  );
+      return false;
 
-  return result;
+    }
+  ).length;
 
 }
 
@@ -1801,13 +1790,19 @@ function updateCalendarStats() {
     completedMalas;
 
   calendarStatWeek.textContent =
-    getTotalForPeriod("week");
+    getCompletedMalasForPeriod(
+      "week"
+    );
 
   calendarStatMonth.textContent =
-    getTotalForPeriod("month");
+    getCompletedMalasForPeriod(
+      "month"
+    );
 
   calendarStatYear.textContent =
-    getTotalForPeriod("year");
+    getCompletedMalasForPeriod(
+      "year"
+    );
 
 }
 
@@ -2926,7 +2921,7 @@ function pauseListening() {
 }
 
 /* =====================================
-   V37 RESET CURRENT MALA
+   RESET CURRENT MALA
 ===================================== */
 
 function resetCurrentMala() {
@@ -2986,7 +2981,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   V37 CALENDAR
+   CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
@@ -3340,23 +3335,10 @@ openCalendarBtn.addEventListener(
   }
 );
 
-calendarBox.addEventListener(
-  "click",
-  event => {
-
-    if (
-      event.target ===
-      openCalendarBtn
-    ) {
-
-      return;
-
-    }
-
-    openCalendar();
-
-  }
-);
+/*
+   Calendar now opens ONLY when
+   Open Calendar is pressed.
+*/
 
 closeCalendarBtn.addEventListener(
   "click",
