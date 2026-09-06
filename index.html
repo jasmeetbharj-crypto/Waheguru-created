@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 34</title>
+<title>Waheguru Voice Counter - V 36</title>
 
 <style>
 * {o
@@ -342,7 +342,7 @@ button:hover {
   font-size: 12px;
 }
 
-/* V34 CHANTING STATISTICS */
+/* V36 TIME / DURATION */
 
 .calendar-stats {
   margin-top: 12px;
@@ -668,7 +668,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V34</div>
+<div class="subtitle">Digital 108-Bead Mala—V36</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -690,7 +690,7 @@ body.light .center {
     <div id="count" class="center-count">0</div>
 
     <div id="malaNumber" class="mala-number">
-      Mala #0
+      Mala #0 — 0/108
     </div>
 
     <div id="colorBox" class="color-box">
@@ -792,57 +792,32 @@ body.light .center {
 
 </div>
 
-<!-- V34 CHANTING STATISTICS -->
+<!-- V36 TIME / DURATION -->
 
 <div class="calendar-stats">
 
   <div class="calendar-stat-row">
-    <span>🙏 Chanting Count Today</span>
-    <span id="chantCountToday" class="calendar-stat-value">0</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>🙏 Chanting Count This Week</span>
-    <span id="chantCountWeek" class="calendar-stat-value">0</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>🙏 Chanting Count This Month</span>
-    <span id="chantCountMonth" class="calendar-stat-value">0</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>🙏 Chanting Count This Year</span>
-    <span id="chantCountYear" class="calendar-stat-value">0</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>🙏 Total Chanting Count</span>
-    <span id="chantCountTotal" class="calendar-stat-value">0</span>
-  </div>
-
-  <div class="calendar-stat-row">
-    <span>⏱ Chanting Duration Today</span>
+    <span>⏱ Time / Duration Today</span>
     <span id="durationToday" class="calendar-stat-value">0:00</span>
   </div>
 
   <div class="calendar-stat-row">
-    <span>⏱ Chanting Duration This Week</span>
+    <span>⏱ Time / Duration This Week</span>
     <span id="durationWeek" class="calendar-stat-value">0:00</span>
   </div>
 
   <div class="calendar-stat-row">
-    <span>⏱ Chanting Duration This Month</span>
+    <span>⏱ Time / Duration This Month</span>
     <span id="durationMonth" class="calendar-stat-value">0:00</span>
   </div>
 
   <div class="calendar-stat-row">
-    <span>⏱ Chanting Duration This Year</span>
+    <span>⏱ Time / Duration This Year</span>
     <span id="durationYear" class="calendar-stat-value">0:00</span>
   </div>
 
   <div class="calendar-stat-row">
-    <span>⏱ Total Chanting Duration</span>
+    <span>⏱ Total Time / Duration</span>
     <span id="durationTotal" class="calendar-stat-value">0:00</span>
   </div>
 
@@ -1037,8 +1012,11 @@ body.light .center {
 
 <div class="note">
   Say “Waheguru” naturally. Voice recognition counts
-  recognized occurrences. The microphone automatically turns
-  off after 45 seconds of continuous silence. The current
+  recognized occurrences. Time / Duration counts only
+  while chanting activity is detected after “Waheguru”
+  is recognized. Silence while the mic is listening does
+  not add time. The microphone automatically turns off
+  after 45 seconds of continuous silence. The current
   mala resets automatically at midnight while completed
   malas and saved totals remain.
 </div>
@@ -1059,6 +1037,35 @@ let total =
 
 let completedMalas =
   Number(localStorage.getItem("wg_malas") || 0);
+
+/*
+   Current Mala Number is separate from
+   completed-mala history.
+
+   This allows Reset Mala to show:
+   Mala #0 — 0/108
+
+   while completedMalas remains unchanged.
+*/
+
+const savedCurrentMalaNumber =
+  localStorage.getItem(
+    "wg_current_mala_number"
+  );
+
+let currentMalaNumber =
+  savedCurrentMalaNumber === null
+    ? completedMalas
+    : Number(savedCurrentMalaNumber || 0);
+
+if (
+  !Number.isFinite(currentMalaNumber) ||
+  currentMalaNumber < 0
+) {
+
+  currentMalaNumber = 0;
+
+}
 
 let savedColor =
   localStorage.getItem("wg_color") || "#ff2020";
@@ -1095,7 +1102,7 @@ try {
 }
 
 /* =====================================
-   CHANTING DURATION DATA
+   TIME / DURATION DATA
 ===================================== */
 
 let durationRecords;
@@ -1127,7 +1134,20 @@ let totalChantDuration =
     ) || 0
   );
 
-let chantingSessionStart = null;
+/*
+   Time starts only after a recognized
+   Waheguru match.
+
+   It accumulates microphone activity
+   rather than microphone listening time.
+*/
+
+let chantingSessionActive = false;
+let chantingAccumulatedMs = 0;
+let chantingLastAudioAt = 0;
+let chantingLastAudioFrameAt = null;
+
+const CHANTING_SILENCE_TIME = 1500;
 
 /* =====================================
    MALA COMPLETION HISTORY
@@ -1234,23 +1254,8 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V34 CHANTING STATISTICS ELEMENTS
+   V36 TIME / DURATION ELEMENTS
 ===================================== */
-
-const chantCountToday =
-  document.getElementById("chantCountToday");
-
-const chantCountWeek =
-  document.getElementById("chantCountWeek");
-
-const chantCountMonth =
-  document.getElementById("chantCountMonth");
-
-const chantCountYear =
-  document.getElementById("chantCountYear");
-
-const chantCountTotal =
-  document.getElementById("chantCountTotal");
 
 const durationToday =
   document.getElementById("durationToday");
@@ -1268,7 +1273,7 @@ const durationTotal =
   document.getElementById("durationTotal");
 
 /* =====================================
-   V34 CALENDAR ELEMENTS
+   V36 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1411,7 +1416,7 @@ function formatDuration(seconds) {
 }
 
 /* =====================================
-   DURATION SAVE
+   SAVE DURATION DATA
 ===================================== */
 
 function saveDurationData() {
@@ -1429,49 +1434,63 @@ function saveDurationData() {
 }
 
 /* =====================================
-   RECORD CURRENT SESSION DURATION
+   START CHANTING TIME
+===================================== */
+
+function startChantingTime() {
+
+  if (chantingSessionActive) {
+    return;
+  }
+
+  chantingSessionActive = true;
+
+  chantingAccumulatedMs = 0;
+
+  chantingLastAudioAt =
+    performance.now();
+
+  chantingLastAudioFrameAt =
+    null;
+
+}
+
+/* =====================================
+   RECORD CHANTING TIME
 ===================================== */
 
 function recordChantingDuration() {
 
-  if (
-    chantingSessionStart === null
-  ) {
-
+  if (!chantingSessionActive) {
     return;
-
   }
 
-  const elapsed =
-    Math.max(
-      0,
-      Math.floor(
-        (
-          Date.now() -
-          chantingSessionStart
-        ) / 1000
-      )
+  const elapsedSeconds =
+    Math.floor(
+      chantingAccumulatedMs / 1000
     );
 
-  if (elapsed <= 0) {
+  if (elapsedSeconds > 0) {
 
-    chantingSessionStart = null;
+    const day =
+      todayKey();
 
-    return;
+    durationRecords[day] =
+      (Number(durationRecords[day]) || 0) +
+      elapsedSeconds;
+
+    totalChantDuration +=
+      elapsedSeconds;
 
   }
 
-  const day =
-    todayKey();
+  chantingSessionActive = false;
 
-  durationRecords[day] =
-    (Number(durationRecords[day]) || 0) +
-    elapsed;
+  chantingAccumulatedMs = 0;
 
-  totalChantDuration +=
-    elapsed;
+  chantingLastAudioAt = 0;
 
-  chantingSessionStart =
+  chantingLastAudioFrameAt =
     null;
 
   saveDurationData();
@@ -1602,53 +1621,18 @@ function getPeriodTotal(
 }
 
 /* =====================================
-   V34 CHANTING STATISTICS
+   V36 TIME / DURATION STATISTICS
 ===================================== */
 
 function updateChantingStatistics() {
 
-  chantCountToday.textContent =
-    getPeriodTotal(
-      records,
-      "today"
-    );
-
-  chantCountWeek.textContent =
-    getPeriodTotal(
-      records,
-      "week"
-    );
-
-  chantCountMonth.textContent =
-    getPeriodTotal(
-      records,
-      "month"
-    );
-
-  chantCountYear.textContent =
-    getPeriodTotal(
-      records,
-      "year"
-    );
-
-  chantCountTotal.textContent =
-    total;
-
   let currentSessionSeconds = 0;
 
-  if (
-    chantingSessionStart !== null
-  ) {
+  if (chantingSessionActive) {
 
     currentSessionSeconds =
-      Math.max(
-        0,
-        Math.floor(
-          (
-            Date.now() -
-            chantingSessionStart
-          ) / 1000
-        )
+      Math.floor(
+        chantingAccumulatedMs / 1000
       );
 
   }
@@ -2047,6 +2031,11 @@ function saveData() {
   );
 
   localStorage.setItem(
+    "wg_current_mala_number",
+    currentMalaNumber
+  );
+
+  localStorage.setItem(
     "wg_records",
     JSON.stringify(records)
   );
@@ -2066,7 +2055,7 @@ function saveData() {
 }
 
 /* =====================================
-   V34 CALENDAR STATISTICS
+   V36 CALENDAR STATISTICS
 ===================================== */
 
 function getDateFromKey(key) {
@@ -2218,19 +2207,12 @@ function updateDisplay() {
   countEl.textContent =
     count;
 
-  /*
-    Mala number is the saved completed-mala
-    number itself.
-
-    After Reset Mala:
-    completedMalas = 0
-    therefore:
-    Mala #0
-  */
-
   malaNumberEl.textContent =
     "Mala #" +
-    completedMalas;
+    currentMalaNumber +
+    " — " +
+    count +
+    "/108";
 
   const beads =
     document.querySelectorAll(".bead");
@@ -2320,6 +2302,8 @@ function addCount(amount) {
     count -= MALA_SIZE;
 
     completedMalas++;
+
+    currentMalaNumber++;
 
     malaHistory.push({
       date: todayKey(),
@@ -2652,12 +2636,79 @@ function monitorAudio() {
   const now =
     performance.now();
 
+  /* =====================================
+     NORMAL MIC ACTIVITY
+     Keeps the existing 45-second
+     auto-pause behavior unchanged.
+  ===================================== */
+
   if (
     rms >= AUDIO_THRESHOLD
   ) {
 
     lastActivityAt =
       now;
+
+  }
+
+  /* =====================================
+     V36 CHANTING TIME
+
+     Time starts only after a recognized
+     Waheguru match.
+
+     Only microphone activity is added.
+     Silence is not added.
+  ===================================== */
+
+  if (chantingSessionActive) {
+
+    if (
+      rms >= AUDIO_THRESHOLD
+    ) {
+
+      if (
+        chantingLastAudioFrameAt !== null
+      ) {
+
+        const frameElapsed =
+          now -
+          chantingLastAudioFrameAt;
+
+        chantingAccumulatedMs +=
+          Math.min(
+            100,
+            Math.max(
+              0,
+              frameElapsed
+            )
+          );
+
+      }
+
+      chantingLastAudioFrameAt =
+        now;
+
+      chantingLastAudioAt =
+        now;
+
+    } else {
+
+      chantingLastAudioFrameAt =
+        null;
+
+      if (
+        chantingLastAudioAt > 0 &&
+        now -
+          chantingLastAudioAt >=
+          CHANTING_SILENCE_TIME
+      ) {
+
+        recordChantingDuration();
+
+      }
+
+    }
 
   }
 
@@ -2995,7 +3046,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V34 Recognized:",
+        "V36 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -3017,6 +3068,13 @@ function setupRecognition() {
         const newMatches =
           currentMatches -
           previousMatches;
+
+        /*
+          Start Time / Duration only when
+          Waheguru is actually recognized.
+        */
+
+        startChantingTime();
 
         addCount(
           newMatches
@@ -3049,7 +3107,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V34 NEW COUNT:",
+          "V36 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -3069,7 +3127,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V34 Speech recognition:",
+      "V36 Speech recognition:",
       error
     );
 
@@ -3232,7 +3290,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V34 Recognition start error:",
+      "V36 Recognition start error:",
       e
     );
 
@@ -3287,8 +3345,22 @@ async function startListening() {
   listening =
     true;
 
-  chantingSessionStart =
-    Date.now();
+  /*
+    IMPORTANT:
+    No chanting time starts here.
+
+    Time starts only after a recognized
+    Waheguru match.
+  */
+
+  chantingSessionActive = false;
+
+  chantingAccumulatedMs = 0;
+
+  chantingLastAudioAt = 0;
+
+  chantingLastAudioFrameAt =
+    null;
 
   lastActivityAt =
     performance.now();
@@ -3353,15 +3425,21 @@ function pauseListening() {
 }
 
 /* =====================================
-   V34 RESET CURRENT MALA
-   RESET MALA NUMBER AND COUNT TO 0
+   V36 RESET CURRENT MALA
 ===================================== */
 
 function resetCurrentMala() {
 
+  /*
+    Reset only the CURRENT mala.
+
+    Completed mala history stays unchanged.
+    Total Waheguru stays unchanged.
+  */
+
   count = 0;
 
-  completedMalas = 0;
+  currentMalaNumber = 0;
 
   localStorage.setItem(
     "wg_count",
@@ -3369,7 +3447,7 @@ function resetCurrentMala() {
   );
 
   localStorage.setItem(
-    "wg_malas",
+    "wg_current_mala_number",
     "0"
   );
 
@@ -3407,7 +3485,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   V34 CALENDAR
+   V36 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
@@ -3877,9 +3955,16 @@ function checkMidnightReset() {
 
     count = 0;
 
+    currentMalaNumber = 0;
+
     localStorage.setItem(
       "wg_current_date",
       currentDate
+    );
+
+    localStorage.setItem(
+      "wg_current_mala_number",
+      "0"
     );
 
     updateDisplay();
