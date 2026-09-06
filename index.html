@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 42</title>
+<title>Waheguru Simran - V 43</title>
 
 <style>
 * {
@@ -635,6 +635,29 @@ button:hover {
   min-width: 65px;
 }
 
+/* V43 RESET HISTORY BUTTON */
+
+.reset-history-row {
+  margin-top: 5px;
+  padding-top: 9px;
+  border-top: 1px solid #292929;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.reset-history-btn {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 12px;
+  border-color: #661111;
+  color: #ff7070;
+}
+
+.reset-history-btn:hover {
+  background: #3a1111;
+}
+
 .note {
   margin-top: 18px;
   color: #555;
@@ -841,10 +864,24 @@ body.light .bead.current {
     <button id="vibrationBtn">ON</button>
   </div>
 
+  <!-- V43 RESET ALL HISTORY -->
+
+  <div class="reset-history-row">
+
+    <span>🗑️ Mala History</span>
+
+    <button
+      id="resetHistoryBtn"
+      class="reset-history-btn">
+      Reset All History
+    </button>
+
+  </div>
+
 </div>
 
 <h1>Waheguru Simran</h1>
-<div class="subtitle">Digital 108-Bead Mala—V42</div>
+<div class="subtitle">Digital 108-Bead Mala—V43</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -1276,6 +1313,11 @@ const settingsBtn =
 
 const settingsBox =
   document.getElementById("settingsBox");
+
+/* V43 RESET HISTORY ELEMENT */
+
+const resetHistoryBtn =
+  document.getElementById("resetHistoryBtn");
 
 /* =====================================
    CALENDAR ELEMENTS
@@ -3369,6 +3411,119 @@ function resetCurrentMala() {
   updateDisplay();
 
 }
+
+/* =====================================
+   V43 RESET ALL MALA HISTORY
+===================================== */
+
+function resetAllMalaHistory() {
+
+  const confirmed =
+    confirm(
+      "⚠️ WARNING\n\n" +
+      "This will permanently delete ALL Mala history.\n\n" +
+      "It will clear:\n" +
+      "• Calendar history\n" +
+      "• Completed Malas\n" +
+      "• Total Waheguru count\n" +
+      "• Daily records\n" +
+      "• Saved Mala history\n\n" +
+      "This cannot be undone.\n\n" +
+      "Do you want to continue?"
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  count = 0;
+
+  total = 0;
+
+  completedMalas = 0;
+
+  currentMalaNumber = 0;
+
+  records = {};
+
+  malaHistory = [];
+
+  multiColorIndex = 0;
+
+  localStorage.removeItem(
+    "wg_count"
+  );
+
+  localStorage.removeItem(
+    "wg_total"
+  );
+
+  localStorage.removeItem(
+    "wg_malas"
+  );
+
+  localStorage.removeItem(
+    "wg_current_mala_number"
+  );
+
+  localStorage.removeItem(
+    "wg_records"
+  );
+
+  localStorage.removeItem(
+    "wg_mala_history"
+  );
+
+  localStorage.setItem(
+    "wg_current_date",
+    todayKey()
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    "0"
+  );
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  heardText.textContent =
+    "";
+
+  selectedCalendarDate =
+    todayKey();
+
+  calendarViewDate =
+    new Date();
+
+  updateDisplay();
+
+  if (
+    calendarModal.classList.contains("open")
+  ) {
+
+    renderCalendar();
+
+  }
+
+}
+
+/* V43 RESET HISTORY BUTTON */
+
+resetHistoryBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    resetAllMalaHistory();
+
+  }
+);
 
 /* =====================================
    BUTTONS
