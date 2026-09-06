@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 45</title>
+<title>Waheguru Simran - V 46</title>
 
 <style>
 * {
@@ -84,7 +84,6 @@ h1 {
   box-shadow: 0 0 12px var(--mala-color);
 }
 
-/* HEARD SECTION HIDDEN */
 .heard-text {
   display: none;
   margin: -5px auto 10px;
@@ -149,7 +148,6 @@ h1 {
   overflow: hidden;
 }
 
-/* Wood-grain highlight */
 .bead::after {
   content: "";
   position: absolute;
@@ -173,7 +171,6 @@ h1 {
   opacity: .75;
 }
 
-/* Active beads */
 .bead.active {
   background:
     radial-gradient(
@@ -196,7 +193,6 @@ h1 {
     0 0 28px var(--mala-glow);
 }
 
-/* Current bead */
 .bead.current {
   transform:
     translate(-50%, -50%)
@@ -230,11 +226,6 @@ h1 {
 
   border-radius: 50%;
 
-  /*
-     No black solid center.
-     The center is transparent with
-     a blue energy glow.
-  */
   background:
     radial-gradient(
       circle,
@@ -404,6 +395,26 @@ h1 {
     energyFloatThree 4s ease-in-out infinite;
 }
 
+/* V46 - EXTRA ELECTRIC FILAMENT LINE */
+
+.energy-ring:nth-child(4) {
+  width: 190px;
+  height: 135px;
+
+  border-right-color:
+    rgba(100,210,255,.9);
+
+  border-bottom-color:
+    rgba(255,230,170,.8);
+
+  filter:
+    drop-shadow(0 0 6px #62cfff)
+    drop-shadow(0 0 10px #ffbd45);
+
+  animation:
+    energyFloatFour 3.1s ease-in-out infinite;
+}
+
 /* Electric sparks */
 
 .energy-spark {
@@ -565,6 +576,27 @@ h1 {
       translate(-50%, -50%)
       rotate(-30deg)
       scale(.94);
+  }
+
+}
+
+/* V46 EXTRA LINE ANIMATION */
+
+@keyframes energyFloatFour {
+
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(40deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(120deg)
+      scale(1.07);
   }
 
 }
@@ -1329,8 +1361,6 @@ button:hover {
   min-width: 65px;
 }
 
-/* V43 RESET HISTORY BUTTON */
-
 .reset-history-row {
   margin-top: 5px;
 
@@ -1403,12 +1433,6 @@ body.light .calendar-stat-row + .calendar-stat-row {
   border-color: #ddd;
 }
 
-/*
-   V44 CENTER:
-   Keep electric center visible
-   in day mode too.
-*/
-
 body.light .center {
   background:
     radial-gradient(
@@ -1434,10 +1458,6 @@ body.light .ik-onkar {
     0 0 25px rgba(22,140,255,.7);
 }
 
-/*
-   DAY MODE:
-   Mala beads are blank/invisible.
-*/
 body.light .bead.active {
   background: transparent;
 
@@ -1453,12 +1473,6 @@ body.light .bead.current {
 
   box-shadow: none;
 }
-
-/*
-   NIGHT MODE:
-   Normal selected colours are shown.
-   Multi-colour is handled by JavaScript.
-*/
 
 @media (max-width: 420px) {
 
@@ -1526,8 +1540,6 @@ body.light .bead.current {
 <button id="malaColorBtn" class="right-side-btn">🎨</button>
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
-<!-- SEPARATE COLOUR PANEL -->
-
 <div id="colorBox" class="top-panel">
 
   <div class="color-title">
@@ -1585,8 +1597,6 @@ body.light .bead.current {
       data-glow="rgba(255,59,157,.8)"
       data-center="#350018"></button>
 
-    <!-- MULTI COLOUR -->
-
     <button class="color-btn multi"
       data-multi="true"
       title="Multi Colour"></button>
@@ -1594,8 +1604,6 @@ body.light .bead.current {
   </div>
 
 </div>
-
-<!-- SEPARATE SETTINGS PANEL -->
 
 <div id="settingsBox" class="top-panel">
 
@@ -1613,8 +1621,6 @@ body.light .bead.current {
     <button id="vibrationBtn">ON</button>
   </div>
 
-  <!-- V43 RESET ALL HISTORY -->
-
   <div class="reset-history-row">
 
     <span>🗑️ Mala History</span>
@@ -1630,7 +1636,7 @@ body.light .bead.current {
 </div>
 
 <h1>Waheguru Simran</h1>
-<div class="subtitle">Digital 108-Bead Mala—V45</div>
+<div class="subtitle">Digital 108-Bead Mala—V46</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -1643,12 +1649,15 @@ body.light .bead.current {
 
   <div id="mala" class="mala">
 
-    <!-- V44 ELECTRIC CENTER ENERGY -->
+    <!-- V46 ELECTRIC CENTER ENERGY -->
 
     <div class="electric-energy">
 
       <div class="energy-ring"></div>
       <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+
+      <!-- V46 EXTRA ELECTRIC LINE -->
       <div class="energy-ring"></div>
 
       <div class="energy-spark spark1"></div>
@@ -1704,8 +1713,6 @@ body.light .bead.current {
   </button>
 
 </div>
-
-<!-- CALENDAR -->
 
 <div id="calendarBox" class="calendar-box">
 
@@ -1770,8 +1777,6 @@ body.light .bead.current {
   </div>
 
 </div>
-
-<!-- CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1905,9 +1910,7 @@ if (
   !Number.isFinite(currentMalaNumber) ||
   currentMalaNumber < 0
 ) {
-
   currentMalaNumber = 0;
-
 }
 
 let savedColor =
@@ -1941,9 +1944,7 @@ if (
   multiColorIndex < 0 ||
   multiColorIndex > 6
 ) {
-
   multiColorIndex = 0;
-
 }
 
 let records;
@@ -1959,9 +1960,7 @@ try {
     !records ||
     typeof records !== "object"
   ) {
-
     records = {};
-
   }
 
 } catch {
@@ -2079,8 +2078,6 @@ const settingsBtn =
 
 const settingsBox =
   document.getElementById("settingsBox");
-
-/* V43 RESET HISTORY ELEMENT */
 
 const resetHistoryBtn =
   document.getElementById("resetHistoryBtn");
@@ -2299,9 +2296,7 @@ function setColor(button) {
     document
       .querySelectorAll(".color-btn")
       .forEach(btn => {
-
         btn.classList.remove("selected");
-
       });
 
     button.classList.add("selected");
@@ -2317,7 +2312,6 @@ function setColor(button) {
     updateDisplay();
 
     return;
-
   }
 
   multiColorEnabled = false;
@@ -2348,9 +2342,7 @@ function setColor(button) {
   document
     .querySelectorAll(".color-btn")
     .forEach(btn => {
-
       btn.classList.remove("selected");
-
     });
 
   button.classList.add("selected");
@@ -2386,15 +2378,10 @@ function loadSavedColor() {
       );
 
     if (multiButton) {
-
-      setColor(
-        multiButton
-      );
-
+      setColor(multiButton);
     }
 
     return;
-
   }
 
   const buttons =
@@ -2408,9 +2395,7 @@ function loadSavedColor() {
       button.dataset.color === savedColor &&
       button.dataset.multi !== "true"
     ) {
-
       selected = button;
-
     }
 
   });
@@ -2505,18 +2490,14 @@ settingsBtn.addEventListener(
 colorBox.addEventListener(
   "click",
   event => {
-
     event.stopPropagation();
-
   }
 );
 
 settingsBox.addEventListener(
   "click",
   event => {
-
     event.stopPropagation();
-
   }
 );
 
@@ -2528,18 +2509,14 @@ document.addEventListener(
       !colorBox.contains(event.target) &&
       event.target.id !== "malaColorBtn"
     ) {
-
       colorBox.classList.remove("open");
-
     }
 
     if (
       !settingsBox.contains(event.target) &&
       event.target.id !== "settingsBtn"
     ) {
-
       settingsBox.classList.remove("open");
-
     }
 
   }
@@ -2767,9 +2744,7 @@ function getCompletedMalasForPeriod(
         !entry ||
         !entry.date
       ) {
-
         return false;
-
       }
 
       const d =
@@ -2855,19 +2830,13 @@ function updateCalendarStats() {
     completedMalas;
 
   calendarStatWeek.textContent =
-    getCompletedMalasForPeriod(
-      "week"
-    );
+    getCompletedMalasForPeriod("week");
 
   calendarStatMonth.textContent =
-    getCompletedMalasForPeriod(
-      "month"
-    );
+    getCompletedMalasForPeriod("month");
 
   calendarStatYear.textContent =
-    getCompletedMalasForPeriod(
-      "year"
-    );
+    getCompletedMalasForPeriod("year");
 
 }
 
@@ -2885,9 +2854,7 @@ function updateDisplay() {
     currentMalaNumber;
 
   if (multiColorEnabled) {
-
     applyCurrentMultiColor();
-
   }
 
   const beads =
@@ -2900,18 +2867,14 @@ function updateDisplay() {
       bead.classList.remove("current");
 
       if (i < count) {
-
         bead.classList.add("active");
-
       }
 
       if (
         i === count &&
         count < MALA_SIZE
       ) {
-
         bead.classList.add("current");
-
       }
 
     }
@@ -2926,9 +2889,7 @@ function updateDisplay() {
   if (
     calendarModal.classList.contains("open")
   ) {
-
     renderCalendar();
-
   }
 
 }
@@ -2946,9 +2907,7 @@ function addCount(amount) {
     !Number.isFinite(amount) ||
     amount <= 0
   ) {
-
     return;
-
   }
 
   amount =
@@ -3010,7 +2969,7 @@ function addCount(amount) {
 }
 
 /* =====================================
-   MALA COMPLETE - V44
+   MALA COMPLETE
 ===================================== */
 
 function malaComplete() {
@@ -3023,25 +2982,19 @@ function malaComplete() {
   ) {
 
     try {
-
-      navigator.vibrate(
-        120
-      );
-
+      navigator.vibrate(120);
     } catch(e) {}
 
   }
 
   if (soundEnabled) {
-
     completionChime();
-
   }
 
 }
 
 /* =====================================
-   V44 COMPLETION GLOW
+   COMPLETION GLOW
 ===================================== */
 
 function triggerCompletionGlow() {
@@ -3066,7 +3019,7 @@ function triggerCompletionGlow() {
 }
 
 /* =====================================
-   V44 SOFT COMPLETION CHIME
+   SOFT COMPLETION CHIME
 ===================================== */
 
 function completionChime() {
@@ -3335,9 +3288,7 @@ async function startAudioMonitor() {
       !navigator.mediaDevices ||
       !navigator.mediaDevices.getUserMedia
     ) {
-
       return;
-
     }
 
     if (micStream) {
@@ -3380,11 +3331,9 @@ async function startAudioMonitor() {
     );
 
     if (audioMonitor) {
-
       cancelAnimationFrame(
         audioMonitor
       );
-
     }
 
     monitorAudio();
@@ -3414,9 +3363,7 @@ function monitorAudio() {
     !analyser ||
     !audioData
   ) {
-
     return;
-
   }
 
   analyser.getByteTimeDomainData(
@@ -3453,10 +3400,8 @@ function monitorAudio() {
   if (
     rms >= AUDIO_THRESHOLD
   ) {
-
     lastActivityAt =
       now;
-
   }
 
   const elapsed =
@@ -3724,10 +3669,8 @@ function setupRecognition() {
   r.onspeechstart = () => {
 
     if (listening) {
-
       lastActivityAt =
         performance.now();
-
     }
 
   };
@@ -3735,10 +3678,8 @@ function setupRecognition() {
   r.onaudiostart = () => {
 
     if (listening) {
-
       lastActivityAt =
         performance.now();
-
     }
 
   };
@@ -3762,9 +3703,7 @@ function setupRecognition() {
         !result ||
         !result[0]
       ) {
-
         continue;
-
       }
 
       const transcript =
@@ -3902,15 +3841,11 @@ function setupRecognition() {
       error === "aborted" ||
       error === "no-speech"
     ) {
-
       return;
-
     }
 
     if (listening) {
-
       scheduleRecognitionRestart();
-
     }
 
   };
@@ -3933,10 +3868,8 @@ function setupRecognition() {
       "";
 
     try {
-
       r.lang =
         recognitionLanguage;
-
     } catch(e) {}
 
     scheduleRecognitionRestart();
@@ -3990,9 +3923,7 @@ function startRecognitionSafely() {
     recognitionRunning ||
     recognitionStarting
   ) {
-
     return;
-
   }
 
   if (!recognition) {
@@ -4033,15 +3964,11 @@ function startRecognitionSafely() {
       e.name ===
         "InvalidStateError"
     ) {
-
       return;
-
     }
 
     if (listening) {
-
       scheduleRecognitionRestart();
-
     }
 
   }
@@ -4179,7 +4106,7 @@ function resetCurrentMala() {
 }
 
 /* =====================================
-   V43 RESET ALL MALA HISTORY
+   RESET ALL MALA HISTORY
 ===================================== */
 
 function resetAllMalaHistory() {
@@ -4203,42 +4130,19 @@ function resetAllMalaHistory() {
   }
 
   count = 0;
-
   total = 0;
-
   completedMalas = 0;
-
   currentMalaNumber = 0;
-
   records = {};
-
   malaHistory = [];
-
   multiColorIndex = 0;
 
-  localStorage.removeItem(
-    "wg_count"
-  );
-
-  localStorage.removeItem(
-    "wg_total"
-  );
-
-  localStorage.removeItem(
-    "wg_malas"
-  );
-
-  localStorage.removeItem(
-    "wg_current_mala_number"
-  );
-
-  localStorage.removeItem(
-    "wg_records"
-  );
-
-  localStorage.removeItem(
-    "wg_mala_history"
-  );
+  localStorage.removeItem("wg_count");
+  localStorage.removeItem("wg_total");
+  localStorage.removeItem("wg_malas");
+  localStorage.removeItem("wg_current_mala_number");
+  localStorage.removeItem("wg_records");
+  localStorage.removeItem("wg_mala_history");
 
   localStorage.setItem(
     "wg_current_date",
@@ -4271,14 +4175,10 @@ function resetAllMalaHistory() {
   if (
     calendarModal.classList.contains("open")
   ) {
-
     renderCalendar();
-
   }
 
 }
-
-/* V43 RESET HISTORY BUTTON */
 
 resetHistoryBtn.addEventListener(
   "click",
@@ -4463,21 +4363,13 @@ function renderCalendar() {
     if (
       key === todayKey()
     ) {
-
-      dayBox.classList.add(
-        "today"
-      );
-
+      dayBox.classList.add("today");
     }
 
     if (
       key === selectedCalendarDate
     ) {
-
-      dayBox.classList.add(
-        "selected"
-      );
-
+      dayBox.classList.add("selected");
     }
 
     const number =
@@ -4541,17 +4433,9 @@ function renderCalendar() {
 
     }
 
-    dayBox.appendChild(
-      number
-    );
-
-    dayBox.appendChild(
-      waheguru
-    );
-
-    dayBox.appendChild(
-      mala
-    );
+    dayBox.appendChild(number);
+    dayBox.appendChild(waheguru);
+    dayBox.appendChild(mala);
 
     dayBox.addEventListener(
       "click",
@@ -4708,9 +4592,7 @@ calendarModal.addEventListener(
       event.target ===
       calendarModal
     ) {
-
       closeCalendar();
-
     }
 
   }
@@ -4724,9 +4606,7 @@ document.addEventListener(
       event.key === "Escape" &&
       calendarModal.classList.contains("open")
     ) {
-
       closeCalendar();
-
     }
 
   }
@@ -4812,9 +4692,7 @@ checkMidnightReset();
 loadSavedColor();
 
 if (multiColorEnabled) {
-
   applyCurrentMultiColor();
-
 }
 
 applyDarkMode();
