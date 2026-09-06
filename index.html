@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 31</title>
+<title>Waheguru Voice Counter - V 32</title>
 
 <style>
 * {
@@ -415,38 +415,8 @@ button:hover {
   margin-top: 4px;
 }
 
-.records {
-  margin-top: 18px;
-  text-align: left;
-}
-
-.records h2 {
-  text-align: center;
-  font-size: 18px;
-  color: #ddd;
-}
-
-.record {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  background: #101010;
-  border-bottom: 1px solid #222;
-  border-radius: 7px;
-  margin-bottom: 5px;
-}
-
-.record-date {
-  color: #aaa;
-}
-
-.record-count {
-  color: var(--mala-color);
-  font-weight: bold;
-}
-
 /* =====================================
-   V31 CALENDAR
+   V32 CALENDAR
 ===================================== */
 
 .calendar-box {
@@ -481,32 +451,6 @@ button:hover {
 
 .selected-day span {
   color: var(--mala-color);
-  font-weight: bold;
-}
-
-/* V31 HISTORY TOTALS */
-
-.calendar-history-totals {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.calendar-history-total {
-  padding: 9px;
-  background: #080808;
-  border: 1px solid #292929;
-  border-radius: 8px;
-  color: #888;
-  font-size: 11px;
-}
-
-.calendar-history-value {
-  display: block;
-  margin-top: 4px;
-  color: var(--mala-color);
-  font-size: 18px;
   font-weight: bold;
 }
 
@@ -716,7 +660,6 @@ body.light .status,
 body.light .timeout-box,
 body.light .manual,
 body.light .stat,
-body.light .record,
 body.light .calendar-box,
 body.light .calendar-panel,
 body.light .calendar-details,
@@ -725,15 +668,10 @@ body.light .settings {
   background: #fff;
 }
 
-body.light .calendar-history-total {
-  background: #f7f7f7;
-}
-
 body.light .calendar-day.empty {
   background: transparent;
 }
 
-body.light .records h2,
 body.light .manual-title,
 body.light .settings-title {
   color: #333;
@@ -811,7 +749,7 @@ body.light .center {
 <button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V31</div>
+<div class="subtitle">Digital 108-Bead Mala—V32</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -996,9 +934,7 @@ body.light .center {
 
 </div>
 
-<!-- =====================================
-     V31 CALENDAR
-===================================== -->
+<!-- V32 CALENDAR -->
 
 <div
   id="calendarBox"
@@ -1019,60 +955,9 @@ body.light .center {
     <span id="selectedDateLabel">Today</span>
   </div>
 
-  <div class="calendar-history-totals">
-
-    <div class="calendar-history-total">
-      🙏 Total Waheguru
-      <span
-        id="calendarTotalWaheguru"
-        class="calendar-history-value">
-        0
-      </span>
-    </div>
-
-    <div class="calendar-history-total">
-      📿 Completed Mala
-      <span
-        id="calendarTotalMalas"
-        class="calendar-history-value">
-        0
-      </span>
-    </div>
-
-    <div class="calendar-history-total">
-      📿 Total This Week
-      <span
-        id="calendarWeekTotal"
-        class="calendar-history-value">
-        0
-      </span>
-    </div>
-
-    <div class="calendar-history-total">
-      📿 Total This Month
-      <span
-        id="calendarMonthTotal"
-        class="calendar-history-value">
-        0
-      </span>
-    </div>
-
-    <div class="calendar-history-total">
-      📿 Total This Year
-      <span
-        id="calendarYearTotal"
-        class="calendar-history-value">
-        0
-      </span>
-    </div>
-
-  </div>
-
 </div>
 
-<!-- =====================================
-     V31 CALENDAR POPUP
-===================================== -->
+<!-- V32 CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1167,14 +1052,6 @@ body.light .center {
 
 </div>
 
-<div class="records">
-
-  <h2>📅 Daily Records</h2>
-
-  <div id="recordsList"></div>
-
-</div>
-
 <!-- SETTINGS -->
 <div id="settingsBox" class="color-box">
 
@@ -1200,7 +1077,7 @@ body.light .center {
   and press Add Count. The microphone automatically turns
   off after 45 seconds of continuous silence. The current
   mala resets automatically at midnight while completed
-  malas, saved totals and daily records remain.
+  malas and saved totals remain.
 </div>
 
 </div>
@@ -1364,9 +1241,6 @@ const manualInput =
 const manualAddBtn =
   document.getElementById("manualAddBtn");
 
-const recordsList =
-  document.getElementById("recordsList");
-
 const colorBox =
   document.getElementById("colorBox");
 
@@ -1380,7 +1254,7 @@ const vibrationBtn =
   document.getElementById("vibrationBtn");
 
 /* =====================================
-   V31 CALENDAR ELEMENTS
+   V32 CALENDAR ELEMENTS
 ===================================== */
 
 const calendarBox =
@@ -1418,31 +1292,6 @@ const closeCalendarBtn =
 
 const selectedDateLabel =
   document.getElementById("selectedDateLabel");
-
-const calendarTotalWaheguru =
-  document.getElementById(
-    "calendarTotalWaheguru"
-  );
-
-const calendarTotalMalas =
-  document.getElementById(
-    "calendarTotalMalas"
-  );
-
-const calendarWeekTotal =
-  document.getElementById(
-    "calendarWeekTotal"
-  );
-
-const calendarMonthTotal =
-  document.getElementById(
-    "calendarMonthTotal"
-  );
-
-const calendarYearTotal =
-  document.getElementById(
-    "calendarYearTotal"
-  );
 
 /* =====================================
    DATE HELPERS
@@ -1909,9 +1758,7 @@ function updateDisplay() {
 
   updateExtraStats();
   saveData();
-  updateRecords();
   updateSelectedDateDisplay();
-  updateCalendarHistoryTotals();
 
   if (
     calendarModal.classList.contains("open")
@@ -2758,7 +2605,7 @@ function setupRecognition() {
       }
 
       console.log(
-        "V31 Recognized:",
+        "V32 Recognized:",
         transcript,
         "Final:",
         result.isFinal
@@ -2812,7 +2659,7 @@ function setupRecognition() {
           performance.now();
 
         console.log(
-          "V31 NEW COUNT:",
+          "V32 NEW COUNT:",
           newMatches,
           "Current result matches:",
           currentMatches
@@ -2832,7 +2679,7 @@ function setupRecognition() {
         : "unknown";
 
     console.log(
-      "V31 Speech recognition:",
+      "V32 Speech recognition:",
       error
     );
 
@@ -2993,7 +2840,7 @@ function startRecognitionSafely() {
       false;
 
     console.log(
-      "V31 Recognition start error:",
+      "V32 Recognition start error:",
       e
     );
 
@@ -3101,13 +2948,23 @@ function pauseListening() {
 }
 
 /* =====================================
-   V31 RESET CURRENT MALA
-   ONLY RESET CURRENT COUNT
+   V32 RESET CURRENT MALA
+   RESET ONLY CURRENT MALA COUNT
 ===================================== */
 
 function resetCurrentMala() {
 
   count = 0;
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  heardText.textContent =
+    "";
 
   updateDisplay();
 
@@ -3180,7 +3037,7 @@ resetBtn.addEventListener(
 );
 
 /* =====================================
-   DAILY RECORDS + WEEK/MONTH
+   WEEK / MONTH
 ===================================== */
 
 function updateExtraStats() {
@@ -3207,143 +3064,8 @@ function updateExtraStats() {
 
 }
 
-function updateRecords() {
-
-  recordsList.innerHTML =
-    "";
-
-  const dates =
-    Object.keys(records)
-      .sort()
-      .reverse();
-
-  if (!dates.length) {
-
-    recordsList.innerHTML =
-      '<div class="record">' +
-      '<span class="record-date">' +
-      'No records yet' +
-      '</span>' +
-      '<span class="record-count">0</span>' +
-      '</div>';
-
-    return;
-
-  }
-
-  dates
-    .slice(0, 30)
-    .forEach(
-      date => {
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          "record";
-
-        const dateEl =
-          document.createElement(
-            "span"
-          );
-
-        dateEl.className =
-          "record-date";
-
-        dateEl.textContent =
-          formatDate(date);
-
-        const recordCountEl =
-          document.createElement(
-            "span"
-          );
-
-        recordCountEl.className =
-          "record-count";
-
-        recordCountEl.textContent =
-          records[date] || 0;
-
-        row.appendChild(
-          dateEl
-        );
-
-        row.appendChild(
-          recordCountEl
-        );
-
-        recordsList.appendChild(
-          row
-        );
-
-      }
-    );
-
-}
-
 /* =====================================
-   V31 CALENDAR TOTALS
-===================================== */
-
-function updateCalendarHistoryTotals() {
-
-  if (
-    calendarTotalWaheguru
-  ) {
-
-    calendarTotalWaheguru.textContent =
-      total;
-
-  }
-
-  if (
-    calendarTotalMalas
-  ) {
-
-    calendarTotalMalas.textContent =
-      completedMalas;
-
-  }
-
-  if (
-    calendarWeekTotal
-  ) {
-
-    calendarWeekTotal.textContent =
-      countCompletedMalasForPeriod(
-        "week"
-      );
-
-  }
-
-  if (
-    calendarMonthTotal
-  ) {
-
-    calendarMonthTotal.textContent =
-      countCompletedMalasForPeriod(
-        "month"
-      );
-
-  }
-
-  if (
-    calendarYearTotal
-  ) {
-
-    calendarYearTotal.textContent =
-      countCompletedMalasForPeriod(
-        "year"
-      );
-
-  }
-
-}
-
-/* =====================================
-   V31 CALENDAR
+   V32 CALENDAR
 ===================================== */
 
 function dateKeyFromParts(
