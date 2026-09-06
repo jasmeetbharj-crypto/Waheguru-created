@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 41</title>
+<title>Waheguru Simran - V 42</title>
 
 <style>
 * {
@@ -41,24 +41,8 @@ body.light {
   text-align: center;
 }
 
-/* =====================================
-   V41 UNIFIED HEADER CARD
-===================================== */
-
-.header-card {
-  margin: 0 auto 15px;
-  padding: 14px 14px 13px;
-  background: #101010;
-  border: 1px solid #292929;
-  border-radius: 14px;
-}
-
-body.light .header-card {
-  background: #fff;
-}
-
 h1 {
-  margin: 0 0 2px;
+  margin: 5px 0 2px;
   font-size: 28px;
   color: var(--mala-color);
   text-shadow: 0 0 15px var(--mala-glow);
@@ -67,12 +51,7 @@ h1 {
 .subtitle {
   color: #888;
   font-size: 13px;
-  margin-bottom: 12px;
-}
-
-.header-start {
-  width: 100%;
-  margin-top: 2px;
+  margin-bottom: 15px;
 }
 
 .status {
@@ -179,15 +158,8 @@ h1 {
   overflow: visible;
 }
 
-/* =====================================
-   V41 COMPLETION GLOW
-===================================== */
-
-.center.completion-pulse {
-  animation: completionGlow .7s ease-out;
-}
-
-@keyframes completionGlow {
+/* V42: 108 MALA COMPLETION GLOW */
+@keyframes malaCompletionPulse {
 
   0% {
     box-shadow:
@@ -195,11 +167,10 @@ h1 {
       inset 0 0 25px #000;
   }
 
-  35% {
+  50% {
     box-shadow:
-      0 0 28px var(--mala-color),
-      0 0 55px var(--mala-glow),
-      0 0 80px var(--mala-glow),
+      0 0 35px var(--mala-glow),
+      0 0 60px var(--mala-glow),
       inset 0 0 25px #000;
   }
 
@@ -209,6 +180,11 @@ h1 {
       inset 0 0 25px #000;
   }
 
+}
+
+.center.completion-pulse {
+  animation:
+    malaCompletionPulse .65s ease-out;
 }
 
 .ik-onkar {
@@ -415,18 +391,7 @@ button:hover {
   font-size: 12px;
 }
 
-/* =====================================
-   CALENDAR / HISTORY HIDDEN
-   Existing calendar/history functionality
-   and saved data remain intact.
-===================================== */
-
-.calendar-box,
-.calendar-stats {
-  display: none;
-}
-
-/* CALENDAR COMPACT */
+/* COMPACT CALENDAR */
 
 .calendar-box {
   margin-top: 12px;
@@ -878,23 +843,8 @@ body.light .bead.current {
 
 </div>
 
-<!-- V41 UNIFIED HEADER -->
-
-<div class="header-card">
-
-  <h1>Waheguru Simran</h1>
-
-  <div class="subtitle">
-    Digital 108-Bead Mala—V41
-  </div>
-
-  <button
-    id="startBtn"
-    class="start header-start">
-    🎙️ Start
-  </button>
-
-</div>
+<h1>Waheguru Simran</h1>
+<div class="subtitle">Digital 108-Bead Mala—V42</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -911,7 +861,7 @@ body.light .bead.current {
 
   </div>
 
-  <div id="center" class="center">
+  <div class="center">
 
     <div id="count" class="center-count">0</div>
 
@@ -938,6 +888,10 @@ body.light .bead.current {
 
 <div class="controls">
 
+  <button id="startBtn" class="start">
+    🎙️ Start
+  </button>
+
   <button id="pauseBtn">
     ⏸ Pause
   </button>
@@ -948,9 +902,73 @@ body.light .bead.current {
 
 </div>
 
-<!-- CALENDAR & HISTORY VISIBLE SECTIONS REMOVED -->
+<!-- CALENDAR -->
 
-<!-- CALENDAR POPUP REMAINS AVAILABLE THROUGH EXISTING LOGIC -->
+<div id="calendarBox" class="calendar-box">
+
+  <button
+    id="openCalendarBtn"
+    class="calendar-open-btn">
+    📅 Open Calendar
+  </button>
+
+  <div class="selected-day">
+    Selected date:
+    <span id="selectedDateLabel">Today</span>
+  </div>
+
+</div>
+
+<div class="calendar-stats">
+
+  <div class="calendar-stat-row">
+    <span>🙏 Total Waheguru</span>
+    <span
+      id="calendarStatTotal"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Completed Mala</span>
+    <span
+      id="calendarStatMalas"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Week</span>
+    <span
+      id="calendarStatWeek"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Month</span>
+    <span
+      id="calendarStatMonth"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Year</span>
+    <span
+      id="calendarStatYear"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+</div>
+
+<!-- CALENDAR POPUP -->
 
 <div
   id="calendarModal"
@@ -1219,9 +1237,6 @@ const countEl =
 
 const malaNumberEl =
   document.getElementById("malaNumber");
-
-const centerEl =
-  document.getElementById("center");
 
 const status =
   document.getElementById("status");
@@ -2025,10 +2040,6 @@ function getCompletedMalasForPeriod(
 
 function updateCalendarStats() {
 
-  if (!calendarStatTotal) {
-    return;
-  }
-
   calendarStatTotal.textContent =
     total;
 
@@ -2105,7 +2116,6 @@ function updateDisplay() {
   updateSelectedDateDisplay();
 
   if (
-    calendarModal &&
     calendarModal.classList.contains("open")
   ) {
 
@@ -2183,12 +2193,6 @@ function addCount(amount) {
 
     }
 
-    /*
-       V41:
-       One completion effect for
-       each completed 108-bead mala.
-    */
-
     malaComplete();
 
   }
@@ -2198,24 +2202,12 @@ function addCount(amount) {
 }
 
 /* =====================================
-   V41 MALA COMPLETE
+   MALA COMPLETE - V42
 ===================================== */
 
 function malaComplete() {
 
-  /*
-     Soft ambient chime
-  */
-
-  if (soundEnabled) {
-
-    completionChime();
-
-  }
-
-  /*
-     Short vibration
-  */
+  triggerCompletionGlow();
 
   if (
     vibrationEnabled &&
@@ -2232,43 +2224,48 @@ function malaComplete() {
 
   }
 
-  /*
-     Soft glow pulse around
-     the central counter.
-  */
+  if (soundEnabled) {
 
-  if (centerEl) {
-
-    centerEl.classList.remove(
-      "completion-pulse"
-    );
-
-    void centerEl.offsetWidth;
-
-    centerEl.classList.add(
-      "completion-pulse"
-    );
-
-    setTimeout(
-      () => {
-
-        centerEl.classList.remove(
-          "completion-pulse"
-        );
-
-      },
-      750
-    );
+    completionChime();
 
   }
 
 }
 
 /* =====================================
-   V41 COMPLETION CHIME
+   V42 COMPLETION GLOW
+===================================== */
+
+function triggerCompletionGlow() {
+
+  const center =
+    document.querySelector(".center");
+
+  if (!center) {
+    return;
+  }
+
+  center.classList.remove(
+    "completion-pulse"
+  );
+
+  void center.offsetWidth;
+
+  center.classList.add(
+    "completion-pulse"
+  );
+
+}
+
+/* =====================================
+   V42 SOFT COMPLETION CHIME
 ===================================== */
 
 function completionChime() {
+
+  if (!soundEnabled) {
+    return;
+  }
 
   try {
 
@@ -2286,24 +2283,8 @@ function completionChime() {
     const now =
       ctx.currentTime;
 
-    const oscillator =
-      ctx.createOscillator();
-
     const gain =
       ctx.createGain();
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.setValueAtTime(
-      659.25,
-      now
-    );
-
-    oscillator.frequency.exponentialRampToValueAtTime(
-      880,
-      now + 0.18
-    );
 
     gain.gain.setValueAtTime(
       0.001,
@@ -2312,23 +2293,49 @@ function completionChime() {
 
     gain.gain.exponentialRampToValueAtTime(
       0.12,
-      now + 0.03
+      now + 0.02
     );
 
     gain.gain.exponentialRampToValueAtTime(
       0.001,
-      now + 0.55
+      now + 0.45
     );
 
-    oscillator.connect(gain);
+    const oscillator1 =
+      ctx.createOscillator();
+
+    const oscillator2 =
+      ctx.createOscillator();
+
+    oscillator1.type =
+      "sine";
+
+    oscillator2.type =
+      "sine";
+
+    oscillator1.frequency.value =
+      660;
+
+    oscillator2.frequency.value =
+      990;
+
+    oscillator1.connect(gain);
+    oscillator2.connect(gain);
+
     gain.connect(ctx.destination);
 
-    oscillator.start(
-      now
+    oscillator1.start(now);
+
+    oscillator2.start(
+      now + 0.04
     );
 
-    oscillator.stop(
-      now + 0.55
+    oscillator1.stop(
+      now + 0.45
+    );
+
+    oscillator2.stop(
+      now + 0.40
     );
 
     setTimeout(
@@ -2339,7 +2346,7 @@ function completionChime() {
         } catch(e) {}
 
       },
-      750
+      600
     );
 
   } catch(e) {}
@@ -2436,7 +2443,6 @@ function countWaheguruMatches(text) {
 
 /* =====================================
    BEEP
-   Used for existing auto-pause behavior.
 ===================================== */
 
 function beep() {
@@ -3674,10 +3680,6 @@ function updateCalendarDetails() {
 
 function updateSelectedDateDisplay() {
 
-  if (!selectedDateLabel) {
-    return;
-  }
-
   if (
     selectedCalendarDate ===
     todayKey()
@@ -3731,20 +3733,16 @@ function closeCalendar() {
 
 }
 
-if (openCalendarBtn) {
+openCalendarBtn.addEventListener(
+  "click",
+  event => {
 
-  openCalendarBtn.addEventListener(
-    "click",
-    event => {
+    event.stopPropagation();
 
-      event.stopPropagation();
+    openCalendar();
 
-      openCalendar();
-
-    }
-  );
-
-}
+  }
+);
 
 closeCalendarBtn.addEventListener(
   "click",
