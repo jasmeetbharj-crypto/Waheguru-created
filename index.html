@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 44</title>
+<title>Waheguru Simran - V 45</title>
 
 <style>
 * {
@@ -214,6 +214,99 @@ h1 {
 }
 
 /* =====================================
+   V45 FULL MALA ELECTRIC ARC
+===================================== */
+
+.mala-electric-arc {
+  position: absolute;
+  left: 5%;
+  top: 5%;
+  width: 90%;
+  height: 90%;
+
+  border: 3px solid var(--arc-color, var(--mala-color));
+  border-radius: 50%;
+
+  pointer-events: none;
+  z-index: 3;
+
+  animation:
+    malaArcSpin 3s linear infinite;
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      var(--arc-color, var(--mala-color))
+    )
+    drop-shadow(
+      0 0 18px
+      var(--arc-color, var(--mala-color))
+    );
+}
+
+.mala-electric-arc::before,
+.mala-electric-arc::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  inset: -3px;
+
+  border: 2px solid transparent;
+
+  border-top-color:
+    var(--arc-color, var(--mala-color));
+
+  border-right-color:
+    var(--arc-color, var(--mala-color));
+}
+
+.mala-electric-arc::after {
+  inset: 5px;
+
+  border-width: 1px;
+
+  border-bottom-color:
+    var(--arc-color, var(--mala-color));
+}
+
+/* Lightning */
+.mala-electric-arc.lightning {
+  border-style: dashed;
+}
+
+/* Double Arc */
+.mala-electric-arc.double {
+  box-shadow:
+    0 0 10px
+    var(--arc-color, var(--mala-color)),
+    0 0 25px
+    var(--arc-color, var(--mala-color));
+}
+
+/* Spark Arc */
+.mala-electric-arc.spark {
+  border-style: dotted;
+  border-width: 4px;
+}
+
+@keyframes malaArcSpin {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+
+}
+
+/* =====================================
    V44 ELECTRIC CENTER
 ===================================== */
 
@@ -230,11 +323,6 @@ h1 {
 
   border-radius: 50%;
 
-  /*
-     No black solid center.
-     The center is transparent with
-     a blue energy glow.
-  */
   background:
     radial-gradient(
       circle,
@@ -286,8 +374,6 @@ h1 {
     drop-shadow(0 0 13px rgba(0,120,255,.55));
 }
 
-/* Electric arc layers */
-
 .electric-energy::before,
 .electric-energy::after {
   content: "";
@@ -329,8 +415,6 @@ h1 {
   animation:
     electricSpinReverse 2.4s linear infinite;
 }
-
-/* Additional electric filament rings */
 
 .energy-ring {
   position: absolute;
@@ -1403,12 +1487,6 @@ body.light .calendar-stat-row + .calendar-stat-row {
   border-color: #ddd;
 }
 
-/*
-   V44 CENTER:
-   Keep electric center visible
-   in day mode too.
-*/
-
 body.light .center {
   background:
     radial-gradient(
@@ -1434,10 +1512,6 @@ body.light .ik-onkar {
     0 0 25px rgba(22,140,255,.7);
 }
 
-/*
-   DAY MODE:
-   Mala beads are blank/invisible.
-*/
 body.light .bead.active {
   background: transparent;
 
@@ -1453,12 +1527,6 @@ body.light .bead.current {
 
   box-shadow: none;
 }
-
-/*
-   NIGHT MODE:
-   Normal selected colours are shown.
-   Multi-colour is handled by JavaScript.
-*/
 
 @media (max-width: 420px) {
 
@@ -1585,8 +1653,6 @@ body.light .bead.current {
       data-glow="rgba(255,59,157,.8)"
       data-center="#350018"></button>
 
-    <!-- MULTI COLOUR -->
-
     <button class="color-btn multi"
       data-multi="true"
       title="Multi Colour"></button>
@@ -1613,6 +1679,30 @@ body.light .bead.current {
     <button id="vibrationBtn">ON</button>
   </div>
 
+  <!-- V45 FULL MALA ARC -->
+
+  <div class="setting-row">
+    <span>⚡ Arc</span>
+    <button id="arcEnabledBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>🎨 Match Mala Colour</span>
+    <button id="arcMatchBtn">ON</button>
+  </div>
+
+  <div class="setting-row">
+    <span>✨ Arc Style</span>
+
+    <select id="arcStyle">
+      <option value="energy">Energy Ring</option>
+      <option value="lightning">Lightning</option>
+      <option value="double">Double Arc</option>
+      <option value="spark">Spark Arc</option>
+    </select>
+
+  </div>
+
   <!-- V43 RESET ALL HISTORY -->
 
   <div class="reset-history-row">
@@ -1630,7 +1720,7 @@ body.light .bead.current {
 </div>
 
 <h1>Waheguru Simran</h1>
-<div class="subtitle">Digital 108-Bead Mala—V44</div>
+<div class="subtitle">Digital 108-Bead Mala—V45</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -1642,6 +1732,13 @@ body.light .bead.current {
 <div class="mala-wrapper">
 
   <div id="mala" class="mala">
+
+    <!-- V45 FULL MALA ELECTRIC ARC -->
+
+    <div
+      id="malaElectricArc"
+      class="mala-electric-arc">
+    </div>
 
     <!-- V44 ELECTRIC CENTER ENERGY -->
 
@@ -1923,6 +2020,19 @@ let vibrationEnabled =
   localStorage.getItem("wg_vibration") !== "false";
 
 /* =====================================
+   V45 ARC SETTINGS
+===================================== */
+
+let arcEnabled =
+  localStorage.getItem("wg_arc_enabled") !== "false";
+
+let arcMatchMala =
+  localStorage.getItem("wg_arc_match") !== "false";
+
+let arcStyle =
+  localStorage.getItem("wg_arc_style") || "energy";
+
+/* =====================================
    MULTI COLOUR
 ===================================== */
 
@@ -2080,65 +2190,144 @@ const settingsBtn =
 const settingsBox =
   document.getElementById("settingsBox");
 
+/* V45 ARC ELEMENTS */
+
+const malaElectricArc =
+  document.getElementById(
+    "malaElectricArc"
+  );
+
+const arcEnabledBtn =
+  document.getElementById(
+    "arcEnabledBtn"
+  );
+
+const arcMatchBtn =
+  document.getElementById(
+    "arcMatchBtn"
+  );
+
+const arcStyleSelect =
+  document.getElementById(
+    "arcStyle"
+  );
+
 /* V43 RESET HISTORY ELEMENT */
 
 const resetHistoryBtn =
   document.getElementById("resetHistoryBtn");
 
 /* =====================================
-   CALENDAR ELEMENTS
+   V45 ARC UPDATE
 ===================================== */
 
-const calendarBox =
-  document.getElementById("calendarBox");
+function updateMalaArc() {
 
-const openCalendarBtn =
-  document.getElementById("openCalendarBtn");
+  if (!malaElectricArc) {
+    return;
+  }
 
-const calendarModal =
-  document.getElementById("calendarModal");
+  malaElectricArc.style.display =
+    arcEnabled
+      ? "block"
+      : "none";
 
-const previousMonthBtn =
-  document.getElementById("previousMonthBtn");
+  malaElectricArc.className =
+    "mala-electric-arc";
 
-const nextMonthBtn =
-  document.getElementById("nextMonthBtn");
+  if (arcStyle !== "energy") {
 
-const calendarMonth =
-  document.getElementById("calendarMonth");
+    malaElectricArc.classList.add(
+      arcStyle
+    );
 
-const calendarGrid =
-  document.getElementById("calendarGrid");
+  }
 
-const calendarDetailsDate =
-  document.getElementById("calendarDetailsDate");
+  const malaColor =
+    getComputedStyle(
+      document.documentElement
+    )
+      .getPropertyValue(
+        "--mala-color"
+      )
+      .trim();
 
-const calendarDetailsCount =
-  document.getElementById("calendarDetailsCount");
+  malaElectricArc.style.setProperty(
+    "--arc-color",
+    arcMatchMala
+      ? malaColor
+      : "#00eaff"
+  );
 
-const calendarDetailsMalas =
-  document.getElementById("calendarDetailsMalas");
+  arcEnabledBtn.textContent =
+    arcEnabled
+      ? "ON"
+      : "OFF";
 
-const closeCalendarBtn =
-  document.getElementById("closeCalendarBtn");
+  arcMatchBtn.textContent =
+    arcMatchMala
+      ? "ON"
+      : "OFF";
 
-const selectedDateLabel =
-  document.getElementById("selectedDateLabel");
+  arcStyleSelect.value =
+    arcStyle;
 
-const calendarStatTotal =
-  document.getElementById("calendarStatTotal");
+}
 
-const calendarStatMalas =
-  document.getElementById("calendarStatMalas");
+/* =====================================
+   V45 ARC BUTTONS
+===================================== */
 
-const calendarStatWeek =
-  document.getElementById("calendarStatWeek");
+arcEnabledBtn.addEventListener(
+  "click",
+  () => {
 
-const calendarStatMonth =
-  document.getElementById("calendarStatMonth");
+    arcEnabled =
+      !arcEnabled;
 
-const calendarStatYear =
-  document.getElementById("calendarStatYear");
+    localStorage.setItem(
+      "wg_arc_enabled",
+      arcEnabled
+    );
+
+    updateMalaArc();
+
+  }
+);
+
+arcMatchBtn.addEventListener(
+  "click",
+  () => {
+
+    arcMatchMala =
+      !arcMatchMala;
+
+    localStorage.setItem(
+      "wg_arc_match",
+      arcMatchMala
+    );
+
+    updateMalaArc();
+
+  }
+);
+
+arcStyleSelect.addEventListener(
+  "change",
+  () => {
+
+    arcStyle =
+      arcStyleSelect.value;
+
+    localStorage.setItem(
+      "wg_arc_style",
+      arcStyle
+    );
+
+    updateMalaArc();
+
+  }
+);
 
 /* =====================================
    DATE HELPERS
@@ -2267,6 +2456,8 @@ function applyColorData(data) {
     "--mala-center",
     data.center
   );
+
+  updateMalaArc();
 
 }
 
@@ -2598,6 +2789,8 @@ function updateSettingsButtons() {
       ? "ON"
       : "OFF";
 
+  updateMalaArc();
+
 }
 
 soundBtn.addEventListener(
@@ -2728,6 +2921,21 @@ function saveData() {
   localStorage.setItem(
     "wg_multi_color_index",
     multiColorIndex
+  );
+
+  localStorage.setItem(
+    "wg_arc_enabled",
+    arcEnabled
+  );
+
+  localStorage.setItem(
+    "wg_arc_match",
+    arcMatchMala
+  );
+
+  localStorage.setItem(
+    "wg_arc_style",
+    arcStyle
   );
 
 }
@@ -2889,6 +3097,8 @@ function updateDisplay() {
     applyCurrentMultiColor();
 
   }
+
+  updateMalaArc();
 
   const beads =
     document.querySelectorAll(".bead");
@@ -4826,6 +5036,8 @@ setPausedStatus();
 updateSettingsButtons();
 
 updateSelectedDateDisplay();
+
+updateMalaArc();
 
 </script>
 
