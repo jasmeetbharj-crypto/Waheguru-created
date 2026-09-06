@@ -926,12 +926,10 @@ let audioData = null;
 let audioMonitor = null;
 
 /* =====================================
-   V17 VOICE TRACKING
+   V18 VOICE RECOGNITION
 ===================================== */
 
 const recognitionLanguage = "en-IN";
-
-let speechResultCounts = {};
 
 /* =====================================
    ELEMENTS
@@ -2107,7 +2105,7 @@ function setPausedStatus(
 }
 
 /* =====================================
-   V17 SPEECH RECOGNITION
+   V18 SPEECH RECOGNITION
 ===================================== */
 
 function setupRecognition() {
@@ -2132,8 +2130,14 @@ function setupRecognition() {
   r.continuous =
     true;
 
+  /*
+     IMPORTANT:
+     Count only FINAL recognition results.
+     This prevents iPhone interim-result
+     revisions from causing under-counting.
+  */
   r.interimResults =
-    true;
+    false;
 
   r.maxAlternatives =
     1;
@@ -2165,6 +2169,20 @@ function setupRecognition() {
   };
 
 
+  /*
+     V18 COUNTING LOGIC
+
+     Only final speech results are counted.
+     Every final transcript is processed once
+     by the browser's result event.
+
+     Example:
+     "waheguru waheguru waheguru"
+     = 3 counts.
+
+     Interim revisions are completely ignored.
+  */
+
   r.onresult = event => {
 
     if (!listening) {
@@ -2182,7 +2200,8 @@ function setupRecognition() {
 
       if (
         !result ||
-        !result[0]
+        !result[0] ||
+        !result.isFinal
       ) {
 
         continue;
@@ -2196,17 +2215,13 @@ function setupRecognition() {
         continue;
       }
 
-      if (bestTranscript) {
-        heardText.textContent =
-          "Heard: " +
-          bestTranscript;
-      }
+      heardText.textContent =
+        "Heard: " +
+        bestTranscript;
 
       console.log(
-        "Recognized:",
-        bestTranscript,
-        "Final:",
-        result.isFinal
+        "Recognized FINAL:",
+        bestTranscript
       );
 
       const currentCount =
@@ -2214,31 +2229,11 @@ function setupRecognition() {
           bestTranscript
         );
 
-      const previousCount =
-        speechResultCounts[i] || 0;
-
-      if (
-        currentCount >
-        previousCount
-      ) {
-
-        const newOccurrences =
-          currentCount -
-          previousCount;
+      if (currentCount > 0) {
 
         addCount(
-          newOccurrences
+          currentCount
         );
-
-        speechResultCounts[i] =
-          currentCount;
-
-      }
-
-      if (result.isFinal) {
-
-        speechResultCounts[i] =
-          currentCount;
 
       }
 
@@ -2308,9 +2303,6 @@ function setupRecognition() {
 
     r.lang =
       recognitionLanguage;
-
-    speechResultCounts =
-      {};
 
     scheduleRecognitionRestart();
 
@@ -2430,9 +2422,6 @@ async function startListening() {
   lastActivityAt =
     performance.now();
 
-  speechResultCounts =
-    {};
-
   heardText.textContent =
     "";
 
@@ -2472,9 +2461,6 @@ function pauseListening() {
 
   recognitionStarting =
     false;
-
-  speechResultCounts =
-    {};
 
   setPausedStatus();
 
