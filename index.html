@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Waheguru Voice Counter - V 26</title>
 
-<style>oo
-* {oo
+<style>
+* {
   box-sizing: border-box;
 }
 
@@ -84,8 +84,9 @@ h1 {
   box-shadow: 0 0 12px var(--mala-color);
 }
 
+/* HEARD SECTION HIDDEN */
 .heard-text {
-  //display: none;
+  display: none;
   margin: -5px auto 10px;
   min-height: 18px;
   color: #777;
@@ -193,26 +194,26 @@ h1 {
   background: #292929;
 }
 
-.right-side-btn { 
-  position: fixed; 
-  right: 14px; 
-  width: 42px; 
-  height: 42px; 
-  padding: 0; 
-  border-radius: 50%; 
-  background: #191919; 
-  border: 1px solid #444; 
-  font-size: 19px; 
-  z-index: 100; 
-  cursor: pointer; 
+.right-side-btn {
+  position: fixed;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #191919;
+  border: 1px solid #444;
+  font-size: 19px;
+  z-index: 100;
+  cursor: pointer;
 }
 
-#malaColorBtn { 
-  top: 68px; 
+#malaColorBtn {
+  top: 68px;
 }
 
-.settings-btn { 
-  top: 122px; 
+.settings-btn {
+  top: 122px;
 }
 
 .dark-mode-btn {
@@ -609,6 +610,8 @@ body.light .settings-title {
   <span id="statusText">Mic paused</span>
 </div>
 
+<!-- Heard section remains in the code for voice recognition,
+     but is hidden from the screen -->
 <div id="heardText" class="heard-text"></div>
 
 <div class="mala-wrapper">
@@ -811,6 +814,7 @@ body.light .settings-title {
 
 </div>
 
+<!-- SETTINGS -->
 <div id="settingsBox" class="color-box">
 
   <div class="color-title">
@@ -894,9 +898,7 @@ try {
 ===================================== */
 
 const MALA_SIZE = 108;
-
 const SILENCE_TIME = 45000;
-
 const AUDIO_THRESHOLD = 0.015;
 
 /* =====================================
@@ -904,25 +906,15 @@ const AUDIO_THRESHOLD = 0.015;
 ===================================== */
 
 let listening = false;
-
 let recognition = null;
-
 let recognitionRunning = false;
-
 let recognitionStarting = false;
-
 let recognitionRestartTimer = null;
-
 let lastActivityAt = 0;
-
 let micStream = null;
-
 let audioContext = null;
-
 let analyser = null;
-
 let audioData = null;
-
 let audioMonitor = null;
 
 /* =====================================
@@ -930,38 +922,10 @@ let audioMonitor = null;
 ===================================== */
 
 const recognitionLanguage = "en-IN";
-
 const RECOGNITION_RESTART_DELAY = 500;
 
-/*
-   V26 FIX
-
-   Speech recognition gives changing interim
-   transcripts.
-
-   Example:
-
-   "waheguru"
-   "waheguru waheguru"
-   "waheguru waheguru waheguru"
-
-   The old version could lose track of what
-   had already been counted when the browser
-   changed recognition results.
-
-   V26 keeps a separate count for every
-   recognition result index and only adds
-   the NEW occurrences.
-
-   It also remembers the last displayed
-   transcript so the Heard section does not
-   incorrectly restart from an old result.
-*/
-
 let processedMatchCounts = new Map();
-
 let lastDisplayedTranscript = "";
-
 let heardCountSinceReset = 0;
 
 /* =====================================
@@ -1127,15 +1091,11 @@ function setColor(button) {
     .querySelectorAll(".color-btn")
     .forEach(btn => {
 
-      btn.classList.remove(
-        "selected"
-      );
+      btn.classList.remove("selected");
 
     });
 
-  button.classList.add(
-    "selected"
-  );
+  button.classList.add("selected");
 
 }
 
@@ -1155,9 +1115,7 @@ document
 
         setColor(this);
 
-        colorBox.classList.remove(
-          "open"
-        );
+        colorBox.classList.remove("open");
 
       }
     );
@@ -1167,18 +1125,14 @@ document
 function loadSavedColor() {
 
   const buttons =
-    document.querySelectorAll(
-      ".color-btn"
-    );
+    document.querySelectorAll(".color-btn");
 
-  let selected =
-    null;
+  let selected = null;
 
   buttons.forEach(button => {
 
     if (
-      button.dataset.color ===
-      savedColor
+      button.dataset.color === savedColor
     ) {
 
       selected = button;
@@ -1216,9 +1170,7 @@ document
 
       event.stopPropagation();
 
-      colorBox.classList.toggle(
-        "open"
-      );
+      colorBox.classList.toggle("open");
 
     }
   );
@@ -1239,14 +1191,21 @@ settingsBtn.addEventListener(
 
     event.stopPropagation();
 
-    settingsBox.classList.toggle(
-      "open"
-    );
+    settingsBox.classList.toggle("open");
 
   }
 );
 
 colorBox.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+  }
+);
+
+settingsBox.addEventListener(
   "click",
   event => {
 
@@ -1263,7 +1222,9 @@ document.addEventListener(
       !colorBox.contains(event.target) &&
       event.target.id !== "malaColorBtn"
     ) {
+
       colorBox.classList.remove("open");
+
     }
 
     if (
@@ -1271,7 +1232,9 @@ document.addEventListener(
       !settingsBox.contains(event.target) &&
       event.target.id !== "settingsBtn"
     ) {
+
       settingsBox.classList.remove("open");
+
     }
 
   }
@@ -1407,9 +1370,7 @@ for (
   bead.style.top =
     y + "%";
 
-  mala.appendChild(
-    bead
-  );
+  mala.appendChild(bead);
 
 }
 
@@ -1472,28 +1433,17 @@ function updateDisplay() {
     records[todayKey()] || 0;
 
   const beads =
-    document.querySelectorAll(
-      ".bead"
-    );
+    document.querySelectorAll(".bead");
 
   beads.forEach(
     (bead, i) => {
 
-      bead.classList.remove(
-        "active"
-      );
+      bead.classList.remove("active");
+      bead.classList.remove("current");
 
-      bead.classList.remove(
-        "current"
-      );
+      if (i < count) {
 
-      if (
-        i < count
-      ) {
-
-        bead.classList.add(
-          "active"
-        );
+        bead.classList.add("active");
 
       }
 
@@ -1502,9 +1452,7 @@ function updateDisplay() {
         count < MALA_SIZE
       ) {
 
-        bead.classList.add(
-          "current"
-        );
+        bead.classList.add("current");
 
       }
 
@@ -1513,9 +1461,7 @@ function updateDisplay() {
 
   updateExtraStats();
   saveData();
-
   updateRecords();
-
   updateSelectedDateDisplay();
 
 }
@@ -1739,13 +1685,8 @@ function beep() {
       ctx.currentTime + 0.35
     );
 
-    oscillator.connect(
-      gain
-    );
-
-    gain.connect(
-      ctx.destination
-    );
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
 
     oscillator.start();
 
@@ -1978,9 +1919,7 @@ function stopAudioMonitor() {
   if (audioContext) {
 
     try {
-
       audioContext.close();
-
     } catch(e) {}
 
     audioContext =
@@ -2045,9 +1984,7 @@ function autoPause() {
   if (recognition) {
 
     try {
-
       recognition.stop();
-
     } catch(e) {}
 
   }
@@ -2143,10 +2080,6 @@ function setupRecognition() {
   r.lang =
     recognitionLanguage;
 
-  /* =====================================
-     RECOGNITION START
-  ===================================== */
-
   r.onstart = () => {
 
     recognitionRunning =
@@ -2174,10 +2107,6 @@ function setupRecognition() {
 
   };
 
-  /* =====================================
-     SPEECH START
-  ===================================== */
-
   r.onspeechstart = () => {
 
     if (listening) {
@@ -2189,10 +2118,6 @@ function setupRecognition() {
 
   };
 
-  /* =====================================
-     AUDIO START
-  ===================================== */
-
   r.onaudiostart = () => {
 
     if (listening) {
@@ -2203,10 +2128,6 @@ function setupRecognition() {
     }
 
   };
-
-  /* =====================================
-     V26 RESULT
-===================================== */
 
   r.onresult = event => {
 
@@ -2239,12 +2160,8 @@ function setupRecognition() {
         continue;
       }
 
-      /*
-         Always show the CURRENT transcript.
-
-         This is deliberately separate from
-         the counting logic.
-      */
+      /* Heard text is hidden,
+         but recognition still works. */
 
       if (
         transcript !==
@@ -2267,11 +2184,6 @@ function setupRecognition() {
         result.isFinal
       );
 
-      /*
-         Count occurrences currently present
-         in this result.
-      */
-
       const currentMatches =
         countWaheguruMatches(
           transcript
@@ -2279,39 +2191,6 @@ function setupRecognition() {
 
       const previousMatches =
         processedMatchCounts.get(i) || 0;
-
-      /*
-         ONLY ADD THE DIFFERENCE.
-
-         Example:
-
-         Result 0:
-         waheguru
-         previous = 0
-         current = 1
-         ADD +1
-
-         Same result changes to:
-
-         waheguru waheguru
-         previous = 1
-         current = 2
-         ADD +1
-
-         Same result changes to:
-
-         waheguru waheguru waheguru
-         previous = 2
-         current = 3
-         ADD +1
-
-         Therefore:
-
-         1 + 1 + 1 = 3
-
-         The first Waheguru is NOT counted
-         again.
-      */
 
       if (
         currentMatches >
@@ -2333,19 +2212,6 @@ function setupRecognition() {
 
         heardCountSinceReset +=
           newMatches;
-
-        /*
-           Every 5 newly counted Waheguru,
-           start the Heard section fresh.
-
-           IMPORTANT:
-
-           Do not immediately replace the
-           fresh section with the same old
-           transcript.
-
-           The display is cleared only here.
-        */
 
         if (
           heardCountSinceReset >= 5
@@ -2377,10 +2243,6 @@ function setupRecognition() {
     }
 
   };
-
-  /* =====================================
-     SPEECH ERROR
-===================================== */
 
   r.onerror = event => {
 
@@ -2442,10 +2304,6 @@ function setupRecognition() {
 
   };
 
-  /* =====================================
-     SPEECH END
-===================================== */
-
   r.onend = () => {
 
     recognitionRunning =
@@ -2457,16 +2315,6 @@ function setupRecognition() {
     if (!listening) {
       return;
     }
-
-    /*
-       New recognition session gets new
-       result indexes.
-
-       Clear only the browser-result
-       tracking.
-
-       The main counter remains unchanged.
-    */
 
     processedMatchCounts.clear();
 
@@ -2498,12 +2346,8 @@ function scheduleRecognitionRestart() {
     return;
   }
 
-  if (
-    recognitionRestartTimer
-  ) {
-
+  if (recognitionRestartTimer) {
     return;
-
   }
 
   recognitionRestartTimer =
@@ -2654,9 +2498,7 @@ function pauseListening() {
   if (recognition) {
 
     try {
-
       recognition.stop();
-
     } catch(e) {}
 
   }
@@ -2794,8 +2636,10 @@ function updateExtraStats() {
         new Date(date);
 
       if (d >= weekStart) {
+
         weekly +=
           Number(value) || 0;
+
       }
 
       if (
