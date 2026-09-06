@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Voice Counter - V 39</title>
+<title>Waheguru Voice Counter - V 40</title>
 
 <style>
 * {
@@ -294,7 +294,20 @@ h1 {
 .blue { background: #168cff; }
 .purple { background: #a855f7; }
 .pink { background: #ff3b9d; }
-.white { background: #ffffff; }
+
+.multi {
+  background:
+    linear-gradient(
+      135deg,
+      #ff2020 0%,
+      #ff8c00 16%,
+      #ffd700 32%,
+      #00d26a 48%,
+      #168cff 64%,
+      #a855f7 80%,
+      #ff3b9d 100%
+    );
+}
 
 .controls {
   display: flex;
@@ -640,6 +653,28 @@ body.light .center {
     );
 }
 
+/*
+   DAY MODE:
+   Mala beads are blank/invisible.
+*/
+body.light .bead.active {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body.light .bead.current {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/*
+   NIGHT MODE:
+   Normal selected colours are shown.
+   Multi-colour is handled by JavaScript.
+*/
+
 @media (max-width: 420px) {
 
   .app {
@@ -749,12 +784,11 @@ body.light .center {
       data-glow="rgba(255,59,157,.8)"
       data-center="#350018"></button>
 
-    <button class="color-btn white"
-      data-color="#ffffff"
-      data-dark="#888888"
-      data-light="#ffffff"
-      data-glow="rgba(255,255,255,.8)"
-      data-center="#222222"></button>
+    <!-- MULTI COLOUR -->
+
+    <button class="color-btn multi"
+      data-multi="true"
+      title="Multi Colour"></button>
 
   </div>
 
@@ -781,7 +815,7 @@ body.light .center {
 </div>
 
 <h1>Waheguru Voice Counter</h1>
-<div class="subtitle">Digital 108-Bead Mala—V39</div>
+<div class="subtitle">Digital 108-Bead Mala—V40</div>
 
 <div id="status" class="status">
   <span class="dot"></span>
@@ -1029,11 +1063,6 @@ let total =
 let completedMalas =
   Number(localStorage.getItem("wg_malas") || 0);
 
-/*
-   Current Mala Number is separate from
-   completed-mala history.
-*/
-
 const savedCurrentMalaNumber =
   localStorage.getItem(
     "wg_current_mala_number"
@@ -1065,6 +1094,45 @@ let soundEnabled =
 let vibrationEnabled =
   localStorage.getItem("wg_vibration") !== "false";
 
+/* =====================================
+   MULTI COLOUR
+===================================== */
+
+let multiColorEnabled =
+  localStorage.getItem("wg_multi_color") === "true";
+
+/*
+   The colour belongs to the CURRENT mala.
+
+   0 = Red
+   1 = Orange
+   2 = Yellow
+   3 = Green
+   4 = Blue
+   5 = Purple
+   6 = Pink
+
+   It changes ONLY after a complete
+   108-count mala.
+*/
+
+let multiColorIndex =
+  Number(
+    localStorage.getItem(
+      "wg_multi_color_index"
+    ) || 0
+  );
+
+if (
+  !Number.isFinite(multiColorIndex) ||
+  multiColorIndex < 0 ||
+  multiColorIndex > 6
+) {
+
+  multiColorIndex = 0;
+
+}
+
 let records;
 
 try {
@@ -1078,7 +1146,9 @@ try {
     !records ||
     typeof records !== "object"
   ) {
+
     records = {};
+
   }
 
 } catch {
@@ -1191,6 +1261,12 @@ const soundBtn =
 const vibrationBtn =
   document.getElementById("vibrationBtn");
 
+const settingsBtn =
+  document.getElementById("settingsBtn");
+
+const settingsBox =
+  document.getElementById("settingsBox");
+
 /* =====================================
    CALENDAR ELEMENTS
 ===================================== */
@@ -1288,6 +1364,95 @@ function formatDate(dateString) {
 }
 
 /* =====================================
+   MULTI COLOUR DATA
+===================================== */
+
+const multiColors = [
+  {
+    color: "#ff2020",
+    dark: "#8d0000",
+    light: "#ff7070",
+    glow: "rgba(255,0,0,.8)",
+    center: "#280000"
+  },
+  {
+    color: "#ff8c00",
+    dark: "#a85500",
+    light: "#ffc266",
+    glow: "rgba(255,140,0,.8)",
+    center: "#281500"
+  },
+  {
+    color: "#ffd700",
+    dark: "#a88a00",
+    light: "#fff099",
+    glow: "rgba(255,215,0,.8)",
+    center: "#282400"
+  },
+  {
+    color: "#00d26a",
+    dark: "#007a3d",
+    light: "#66ffad",
+    glow: "rgba(0,210,106,.8)",
+    center: "#002818"
+  },
+  {
+    color: "#168cff",
+    dark: "#07539c",
+    light: "#75baff",
+    glow: "rgba(22,140,255,.8)",
+    center: "#001b35"
+  },
+  {
+    color: "#a855f7",
+    dark: "#63209c",
+    light: "#d29aff",
+    glow: "rgba(168,85,247,.8)",
+    center: "#210b35"
+  },
+  {
+    color: "#ff3b9d",
+    dark: "#a51760",
+    light: "#ff9dcc",
+    glow: "rgba(255,59,157,.8)",
+    center: "#350018"
+  }
+];
+
+/* =====================================
+   APPLY COLOUR
+===================================== */
+
+function applyColorData(data) {
+
+  document.documentElement.style.setProperty(
+    "--mala-color",
+    data.color
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-dark",
+    data.dark
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-light",
+    data.light
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-glow",
+    data.glow
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-center",
+    data.center
+  );
+
+}
+
+/* =====================================
    COLOR
 ===================================== */
 
@@ -1297,33 +1462,63 @@ function setColor(button) {
     return;
   }
 
+  if (button.dataset.multi === "true") {
+
+    multiColorEnabled = true;
+
+    localStorage.setItem(
+      "wg_multi_color",
+      "true"
+    );
+
+    const multiColor =
+      multiColors[multiColorIndex];
+
+    applyColorData(
+      multiColor
+    );
+
+    document
+      .querySelectorAll(".color-btn")
+      .forEach(btn => {
+
+        btn.classList.remove("selected");
+
+      });
+
+    button.classList.add("selected");
+
+    savedColor =
+      multiColor.color;
+
+    localStorage.setItem(
+      "wg_color",
+      savedColor
+    );
+
+    updateDisplay();
+
+    return;
+
+  }
+
+  multiColorEnabled = false;
+
+  localStorage.setItem(
+    "wg_multi_color",
+    "false"
+  );
+
   const color =
     button.dataset.color;
 
-  document.documentElement.style.setProperty(
-    "--mala-color",
-    color
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-dark",
-    button.dataset.dark
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-light",
-    button.dataset.light
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-glow",
-    button.dataset.glow
-  );
-
-  document.documentElement.style.setProperty(
-    "--mala-center",
-    button.dataset.center
-  );
+  applyColorData({
+    color: color,
+    dark: button.dataset.dark,
+    light: button.dataset.light,
+    glow: button.dataset.glow,
+    center: button.dataset.center
+  });
 
   savedColor = color;
 
@@ -1365,6 +1560,25 @@ document
 
 function loadSavedColor() {
 
+  if (multiColorEnabled) {
+
+    const multiButton =
+      document.querySelector(
+        '.color-btn[data-multi="true"]'
+      );
+
+    if (multiButton) {
+
+      setColor(
+        multiButton
+      );
+
+    }
+
+    return;
+
+  }
+
   const buttons =
     document.querySelectorAll(".color-btn");
 
@@ -1373,7 +1587,8 @@ function loadSavedColor() {
   buttons.forEach(button => {
 
     if (
-      button.dataset.color === savedColor
+      button.dataset.color === savedColor &&
+      button.dataset.multi !== "true"
     ) {
 
       selected = button;
@@ -1397,7 +1612,41 @@ function loadSavedColor() {
 
 }
 
-loadSavedColor();
+/* =====================================
+   APPLY MULTI COLOUR
+===================================== */
+
+function applyCurrentMultiColor() {
+
+  if (!multiColorEnabled) {
+    return;
+  }
+
+  const data =
+    multiColors[
+      multiColorIndex
+    ];
+
+  if (!data) {
+    return;
+  }
+
+  applyColorData(data);
+
+  savedColor =
+    data.color;
+
+  localStorage.setItem(
+    "wg_color",
+    savedColor
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
+}
 
 /* =====================================
    OPEN COLOR PALETTE
@@ -1421,12 +1670,6 @@ document
 /* =====================================
    OPEN SETTINGS
 ===================================== */
-
-const settingsBtn =
-  document.getElementById("settingsBtn");
-
-const settingsBox =
-  document.getElementById("settingsBox");
 
 settingsBtn.addEventListener(
   "click",
@@ -1473,7 +1716,6 @@ document.addEventListener(
     }
 
     if (
-      settingsBox &&
       !settingsBox.contains(event.target) &&
       event.target.id !== "settingsBtn"
     ) {
@@ -1501,6 +1743,13 @@ function applyDarkMode() {
       ? "☀️"
       : "🌙";
 
+  /*
+     Night mode shows the mala.
+     Day mode makes active/current beads blank.
+  */
+
+  updateDisplay();
+
 }
 
 darkModeBtn.addEventListener(
@@ -1519,8 +1768,6 @@ darkModeBtn.addEventListener(
 
   }
 );
-
-applyDarkMode();
 
 /* =====================================
    SETTINGS
@@ -1660,6 +1907,16 @@ function saveData() {
     todayKey()
   );
 
+  localStorage.setItem(
+    "wg_multi_color",
+    multiColorEnabled
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
 }
 
 /* =====================================
@@ -1682,11 +1939,6 @@ function getDateFromKey(key) {
   );
 
 }
-
-/*
-   Week / Month / Year statistics
-   count COMPLETED MALAS only.
-*/
 
 function getCompletedMalasForPeriod(
   period
@@ -1819,6 +2071,18 @@ function updateDisplay() {
     "Mala #" +
     currentMalaNumber;
 
+  /*
+     Multi Colour:
+     The colour is changed only when
+     a new mala starts at count 0.
+  */
+
+  if (multiColorEnabled) {
+
+    applyCurrentMultiColor();
+
+  }
+
   const beads =
     document.querySelectorAll(".bead");
 
@@ -1912,6 +2176,29 @@ function addCount(amount) {
       date: todayKey(),
       timestamp: Date.now()
     });
+
+    /*
+       Multi Colour changes ONLY here,
+       after the mala has completed and
+       count has returned to 0.
+    */
+
+    if (multiColorEnabled) {
+
+      multiColorIndex =
+        (
+          multiColorIndex + 1
+        ) %
+        multiColors.length;
+
+      localStorage.setItem(
+        "wg_multi_color_index",
+        multiColorIndex
+      );
+
+      applyCurrentMultiColor();
+
+    }
 
     malaComplete();
 
@@ -2931,11 +3218,27 @@ function resetCurrentMala() {
 
     Completed mala history stays unchanged.
     Total Waheguru stays unchanged.
+
+    Multi Colour does not advance because
+    Reset Mala is not a completed mala.
   */
 
   count = 0;
 
   currentMalaNumber = 0;
+
+  if (multiColorEnabled) {
+
+    multiColorIndex = 0;
+
+    localStorage.setItem(
+      "wg_multi_color_index",
+      "0"
+    );
+
+    applyCurrentMultiColor();
+
+  }
 
   localStorage.setItem(
     "wg_count",
@@ -3440,6 +3743,24 @@ function checkMidnightReset() {
 
     currentMalaNumber = 0;
 
+    /*
+       A new day starts the multi-colour
+       sequence again from Red.
+    */
+
+    if (multiColorEnabled) {
+
+      multiColorIndex = 0;
+
+      localStorage.setItem(
+        "wg_multi_color_index",
+        "0"
+      );
+
+      applyCurrentMultiColor();
+
+    }
+
     localStorage.setItem(
       "wg_current_date",
       currentDate
@@ -3472,6 +3793,14 @@ setInterval(
 checkMidnightReset();
 
 loadSavedColor();
+
+if (multiColorEnabled) {
+
+  applyCurrentMultiColor();
+
+}
+
+applyDarkMode();
 
 updateDisplay();
 
