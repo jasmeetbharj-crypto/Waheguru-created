@@ -1,0 +1,10 @@
+{
+  "name": "Waheguru Simran",
+  "short_name": "Waheguru",
+  "description": "Waheguru Simran Digital 108-Bead Mala",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait"
+}
