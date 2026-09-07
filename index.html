@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waheguru Simran - V 47</title>
+<title>Waheguru Simran - V 48</title>
 
 <style>
 * {
@@ -14,523 +14,1699 @@
   --mala-color: #ff2020;
   --mala-dark: #8d0000;
   --mala-light: #ff7070;
-  --bg: #080808;
-  --card: #111111;
-  --text: #ffffff;
-  --muted: #aaaaaa;
-  --border: #292929;
+  --mala-glow: rgba(255,0,0,.8);
+  --mala-center: #280000;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
+  background: #050505;
+  color: white;
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
   transition: background .3s, color .3s;
 }
 
 body.light {
-  --bg: #f4f4f4;
-  --card: #ffffff;
-  --text: #111111;
-  --muted: #666666;
-  --border: #dddddd;
+  background: #f2f2f2;
+  color: #111;
 }
 
 .app {
   width: 100%;
-  max-width: 700px;
-  margin: auto;
-  padding: 12px;
-}
-
-header {
+  max-width: 500px;
+  padding: 18px 15px 40px;
   text-align: center;
-  margin-bottom: 10px;
 }
 
 h1 {
-  margin: 5px 0;
+  margin: 5px 0 2px;
   font-size: 28px;
+  color: var(--mala-color);
+  text-shadow: 0 0 15px var(--mala-glow);
 }
 
 .subtitle {
-  color: var(--muted);
+  color: #888;
   font-size: 13px;
+  margin-bottom: 15px;
 }
 
-.top-buttons {
-  display: flex;
-  justify-content: center;
+.status {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  margin: 12px 0;
-  flex-wrap: wrap;
-}
-
-button {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  padding: 9px 13px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-button:active {
-  transform: scale(.97);
-}
-
-button.active {
-  border-color: var(--mala-color);
-  box-shadow: 0 0 10px rgba(255,32,32,.35);
-}
-
-.settings {
-  display: none;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-}
-
-.settings.show {
-  display: block;
-}
-
-.setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.setting-row:last-child {
-  border-bottom: none;
-}
-
-.setting-title {
-  font-size: 14px;
-}
-
-.setting-sub {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 3px;
-}
-
-.target-box {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.target-input-row {
-  display: flex;
-  gap: 7px;
-  margin-top: 7px;
-}
-
-input,
-select {
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-}
-
-input[type="number"] {
-  width: 90px;
-}
-
-input[type="time"] {
-  width: 120px;
-}
-
-select {
-  min-width: 120px;
-}
-
-.target-progress {
-  margin-top: 8px;
-  color: var(--mala-light);
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #111;
+  border: 1px solid #333;
+  color: #999;
   font-size: 13px;
-  font-weight: bold;
+  margin-bottom: 15px;
 }
 
-.reminder-section {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #555;
 }
 
-.reminder-controls {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 7px;
+.status.active {
+  color: var(--mala-color);
+  border-color: var(--mala-dark);
 }
 
-.notification-button {
-  width: 100%;
-  margin-top: 10px;
+.status.active .dot {
+  background: var(--mala-color);
+  box-shadow: 0 0 12px var(--mala-color);
 }
 
-.mala-area {
+.heard-text {
+  display: none;
+  margin: -5px auto 10px;
+  min-height: 18px;
+  color: #777;
+  font-size: 12px;
+}
+
+/* =====================================
+   MALA
+===================================== */
+
+.mala-wrapper {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  max-width: 620px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
+  width: min(90vw, 390px);
+  height: min(90vw, 390px);
+  margin: 8px auto 20px;
 }
 
 .mala {
   position: relative;
-  width: 92%;
-  height: 92%;
-  border-radius: 50%;
-  overflow: visible;
+  width: 100%;
+  height: 100%;
 }
+
+/* =====================================
+   V44 REALISTIC WOODEN BEADS
+===================================== */
 
 .bead {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
+
   background:
-    radial-gradient(circle at 35% 30%,
-      #d49a5d 0%,
-      #8b5425 35%,
-      #4b250e 70%,
-      #210e05 100%);
+    radial-gradient(
+      circle at 30% 25%,
+      #8b7660 0%,
+      #5a4635 18%,
+      #34281f 48%,
+      #17120e 78%,
+      #090706 100%
+    );
+
+  border: 1px solid #665443;
+
   box-shadow:
-    inset -3px -3px 5px rgba(0,0,0,.55),
-    inset 2px 2px 4px rgba(255,255,255,.15),
-    0 2px 5px rgba(0,0,0,.5);
-  transition: .15s;
+    inset -3px -4px 5px rgba(0,0,0,.75),
+    inset 2px 2px 4px rgba(255,255,255,.16),
+    0 2px 4px rgba(0,0,0,.7);
+
+  transform:
+    translate(-50%, -50%);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease,
+    background .18s ease;
+
+  overflow: hidden;
+}
+
+.bead::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 7px;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.18),
+      rgba(0,0,0,.45),
+      rgba(255,255,255,.10),
+      transparent
+    );
+
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  opacity: .75;
 }
 
 .bead.active {
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #fff2d0 0%,
+      var(--mala-light) 18%,
+      var(--mala-color) 45%,
+      var(--mala-dark) 78%,
+      #120606 100%
+    );
+
+  border-color:
+    var(--mala-light);
+
   box-shadow:
-    0 0 8px var(--mala-light),
-    0 0 18px var(--mala-color),
-    inset -3px -3px 5px rgba(0,0,0,.45);
-  transform: translate(-50%, -50%) scale(1.12);
+    inset -3px -4px 5px rgba(0,0,0,.55),
+    inset 2px 2px 4px rgba(255,255,255,.35),
+    0 0 8px var(--mala-color),
+    0 0 18px var(--mala-glow),
+    0 0 28px var(--mala-glow);
 }
+
+.bead.current {
+  transform:
+    translate(-50%, -50%)
+    scale(1.45);
+
+  filter:
+    brightness(1.35);
+
+  box-shadow:
+    inset -3px -4px 5px rgba(0,0,0,.45),
+    inset 2px 2px 5px rgba(255,255,255,.45),
+    0 0 10px white,
+    0 0 22px var(--mala-color),
+    0 0 38px var(--mala-glow);
+}
+
+/* =====================================
+   V44 ELECTRIC CENTER
+===================================== */
 
 .center {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 190px;
-  height: 190px;
-  transform: translate(-50%, -50%);
+
+  transform:
+    translate(-50%, -50%);
+
+  width: 155px;
+  height: 155px;
+
   border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(20,60,110,.28) 0%,
+      rgba(5,20,45,.20) 35%,
+      rgba(0,0,0,0) 72%
+    );
+
+  border:
+    2px solid rgba(100,190,255,.28);
+
+  box-shadow:
+    0 0 18px rgba(0,150,255,.45),
+    0 0 40px rgba(0,110,255,.22),
+    inset 0 0 25px rgba(0,120,255,.18);
+
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle,
-      rgba(255,30,30,.16),
-      rgba(0,0,0,.95) 67%);
-  border: 1px solid rgba(255,40,40,.35);
-  z-index: 5;
+  align-items: center;
+
   overflow: visible;
+
+  isolation: isolate;
 }
 
-.center-count {
-  font-size: 46px;
-  font-weight: bold;
-  color: var(--mala-light);
-  text-shadow:
-    0 0 8px rgba(255,30,30,.7),
-    0 0 18px rgba(255,30,30,.4);
-}
+/* =====================================
+   ELECTRIC ENERGY RINGS
+===================================== */
 
-.center-mala {
-  font-size: 16px;
-  color: var(--muted);
-  margin-top: 3px;
-}
-
-.electric {
+.electric-energy {
   position: absolute;
-  inset: -16px;
+  left: 50%;
+  top: 50%;
+
+  width: 241px;
+  height: 241px;
+
+  transform:
+    translate(-50%, -50%);
+
   border-radius: 50%;
+
   pointer-events: none;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity .2s;
+  z-index: 0;
+
+  filter:
+    drop-shadow(0 0 5px rgba(80,190,255,.9))
+    drop-shadow(0 0 13px rgba(0,120,255,.55));
 }
 
-.electric.on {
-  opacity: 1;
-  animation: electricPulse 1.5s infinite;
-}
-
-.electric::before,
-.electric::after {
+.electric-energy::before,
+.electric-energy::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: 5px;
+
   border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: #fff;
-  border-right-color: #ff2020;
-  filter: drop-shadow(0 0 7px #ff2020);
+
+  border:
+    2px solid transparent;
+
+  border-top-color:
+    rgba(100,210,255,.95);
+
+  border-right-color:
+    rgba(255,255,255,.85);
+
+  filter:
+    drop-shadow(0 0 5px #62cfff)
+    drop-shadow(0 0 12px #168cff);
+
+  animation:
+    electricSpin 3.2s linear infinite;
 }
 
-.electric::before {
-  animation: spinElectric 1.2s linear infinite;
-}
+.electric-energy::after {
+  inset: 15px;
 
-.electric::after {
-  inset: 8px;
-  border-bottom-color: #ff7070;
-  border-left-color: #ffffff;
-  animation: spinElectricReverse .9s linear infinite;
+  border-top-color:
+    rgba(255,230,170,.95);
+
+  border-left-color:
+    rgba(255,190,70,.9);
+
+  filter:
+    drop-shadow(0 0 5px #ffd27a)
+    drop-shadow(0 0 12px #ff9d00);
+
+  animation:
+    electricSpinReverse 2.4s linear infinite;
 }
 
 .energy-ring {
   position: absolute;
-  inset: -35px;
+  left: 50%;
+  top: 50%;
+
+  width: 100%;
+  height: 100%;
+
+  transform:
+    translate(-50%, -50%);
+
   border-radius: 50%;
-  border: 1px dashed rgba(255,60,60,.45);
+
   pointer-events: none;
-  opacity: 0;
+
+  border:
+    1px solid transparent;
+
+  opacity: .95;
 }
 
-.electric.on + .energy-ring {
-  opacity: 1;
-  animation: energyRotate 4s linear infinite;
+.energy-ring:nth-child(1) {
+  width: 160px;
+  height: 142px;
+
+  border-top-color:
+    rgba(80,190,255,.95);
+
+  border-bottom-color:
+    rgba(255,255,255,.65);
+
+  filter:
+    drop-shadow(0 0 5px #4dc8ff);
+
+  animation:
+    energyFloatOne 2.7s ease-in-out infinite;
 }
 
-.spark {
+.energy-ring:nth-child(2) {
+  width: 145px;
+  height: 165px;
+
+  border-left-color:
+    rgba(255,215,130,.95);
+
+  border-right-color:
+    rgba(255,245,210,.75);
+
+  filter:
+    drop-shadow(0 0 6px #ffbd45);
+
+  animation:
+    energyFloatTwo 3.4s ease-in-out infinite;
+}
+
+.energy-ring:nth-child(3) {
+  width: 175px;
+  height: 150px;
+
+  border-top-color:
+    rgba(150,220,255,.9);
+
+  border-left-color:
+    rgba(255,255,255,.7);
+
+  filter:
+    drop-shadow(0 0 7px #65cfff);
+
+  animation:
+    energyFloatThree 4s ease-in-out infinite;
+}
+
+.energy-ring:nth-child(4) {
+  width: 190px;
+  height: 135px;
+
+  border-right-color:
+    rgba(100,210,255,.9);
+
+  border-bottom-color:
+    rgba(255,230,170,.8);
+
+  filter:
+    drop-shadow(0 0 6px #62cfff)
+    drop-shadow(0 0 10px #ffbd45);
+
+  animation:
+    energyFloatFour 3.1s ease-in-out infinite;
+}
+
+/* Electric sparks */
+
+.energy-spark {
   position: absolute;
-  width: 5px;
-  height: 5px;
+
+  width: 4px;
+  height: 4px;
+
   border-radius: 50%;
-  background: #fff;
+
+  background:
+    white;
+
   box-shadow:
-    0 0 6px #fff,
-    0 0 13px #ff2020;
-  opacity: 0;
+    0 0 5px white,
+    0 0 12px #58caff,
+    0 0 20px #168cff;
+
+  pointer-events: none;
+
+  animation:
+    sparkPulse 1.4s ease-in-out infinite;
 }
 
-.electric.on ~ .spark {
+.spark1 {
+  left: 25%;
+  top: 22%;
+  animation-delay: .1s;
+}
+
+.spark2 {
+  left: 72%;
+  top: 27%;
+  animation-delay: .45s;
+}
+
+.spark3 {
+  left: 79%;
+  top: 62%;
+  animation-delay: .8s;
+}
+
+.spark4 {
+  left: 27%;
+  top: 76%;
+  animation-delay: .25s;
+}
+
+.spark5 {
+  left: 17%;
+  top: 49%;
+  animation-delay: .65s;
+}
+
+.spark6 {
+  left: 60%;
+  top: 82%;
+  animation-delay: 1s;
+}
+
+@keyframes electricSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.035);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes electricSpinReverse {
+  0% {
+    transform: rotate(360deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(.96);
+  }
+
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes energyFloatOne {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(25deg)
+      scale(1.06);
+  }
+}
+
+@keyframes energyFloatTwo {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(320deg)
+      scale(1.05);
+  }
+}
+
+@keyframes energyFloatThree {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(-30deg)
+      scale(.94);
+  }
+}
+
+@keyframes energyFloatFour {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      rotate(40deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      rotate(120deg)
+      scale(1.07);
+  }
+}
+
+@keyframes sparkPulse {
+  0% {
+    opacity: .25;
+    transform: scale(.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+
+  100% {
+    opacity: .25;
+    transform: scale(.6);
+  }
+}
+
+/* =====================================
+   MALA COMPLETION GLOW
+===================================== */
+
+@keyframes malaCompletionPulse {
+  0% {
+    box-shadow:
+      0 0 18px rgba(0,150,255,.45),
+      0 0 40px rgba(0,110,255,.22);
+  }
+
+  50% {
+    box-shadow:
+      0 0 35px rgba(100,220,255,.95),
+      0 0 70px rgba(0,150,255,.85),
+      0 0 100px rgba(255,190,80,.45);
+  }
+
+  100% {
+    box-shadow:
+      0 0 18px rgba(0,150,255,.45),
+      0 0 40px rgba(0,110,255,.22);
+  }
+}
+
+.center.completion-pulse {
+  animation:
+    malaCompletionPulse .65s ease-out;
+}
+
+/* =====================================
+   EK ONKAR
+===================================== */
+
+.ik-onkar {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  font-size: 82px;
+  line-height: 1;
+
+  color: white;
+
   opacity: 1;
-  animation: sparkMove 1.2s infinite;
+
+  text-shadow:
+    0 0 5px white,
+    0 0 12px #8bdcff,
+    0 0 25px #168cff,
+    0 0 40px rgba(22,140,255,.8);
+
+  pointer-events: none;
+  user-select: none;
+
+  z-index: 2;
+
+  animation:
+    ikGlow 2.5s ease-in-out infinite;
 }
 
-.spark:nth-of-type(1) {
-  top: -40px;
-  left: 20%;
-}
-
-.spark:nth-of-type(2) {
-  top: 10%;
-  right: -42px;
-  animation-delay: .3s;
-}
-
-.spark:nth-of-type(3) {
-  bottom: -40px;
-  left: 65%;
-  animation-delay: .6s;
-}
-
-.spark:nth-of-type(4) {
-  top: 70%;
-  left: -42px;
-  animation-delay: .9s;
-}
-
-@keyframes spinElectric {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spinElectricReverse {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
-}
-
-@keyframes energyRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes electricPulse {
-  0%,100% {
+@keyframes ikGlow {
+  0%,
+  100% {
     filter: brightness(1);
+
+    text-shadow:
+      0 0 5px white,
+      0 0 12px #8bdcff,
+      0 0 25px #168cff;
   }
+
   50% {
-    filter: brightness(1.45);
+    filter: brightness(1.25);
+
+    text-shadow:
+      0 0 8px white,
+      0 0 18px #b7edff,
+      0 0 35px #168cff,
+      0 0 55px rgba(22,140,255,.75);
   }
 }
 
-@keyframes sparkMove {
-  0%,100% {
-    transform: scale(.7) translate(0,0);
-  }
-  50% {
-    transform: scale(1.4) translate(4px,-4px);
-  }
+/* =====================================
+   COUNT
+===================================== */
+
+.center-count {
+  position: relative;
+
+  z-index: 4;
+
+  margin-top: 58px;
+
+  font-size: 38px;
+  font-weight: bold;
+
+  color: white;
+
+  text-shadow:
+    0 0 8px white,
+    0 0 18px var(--mala-color),
+    0 0 30px var(--mala-glow);
+}
+
+.mala-number {
+  position: relative;
+
+  z-index: 4;
+
+  color: #ddd;
+
+  font-size: 12px;
+
+  margin-top: 4px;
+
+  text-shadow:
+    0 0 8px rgba(255,255,255,.35);
+}
+
+.mala-color-btn:hover {
+  background: #292929;
+}
+
+.right-side-btn {
+  position: fixed;
+  right: 14px;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  background: #191919;
+
+  border: 1px solid #444;
+
+  font-size: 19px;
+
+  z-index: 100;
+
+  cursor: pointer;
+}
+
+#malaColorBtn {
+  top: 68px;
+}
+
+.settings-btn {
+  top: 122px;
+}
+
+.dark-mode-btn {
+  position: fixed;
+
+  top: 14px;
+  right: 14px;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  background: #191919;
+
+  border: 1px solid #444;
+
+  font-size: 19px;
+
+  z-index: 100;
+}
+
+/* =====================================
+   PANELS
+===================================== */
+
+.top-panel {
+  display: none;
+
+  position: fixed;
+
+  right: 14px;
+
+  width: 205px;
+
+  padding: 10px;
+
+  background: #101010;
+
+  border: 1px solid #333;
+
+  border-radius: 10px;
+
+  z-index: 200;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.5);
+}
+
+.top-panel.open {
+  display: block;
+}
+
+#colorBox {
+  top: 118px;
+}
+
+#settingsBox {
+  top: 172px;
+}
+
+.color-title {
+  color: #aaa;
+
+  font-size: 11px;
+
+  margin-bottom: 8px;
+}
+
+.colors {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 27px;
+  height: 27px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  border: 2px solid #555;
+
+  cursor: pointer;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.selected {
+  border-color: white;
+
+  box-shadow:
+    0 0 10px white;
+}
+
+.red {
+  background: #ff2020;
+}
+
+.orange {
+  background: #ff8c00;
+}
+
+.yellow {
+  background: #ffd700;
+}
+
+.green {
+  background: #00d26a;
+}
+
+.blue {
+  background: #168cff;
+}
+
+.purple {
+  background: #a855f7;
+}
+
+.pink {
+  background: #ff3b9d;
+}
+
+.multi {
+  background:
+    linear-gradient(
+      135deg,
+      #ff2020 0%,
+      #ff8c00 16%,
+      #ffd700 32%,
+      #00d26a 48%,
+      #168cff 64%,
+      #a855f7 80%,
+      #ff3b9d 100%
+    );
 }
 
 .controls {
   display: flex;
+
+  gap: 8px;
+
   justify-content: center;
-  gap: 9px;
-  flex-wrap: wrap;
-  margin: 8px 0;
+
+  margin: 12px 0;
 }
 
-.primary {
-  background: var(--mala-color);
-  border-color: var(--mala-color);
+button {
+  border: 1px solid #444;
+
+  border-radius: 10px;
+
+  padding: 13px 15px;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  background: #191919;
+
   color: white;
 }
 
+button:hover {
+  background: #292929;
+}
+
+.start {
+  background: var(--mala-dark);
+
+  border-color:
+    var(--mala-color);
+}
+
+.start:hover {
+  background:
+    var(--mala-color);
+}
+
 .timeout-box {
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-  margin: 8px 0 12px;
-}
+  margin: 10px auto 15px;
 
-.heard-section {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
   padding: 10px;
-  margin: 10px 0;
-}
 
-.heard-title {
-  font-size: 12px;
-  color: var(--muted);
-}
+  max-width: 340px;
 
-.heard-text {
-  margin-top: 5px;
-  font-size: 14px;
-  word-break: break-word;
-  min-height: 20px;
-}
+  background: #101010;
 
-.calendar-button {
-  width: 100%;
-  margin-top: 8px;
-}
+  border: 1px solid #292929;
 
-.calendar-stats {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 10px;
-  text-align: center;
-}
+  border-radius: 10px;
 
-.calendar-stats-title {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
+  color: #999;
 
-.calendar-details {
-  color: var(--muted);
   font-size: 13px;
 }
 
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.75);
-  z-index: 100;
+.timeout-value {
+  color:
+    var(--mala-color);
+
+  font-weight: bold;
+}
+
+.timer {
+  margin-top: 5px;
+
+  color: #777;
+
+  font-size: 12px;
+}
+
+/* =====================================
+   CALENDAR
+===================================== */
+
+.calendar-box {
+  margin-top: 12px;
+
+  padding: 10px 12px;
+
+  background: #101010;
+
+  border: 1px solid #292929;
+
+  border-radius: 10px;
+}
+
+.calendar-title {
+  color: #aaa;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  margin-bottom: 8px;
+}
+
+.calendar-open-btn {
+  width: 100%;
+
+  padding: 9px 12px;
+
+  font-size: 12px;
+}
+
+.selected-day {
+  margin-top: 7px;
+
+  color: #666;
+
+  font-size: 11px;
+}
+
+#selectedDateLabel {
+  color:
+    var(--mala-color);
+
+  font-weight: bold;
+}
+
+/* CALENDAR STATS */
+
+.calendar-stats {
+  margin-top: 12px;
+
+  padding: 13px;
+
+  background: #101010;
+
+  border: 1px solid #292929;
+
+  border-radius: 10px;
+
+  text-align: left;
+}
+
+.calendar-stat-row {
+  display: flex;
+
+  justify-content: space-between;
+
   align-items: center;
+
+  padding: 6px 2px;
+
+  color: #aaa;
+
+  font-size: 13px;
+}
+
+.calendar-stat-row + .calendar-stat-row {
+  border-top:
+    1px solid #292929;
+}
+
+.calendar-stat-value {
+  color:
+    var(--mala-color);
+
+  font-weight: bold;
+}
+
+/* =====================================
+   V48 DAILY TARGET
+===================================== */
+
+.target-box {
+  margin-top: 12px;
+
+  padding: 13px;
+
+  background: #101010;
+
+  border: 1px solid #292929;
+
+  border-radius: 10px;
+
+  text-align: left;
+}
+
+.target-title {
+  color: #aaa;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+.target-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #aaa;
+
+  font-size: 13px;
+
+  margin-bottom: 9px;
+}
+
+.target-input {
+  width: 90px;
+
+  padding: 8px 9px;
+
+  border-radius: 8px;
+
+  border: 1px solid #444;
+
+  background: #191919;
+
+  color: white;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.target-input:focus {
+  outline: none;
+
+  border-color:
+    var(--mala-color);
+}
+
+.target-progress-text {
+  display: flex;
+
+  justify-content: space-between;
+
+  color: #999;
+
+  font-size: 12px;
+
+  margin-bottom: 6px;
+}
+
+.target-progress-value {
+  color:
+    var(--mala-color);
+
+  font-weight: bold;
+}
+
+.target-progress {
+  width: 100%;
+
+  height: 9px;
+
+  background: #222;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid #333;
+}
+
+.target-progress-fill {
+  width: 0%;
+
+  height: 100%;
+
+  background:
+    var(--mala-color);
+
+  box-shadow:
+    0 0 10px var(--mala-glow);
+
+  border-radius: 20px;
+
+  transition:
+    width .3s ease;
+}
+
+.target-complete {
+  margin-top: 7px;
+
+  color: var(--mala-color);
+
+  font-size: 11px;
+
+  font-weight: bold;
+
+  text-align: center;
+}
+
+/* =====================================
+   CALENDAR POPUP
+===================================== */
+
+.calendar-modal {
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,.78);
+
+  z-index: 500;
+
   justify-content: center;
+
+  align-items: center;
+
   padding: 15px;
 }
 
-.modal.show {
+.calendar-modal.open {
   display: flex;
 }
 
-.modal-content {
+.calendar-panel {
   width: 100%;
-  max-width: 600px;
+
+  max-width: 430px;
+
   max-height: 90vh;
+
   overflow-y: auto;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 15px;
+
+  background: #101010;
+
+  border: 1px solid #333;
+
+  border-radius: 16px;
+
   padding: 16px;
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.7);
 }
 
 .calendar-header {
   display: flex;
-  justify-content: space-between;
+
   align-items: center;
-  margin-bottom: 12px;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+.calendar-month {
+  color:
+    var(--mala-color);
+
+  font-size: 18px;
+
+  font-weight: bold;
+}
+
+.calendar-nav {
+  width: 42px;
+
+  height: 38px;
+
+  padding: 0;
+
+  font-size: 25px;
+
+  line-height: 1;
+}
+
+.calendar-weekdays {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
+  gap: 4px;
+
+  margin-bottom: 5px;
+}
+
+.calendar-weekday {
+  color: #666;
+
+  font-size: 9px;
+
+  font-weight: bold;
+
+  text-align: center;
+
+  padding: 5px 0;
 }
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
   gap: 5px;
 }
 
-.calendar-day-name {
-  text-align: center;
-  color: var(--muted);
-  font-size: 11px;
-  padding: 5px 0;
+.calendar-day {
+  min-height: 68px;
+
+  padding: 5px 2px;
+
+  border: 1px solid #292929;
+
+  border-radius: 8px;
+
+  background: #171717;
+
+  cursor: pointer;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
 }
 
-.calendar-day {
-  min-height: 55px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  padding: 5px;
-  text-align: center;
-  font-size: 12px;
+.calendar-day:hover {
+  background: #292929;
+}
+
+.calendar-day.empty {
+  background: transparent;
+
+  border-color: transparent;
+
+  cursor: default;
 }
 
 .calendar-day.today {
-  border-color: var(--mala-color);
+  border-color:
+    var(--mala-color);
 }
 
-.calendar-day-number {
+.calendar-day.selected {
+  background:
+    var(--mala-dark);
+
+  border-color:
+    var(--mala-color);
+}
+
+.day-number {
+  font-size: 14px;
+
+  font-weight: bold;
+
+  color: #ddd;
+}
+
+.day-waheguru {
+  margin-top: 3px;
+
+  font-size: 8px;
+
+  color:
+    var(--mala-color);
+
+  line-height: 1.2;
+}
+
+.day-mala {
+  margin-top: 2px;
+
+  font-size: 8px;
+
+  color: #aaa;
+
+  line-height: 1.2;
+}
+
+.calendar-details {
+  margin-top: 15px;
+
+  padding: 13px;
+
+  background: #171717;
+
+  border: 1px solid #292929;
+
+  border-radius: 10px;
+}
+
+.calendar-details-title {
+  color: #777;
+
+  font-size: 11px;
+
+  margin-bottom: 5px;
+}
+
+.calendar-details-date {
+  color:
+    var(--mala-color);
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+.calendar-detail-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding: 7px 0;
+
+  border-top:
+    1px solid #292929;
+
+  color: #aaa;
+
+  font-size: 13px;
+}
+
+.calendar-detail-value {
+  color:
+    var(--mala-color);
+
   font-weight: bold;
 }
 
-.calendar-malas {
-  color: var(--mala-light);
+.calendar-close {
+  width: 100%;
+
+  margin-top: 12px;
+}
+
+.setting-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 7px 2px;
+
+  color: #aaa;
+
+  font-size: 13px;
+}
+
+.setting-row button {
+  padding: 7px 12px;
+
+  font-size: 12px;
+
+  min-width: 65px;
+}
+
+.reset-history-row {
+  margin-top: 5px;
+
+  padding-top: 9px;
+
+  border-top:
+    1px solid #292929;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.reset-history-btn {
+  width: 100%;
+
+  padding: 8px 10px;
+
+  font-size: 12px;
+
+  border-color: #661111;
+
+  color: #ff7070;
+}
+
+.reset-history-btn:hover {
+  background: #3a1111;
+}
+
+/* =====================================
+   V48 REMINDER SETTINGS
+===================================== */
+
+.reminder-divider {
+  margin:
+    8px 0;
+
+  border-top:
+    1px solid #292929;
+}
+
+.reminder-label {
+  display: block;
+
+  color: #aaa;
+
+  font-size: 11px;
+
+  margin:
+    8px 0 5px;
+}
+
+.reminder-input,
+.reminder-select {
+  width: 100%;
+
+  padding: 7px 8px;
+
+  border-radius: 7px;
+
+  border: 1px solid #444;
+
+  background: #191919;
+
+  color: white;
+
+  font-size: 12px;
+}
+
+.reminder-input:focus,
+.reminder-select:focus {
+  outline: none;
+
+  border-color:
+    var(--mala-color);
+}
+
+.notification-btn {
+  width: 100%;
+
+  margin-top: 8px;
+
+  padding: 8px 10px;
+
+  font-size: 11px;
+
+  border-color:
+    var(--mala-color);
+}
+
+.reminder-status {
+  margin-top: 6px;
+
+  color: #777;
+
   font-size: 10px;
-  margin-top: 4px;
+
+  line-height: 1.4;
 }
 
 .note {
-  text-align: center;
-  color: var(--muted);
+  margin-top: 18px;
+
+  color: #555;
+
   font-size: 11px;
-  margin: 14px 0 5px;
+
+  line-height: 1.5;
+}
+
+body.light .status,
+body.light .timeout-box,
+body.light .calendar-box,
+body.light .calendar-panel,
+body.light .calendar-details,
+body.light .calendar-day,
+body.light .calendar-stats,
+body.light .top-panel,
+body.light .target-box {
+  background: #fff;
+}
+
+body.light .calendar-day.empty {
+  background: transparent;
+}
+
+body.light .calendar-day {
+  border-color: #ddd;
+}
+
+body.light .calendar-details {
+  border-color: #ddd;
+}
+
+body.light .calendar-detail-row {
+  border-color: #ddd;
+}
+
+body.light .calendar-stat-row + .calendar-stat-row {
+  border-color: #ddd;
+}
+
+body.light .target-progress {
+  background: #ddd;
+}
+
+body.light .target-input,
+body.light .reminder-input,
+body.light .reminder-select {
+  background: #f5f5f5;
+
+  color: #111;
+
+  border-color: #ccc;
+}
+
+body.light .center {
+  background:
+    radial-gradient(
+      circle,
+      rgba(80,170,255,.20) 0%,
+      rgba(255,255,255,0) 72%
+    );
+
+  border-color:
+    rgba(22,140,255,.35);
+
+  box-shadow:
+    0 0 18px rgba(22,140,255,.45),
+    0 0 40px rgba(22,140,255,.20);
+}
+
+body.light .ik-onkar {
+  color: #ffffff;
+
+  text-shadow:
+    0 0 4px #168cff,
+    0 0 12px #168cff,
+    0 0 25px rgba(22,140,255,.7);
+}
+
+body.light .bead.active {
+  background: transparent;
+
+  border-color: transparent;
+
+  box-shadow: none;
+}
+
+body.light .bead.current {
+  background: transparent;
+
+  border-color: transparent;
+
+  box-shadow: none;
+}
+
+@media (max-width: 420px) {
+
+  .app {
+    padding-left: 10px;
+
+    padding-right: 10px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .mala-wrapper {
+    width: min(92vw, 370px);
+
+    height: min(92vw, 370px);
+  }
+
+  .center {
+    width: 145px;
+
+    height: 145px;
+  }
+
+  .electric-energy {
+    width: 224px;
+
+    height: 224px;
+  }
+
+  .ik-onkar {
+    font-size: 72px;
+  }
+
+  .center-count {
+    font-size: 36px;
+
+    margin-top: 54px;
+  }
+
+  .controls {
+    gap: 5px;
+  }
+
+  .controls button {
+    padding: 12px 10px;
+
+    font-size: 12px;
+  }
+
+  .calendar-day {
+    min-height: 64px;
+  }
+
 }
 </style>
 </head>
@@ -539,432 +1715,950 @@ select {
 
 <div class="app">
 
-<header>
-  <h1>🙏 Waheguru Simran</h1>
-  <div class="subtitle">Digital 108-Bead Mala — V47</div>
-</header>
+<button id="darkModeBtn" class="dark-mode-btn">☀️</button>
+<button id="malaColorBtn" class="right-side-btn">🎨</button>
+<button id="settingsBtn" class="right-side-btn settings-btn">⚙️</button>
 
-<div class="top-buttons">
-  <button id="darkBtn">🌙 Dark Mode</button>
-  <button id="colorBtn">🎨 Color</button>
-  <button id="settingsBtn">⚙️ Settings</button>
+<div id="colorBox" class="top-panel">
+
+  <div class="color-title">
+    Mala Color
+  </div>
+
+  <div class="colors">
+
+    <button class="color-btn red"
+      data-color="#ff2020"
+      data-dark="#8d0000"
+      data-light="#ff7070"
+      data-glow="rgba(255,0,0,.8)"
+      data-center="#280000"></button>
+
+    <button class="color-btn orange"
+      data-color="#ff8c00"
+      data-dark="#a85500"
+      data-light="#ffc266"
+      data-glow="rgba(255,140,0,.8)"
+      data-center="#281500"></button>
+
+    <button class="color-btn yellow"
+      data-color="#ffd700"
+      data-dark="#a88a00"
+      data-light="#fff099"
+      data-glow="rgba(255,215,0,.8)"
+      data-center="#282400"></button>
+
+    <button class="color-btn green"
+      data-color="#00d26a"
+      data-dark="#007a3d"
+      data-light="#66ffad"
+      data-glow="rgba(0,210,106,.8)"
+      data-center="#002818"></button>
+
+    <button class="color-btn blue"
+      data-color="#168cff"
+      data-dark="#07539c"
+      data-light="#75baff"
+      data-glow="rgba(22,140,255,.8)"
+      data-center="#001b35"></button>
+
+    <button class="color-btn purple"
+      data-color="#a855f7"
+      data-dark="#63209c"
+      data-light="#d29aff"
+      data-glow="rgba(168,85,247,.8)"
+      data-center="#210b35"></button>
+
+    <button class="color-btn pink"
+      data-color="#ff3b9d"
+      data-dark="#a51760"
+      data-light="#ff9dcc"
+      data-glow="rgba(255,59,157,.8)"
+      data-center="#350018"></button>
+
+    <button class="color-btn multi"
+      data-multi="true"
+      title="Multi Colour"></button>
+
+  </div>
+
 </div>
 
-<div class="settings" id="settingsPanel">
+<div id="settingsBox" class="top-panel">
+
+  <div class="color-title">
+    Settings
+  </div>
 
   <div class="setting-row">
-    <div>
-      <div class="setting-title">🔊 Sound</div>
-      <div class="setting-sub">Sound on mala completion</div>
-    </div>
+    <span>🔊 Sound</span>
     <button id="soundBtn">ON</button>
   </div>
 
   <div class="setting-row">
-    <div>
-      <div class="setting-title">📳 Vibration</div>
-      <div class="setting-sub">Vibrate on mala completion</div>
-    </div>
+    <span>📳 Vibration</span>
     <button id="vibrationBtn">ON</button>
   </div>
 
-  <!-- DAILY TARGET -->
-  <div class="target-box">
+  <!-- V48 DAILY REMINDER -->
 
-    <div class="setting-title">🎯 Daily Mala Target</div>
-    <div class="setting-sub">
-      Enter how many malas you want to complete today.
-    </div>
+  <div class="reminder-divider"></div>
 
-    <div class="target-input-row">
-      <input
-        type="number"
-        id="targetInput"
-        min="1"
-        step="1"
-        value="5"
-      >
-      <button id="setTargetBtn" class="primary">Set Target</button>
-    </div>
-
-    <div class="target-progress" id="targetProgress">
-      0 / 5 malas • 5 remaining
-    </div>
-
+  <div class="color-title">
+    🔔 Reminders
   </div>
 
-  <!-- DAILY REMINDER -->
-  <div class="reminder-section">
-
-    <div class="setting-title">🔔 Daily Reminder</div>
-    <div class="setting-sub">
-      Reminder every day at your selected time.
-    </div>
-
-    <div class="reminder-controls">
-      <button id="dailyReminderBtn">OFF</button>
-      <input type="time" id="dailyReminderTime" value="07:00">
-    </div>
-
+  <div class="setting-row">
+    <span>Daily Reminder</span>
+    <button id="dailyReminderBtn">OFF</button>
   </div>
 
-  <!-- WEEKLY REMINDER -->
-  <div class="reminder-section">
+  <label class="reminder-label">
+    Daily reminder time
+  </label>
 
-    <div class="setting-title">📅 Weekly Reminder</div>
-    <div class="setting-sub">
-      Reminder once each week on your selected day and time.
-    </div>
+  <input
+    id="dailyReminderTime"
+    class="reminder-input"
+    type="time"
+    value="09:00"
+  >
 
-    <div class="reminder-controls">
-
-      <button id="weeklyReminderBtn">OFF</button>
-
-      <select id="weeklyReminderDay">
-        <option value="0">Sunday</option>
-        <option value="1">Monday</option>
-        <option value="2">Tuesday</option>
-        <option value="3">Wednesday</option>
-        <option value="4">Thursday</option>
-        <option value="5">Friday</option>
-        <option value="6">Saturday</option>
-      </select>
-
-      <input type="time" id="weeklyReminderTime" value="07:00">
-
-    </div>
-
+  <div class="setting-row">
+    <span>Weekly Reminder</span>
+    <button id="weeklyReminderBtn">OFF</button>
   </div>
 
-  <button id="notificationBtn" class="notification-button">
+  <label class="reminder-label">
+    Weekly reminder day
+  </label>
+
+  <select
+    id="weeklyReminderDay"
+    class="reminder-select">
+
+    <option value="0">Sunday</option>
+    <option value="1">Monday</option>
+    <option value="2">Tuesday</option>
+    <option value="3">Wednesday</option>
+    <option value="4">Thursday</option>
+    <option value="5">Friday</option>
+    <option value="6">Saturday</option>
+
+  </select>
+
+  <label class="reminder-label">
+    Weekly reminder time
+  </label>
+
+  <input
+    id="weeklyReminderTime"
+    class="reminder-input"
+    type="time"
+    value="09:00"
+  >
+
+  <button
+    id="notificationPermissionBtn"
+    class="notification-btn">
     🔔 Enable Notifications
   </button>
 
-  <button
-    id="resetHistoryBtn"
-    style="margin-top:10px;width:100%;"
-  >
-    🗑️ Reset All History
-  </button>
-
-</div>
-
-<div class="mala-area">
-
-  <div class="mala" id="mala"></div>
-
-  <div class="center">
-
-    <div class="electric" id="electric"></div>
-    <div class="energy-ring"></div>
-
-    <div class="spark"></div>
-    <div class="spark"></div>
-    <div class="spark"></div>
-    <div class="spark"></div>
-
-    <div class="center-count" id="countDisplay">0</div>
-    <div class="center-mala" id="malaDisplay">Mala #1</div>
-
+  <div
+    id="notificationStatus"
+    class="reminder-status">
+    Notifications are not enabled.
   </div>
 
-</div>
+  <div class="reset-history-row">
 
-<div class="controls">
-
-  <button id="startBtn" class="primary">
-    🎙️ Start
-  </button>
-
-  <button id="pauseBtn">
-    ⏸️ Pause
-  </button>
-
-  <button id="resetBtn">
-    🔄 Reset Mala
-  </button>
-
-</div>
-
-<div class="timeout-box">
-  Microphone automatically stops after 45 seconds of silence.
-</div>
-
-<div class="heard-section">
-
-  <div class="heard-title">
-    Heard
-  </div>
-
-  <div class="heard-text" id="heardText">
-    —
-  </div>
-
-</div>
-
-<button class="calendar-button" id="calendarBtn">
-  📅 Calendar & Statistics
-</button>
-
-<div class="calendar-stats">
-
-  <div class="calendar-stats-title">
-    Today's Completed Malas
-  </div>
-
-  <div class="calendar-details" id="todayStats">
-    0 malas
-  </div>
-
-</div>
-
-<div class="note">
-  Waheguru Simran • 108 repetitions complete one mala
-</div>
-
-</div>
-
-<!-- CALENDAR MODAL -->
-
-<div class="modal" id="calendarModal">
-
-  <div class="modal-content">
-
-    <div class="calendar-header">
-
-      <button id="prevMonthBtn">‹</button>
-
-      <strong id="calendarTitle"></strong>
-
-      <button id="nextMonthBtn">›</button>
-
-    </div>
-
-    <div class="calendar-grid" id="calendarGrid"></div>
+    <span>🗑️ Mala History</span>
 
     <button
-      id="closeCalendarBtn"
-      style="width:100%;margin-top:12px;"
-    >
-      Close
+      id="resetHistoryBtn"
+      class="reset-history-btn">
+      Reset All History
     </button>
 
   </div>
 
 </div>
 
+<h1>Waheguru Simran</h1>
+<div class="subtitle">Digital 108-Bead Mala—V48</div>
+
+<div id="status" class="status">
+  <span class="dot"></span>
+  <span id="statusText">Mic paused</span>
+</div>
+
+<div id="heardText" class="heard-text"></div>
+
+<div class="mala-wrapper">
+
+  <div id="mala" class="mala">
+
+    <div class="electric-energy">
+
+      <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+      <div class="energy-ring"></div>
+
+      <div class="energy-spark spark1"></div>
+      <div class="energy-spark spark2"></div>
+      <div class="energy-spark spark3"></div>
+      <div class="energy-spark spark4"></div>
+      <div class="energy-spark spark5"></div>
+      <div class="energy-spark spark6"></div>
+
+    </div>
+
+    <div class="ik-onkar">ੴ</div>
+
+  </div>
+
+  <div class="center">
+
+    <div id="count" class="center-count">0</div>
+
+    <div id="malaNumber" class="mala-number">
+      Mala #0
+    </div>
+
+  </div>
+
+</div>
+
+<div class="timeout-box">
+
+  Auto mic-off after:
+  <span class="timeout-value">
+    45 seconds
+  </span>
+
+  <div id="timerText" class="timer">
+    Timer starts when listening begins.
+  </div>
+
+</div>
+
+<div class="controls">
+
+  <button id="startBtn" class="start">
+    🎙️ Start
+  </button>
+
+  <button id="pauseBtn">
+    ⏸ Pause
+  </button>
+
+  <button id="resetBtn">
+    ↺ Reset Mala
+  </button>
+
+</div>
+
+<div id="calendarBox" class="calendar-box">
+
+  <button
+    id="openCalendarBtn"
+    class="calendar-open-btn">
+    📅 Open Calendar
+  </button>
+
+  <div class="selected-day">
+    Selected date:
+    <span id="selectedDateLabel">Today</span>
+  </div>
+
+</div>
+
+<div class="calendar-stats">
+
+  <div class="calendar-stat-row">
+    <span>🙏 Total Waheguru</span>
+    <span
+      id="calendarStatTotal"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Completed Mala</span>
+    <span
+      id="calendarStatMalas"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Week</span>
+    <span
+      id="calendarStatWeek"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Month</span>
+    <span
+      id="calendarStatMonth"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+  <div class="calendar-stat-row">
+    <span>📿 Malas This Year</span>
+    <span
+      id="calendarStatYear"
+      class="calendar-stat-value">
+      0
+    </span>
+  </div>
+
+</div>
+
+<!-- =====================================
+     V48 DAILY TARGET
+===================================== -->
+
+<div class="target-box">
+
+  <div class="target-title">
+    🎯 Daily Mala Target
+  </div>
+
+  <div class="target-row">
+
+    <span>Target Malas</span>
+
+    <input
+      id="dailyTargetInput"
+      class="target-input"
+      type="number"
+      min="0"
+      step="1"
+      value="0"
+    >
+
+  </div>
+
+  <div class="target-progress-text">
+
+    <span>
+      📊 Today's Progress
+    </span>
+
+    <span
+      id="targetProgressText"
+      class="target-progress-value">
+      0 / 0
+    </span>
+
+  </div>
+
+  <div class="target-progress">
+
+    <div
+      id="targetProgressFill"
+      class="target-progress-fill">
+    </div>
+
+  </div>
+
+  <div
+    id="targetCompleteText"
+    class="target-complete">
+  </div>
+
+</div>
+
+<div
+  id="calendarModal"
+  class="calendar-modal">
+
+  <div class="calendar-panel">
+
+    <div class="calendar-header">
+
+      <button
+        id="previousMonthBtn"
+        class="calendar-nav">
+        ‹
+      </button>
+
+      <div
+        id="calendarMonth"
+        class="calendar-month">
+        September 2026
+      </div>
+
+      <button
+        id="nextMonthBtn"
+        class="calendar-nav">
+        ›
+      </button>
+
+    </div>
+
+    <div class="calendar-weekdays">
+
+      <div class="calendar-weekday">SUN</div>
+      <div class="calendar-weekday">MON</div>
+      <div class="calendar-weekday">TUE</div>
+      <div class="calendar-weekday">WED</div>
+      <div class="calendar-weekday">THU</div>
+      <div class="calendar-weekday">FRI</div>
+      <div class="calendar-weekday">SAT</div>
+
+    </div>
+
+    <div
+      id="calendarGrid"
+      class="calendar-grid">
+    </div>
+
+    <div class="calendar-details">
+
+      <div class="calendar-details-title">
+        Selected Date
+      </div>
+
+      <div
+        id="calendarDetailsDate"
+        class="calendar-details-date">
+        Today
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>🙏 Waheguru</span>
+
+        <span
+          id="calendarDetailsCount"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+      <div class="calendar-detail-row">
+
+        <span>📿 Completed Malas</span>
+
+        <span
+          id="calendarDetailsMalas"
+          class="calendar-detail-value">
+          0
+        </span>
+
+      </div>
+
+    </div>
+
+    <button
+      id="closeCalendarBtn"
+      class="calendar-close">
+      Close Calendar
+    </button>
+
+  </div>
+
+</div>
+
+<div class="note">
+  Say “Waheguru” naturally. Voice recognition counts
+  recognized occurrences. The microphone automatically
+  turns off after 45 seconds of continuous silence.
+  The current mala resets automatically at midnight
+  while completed malas and saved totals remain.
+</div>
+
+</div>
+
 <script>
 
-/* =========================
+/* =====================================
+   SAVED DATA
+===================================== */
+
+let count =
+  Number(localStorage.getItem("wg_count") || 0);
+
+let total =
+  Number(localStorage.getItem("wg_total") || 0);
+
+let completedMalas =
+  Number(localStorage.getItem("wg_malas") || 0);
+
+const savedCurrentMalaNumber =
+  localStorage.getItem(
+    "wg_current_mala_number"
+  );
+
+let currentMalaNumber =
+  savedCurrentMalaNumber === null
+    ? completedMalas
+    : Number(savedCurrentMalaNumber || 0);
+
+if (
+  !Number.isFinite(currentMalaNumber) ||
+  currentMalaNumber < 0
+) {
+  currentMalaNumber = 0;
+}
+
+let savedColor =
+  localStorage.getItem("wg_color") || "#ff2020";
+
+let savedDarkMode =
+  localStorage.getItem("wg_dark") !== "false";
+
+let soundEnabled =
+  localStorage.getItem("wg_sound") !== "false";
+
+let vibrationEnabled =
+  localStorage.getItem("wg_vibration") !== "false";
+
+/* =====================================
+   V48 TARGET / REMINDER DATA
+===================================== */
+
+let dailyTarget =
+  Number(
+    localStorage.getItem("wg_daily_target") || 0
+  );
+
+if (
+  !Number.isFinite(dailyTarget) ||
+  dailyTarget < 0
+) {
+  dailyTarget = 0;
+}
+
+dailyTarget =
+  Math.floor(dailyTarget);
+
+let dailyReminderEnabled =
+  localStorage.getItem(
+    "wg_daily_reminder_enabled"
+  ) === "true";
+
+let dailyReminderTime =
+  localStorage.getItem(
+    "wg_daily_reminder_time"
+  ) || "09:00";
+
+let weeklyReminderEnabled =
+  localStorage.getItem(
+    "wg_weekly_reminder_enabled"
+  ) === "true";
+
+let weeklyReminderDay =
+  Number(
+    localStorage.getItem(
+      "wg_weekly_reminder_day"
+    ) || 0
+  );
+
+let weeklyReminderTime =
+  localStorage.getItem(
+    "wg_weekly_reminder_time"
+  ) || "09:00";
+
+let lastDailyReminderDate =
+  localStorage.getItem(
+    "wg_last_daily_reminder_date"
+  ) || "";
+
+let lastWeeklyReminderDate =
+  localStorage.getItem(
+    "wg_last_weekly_reminder_date"
+  ) || "";
+
+/* =====================================
+   MULTI COLOUR
+===================================== */
+
+let multiColorEnabled =
+  localStorage.getItem("wg_multi_color") === "true";
+
+let multiColorIndex =
+  Number(
+    localStorage.getItem(
+      "wg_multi_color_index"
+    ) || 0
+  );
+
+if (
+  !Number.isFinite(multiColorIndex) ||
+  multiColorIndex < 0 ||
+  multiColorIndex > 6
+) {
+  multiColorIndex = 0;
+}
+
+let records;
+
+try {
+
+  records =
+    JSON.parse(
+      localStorage.getItem("wg_records") || "{}"
+    );
+
+  if (
+    !records ||
+    typeof records !== "object"
+  ) {
+    records = {};
+  }
+
+} catch {
+
+  records = {};
+
+}
+
+/* =====================================
+   MALA COMPLETION HISTORY
+===================================== */
+
+let malaHistory;
+
+try {
+
+  malaHistory =
+    JSON.parse(
+      localStorage.getItem("wg_mala_history") || "[]"
+    );
+
+  if (!Array.isArray(malaHistory)) {
+    malaHistory = [];
+  }
+
+} catch {
+
+  malaHistory = [];
+
+}
+
+/* =====================================
    CONSTANTS
-========================= */
+===================================== */
 
 const MALA_SIZE = 108;
 const SILENCE_TIME = 45000;
 const AUDIO_THRESHOLD = 0.015;
 
+/* =====================================
+   VARIABLES
+===================================== */
 
-/* =========================
-   BASIC DATA
-========================= */
+let listening = false;
+let recognition = null;
+let recognitionRunning = false;
+let recognitionStarting = false;
+let recognitionRestartTimer = null;
+let lastActivityAt = 0;
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+let audioData = null;
+let audioMonitor = null;
 
-let count = parseInt(localStorage.getItem("wg_count") || "0");
+/* =====================================
+   VOICE RECOGNITION
+===================================== */
 
-let total = parseInt(localStorage.getItem("wg_total") || "0");
+const recognitionLanguage = "en-IN";
+const RECOGNITION_RESTART_DELAY = 500;
 
-let completedMalas =
-  parseInt(localStorage.getItem("wg_malas") || "0");
+let processedMatchCounts = new Map();
+let lastDisplayedTranscript = "";
+let heardCountSinceReset = 0;
 
-let currentMalaNumber =
-  parseInt(localStorage.getItem("wg_current_mala_number") || "1");
+/* =====================================
+   ELEMENTS
+===================================== */
 
-let darkMode =
-  localStorage.getItem("wg_dark") !== "false";
+const mala =
+  document.getElementById("mala");
 
-let soundOn =
-  localStorage.getItem("wg_sound") !== "false";
+const countEl =
+  document.getElementById("count");
 
-let vibrationOn =
-  localStorage.getItem("wg_vibration") !== "false";
+const malaNumberEl =
+  document.getElementById("malaNumber");
 
-let records =
-  JSON.parse(localStorage.getItem("wg_records") || "{}");
+const status =
+  document.getElementById("status");
 
-let malaHistory =
-  JSON.parse(localStorage.getItem("wg_mala_history") || "[]");
-
-
-/* =========================
-   TARGET / REMINDERS
-========================= */
-
-let dailyTarget =
-  parseInt(localStorage.getItem("wg_daily_target") || "5");
-
-if (!Number.isFinite(dailyTarget) || dailyTarget < 1) {
-  dailyTarget = 5;
-}
-
-let dailyReminderEnabled =
-  localStorage.getItem("wg_daily_reminder_enabled") === "true";
-
-let dailyReminderTime =
-  localStorage.getItem("wg_daily_reminder_time") || "07:00";
-
-let weeklyReminderEnabled =
-  localStorage.getItem("wg_weekly_reminder_enabled") === "true";
-
-let weeklyReminderDay =
-  parseInt(
-    localStorage.getItem("wg_weekly_reminder_day") || "0"
-  );
-
-let weeklyReminderTime =
-  localStorage.getItem("wg_weekly_reminder_time") || "07:00";
-
-
-/* =========================
-   MULTI COLOR
-========================= */
-
-let multiColor =
-  localStorage.getItem("wg_multi_color") === "true";
-
-let colors = [
-  "#ff2020",
-  "#ff8c00",
-  "#ffd700",
-  "#00d26a",
-  "#00bfff",
-  "#7a5cff",
-  "#ff4fd8"
-];
-
-let colorIndex =
-  parseInt(localStorage.getItem("wg_color_index") || "0");
-
-
-/* =========================
-   DOM
-========================= */
-
-const mala = document.getElementById("mala");
-
-const countDisplay =
-  document.getElementById("countDisplay");
-
-const malaDisplay =
-  document.getElementById("malaDisplay");
+const statusText =
+  document.getElementById("statusText");
 
 const heardText =
   document.getElementById("heardText");
 
-const electric =
-  document.getElementById("electric");
+const timerText =
+  document.getElementById("timerText");
 
-const targetInput =
-  document.getElementById("targetInput");
+const startBtn =
+  document.getElementById("startBtn");
 
-const targetProgress =
-  document.getElementById("targetProgress");
+const pauseBtn =
+  document.getElementById("pauseBtn");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+const colorBox =
+  document.getElementById("colorBox");
+
+const darkModeBtn =
+  document.getElementById("darkModeBtn");
+
+const soundBtn =
+  document.getElementById("soundBtn");
+
+const vibrationBtn =
+  document.getElementById("vibrationBtn");
+
+const settingsBtn =
+  document.getElementById("settingsBtn");
+
+const settingsBox =
+  document.getElementById("settingsBox");
+
+const resetHistoryBtn =
+  document.getElementById("resetHistoryBtn");
+
+/* =====================================
+   V48 TARGET ELEMENTS
+===================================== */
+
+const dailyTargetInput =
+  document.getElementById(
+    "dailyTargetInput"
+  );
+
+const targetProgressText =
+  document.getElementById(
+    "targetProgressText"
+  );
+
+const targetProgressFill =
+  document.getElementById(
+    "targetProgressFill"
+  );
+
+const targetCompleteText =
+  document.getElementById(
+    "targetCompleteText"
+  );
 
 const dailyReminderBtn =
-  document.getElementById("dailyReminderBtn");
+  document.getElementById(
+    "dailyReminderBtn"
+  );
 
 const dailyReminderTimeInput =
-  document.getElementById("dailyReminderTime");
+  document.getElementById(
+    "dailyReminderTime"
+  );
 
 const weeklyReminderBtn =
-  document.getElementById("weeklyReminderBtn");
+  document.getElementById(
+    "weeklyReminderBtn"
+  );
 
-const weeklyReminderDayInput =
-  document.getElementById("weeklyReminderDay");
+const weeklyReminderDaySelect =
+  document.getElementById(
+    "weeklyReminderDay"
+  );
 
 const weeklyReminderTimeInput =
-  document.getElementById("weeklyReminderTime");
+  document.getElementById(
+    "weeklyReminderTime"
+  );
 
-const notificationBtn =
-  document.getElementById("notificationBtn");
+const notificationPermissionBtn =
+  document.getElementById(
+    "notificationPermissionBtn"
+  );
 
+const notificationStatus =
+  document.getElementById(
+    "notificationStatus"
+  );
 
-/* =========================
+/* =====================================
+   CALENDAR ELEMENTS
+===================================== */
+
+const openCalendarBtn =
+  document.getElementById("openCalendarBtn");
+
+const calendarModal =
+  document.getElementById("calendarModal");
+
+const previousMonthBtn =
+  document.getElementById("previousMonthBtn");
+
+const nextMonthBtn =
+  document.getElementById("nextMonthBtn");
+
+const calendarMonth =
+  document.getElementById("calendarMonth");
+
+const calendarGrid =
+  document.getElementById("calendarGrid");
+
+const calendarDetailsDate =
+  document.getElementById("calendarDetailsDate");
+
+const calendarDetailsCount =
+  document.getElementById("calendarDetailsCount");
+
+const calendarDetailsMalas =
+  document.getElementById("calendarDetailsMalas");
+
+const closeCalendarBtn =
+  document.getElementById("closeCalendarBtn");
+
+const selectedDateLabel =
+  document.getElementById("selectedDateLabel");
+
+const calendarStatTotal =
+  document.getElementById("calendarStatTotal");
+
+const calendarStatMalas =
+  document.getElementById("calendarStatMalas");
+
+const calendarStatWeek =
+  document.getElementById("calendarStatWeek");
+
+const calendarStatMonth =
+  document.getElementById("calendarStatMonth");
+
+const calendarStatYear =
+  document.getElementById("calendarStatYear");
+
+/* =====================================
    DATE HELPERS
-========================= */
+===================================== */
 
 function todayKey() {
 
   const d = new Date();
 
-  const y = d.getFullYear();
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
 
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-
-  const day = String(d.getDate()).padStart(2, "0");
-
-  return `${y}-${m}-${day}`;
 }
 
+function formatDate(dateString) {
 
-/* =========================
-   SAVE DATA
-========================= */
+  if (!dateString) {
+    return "";
+  }
 
-function saveData() {
+  const parts =
+    dateString.split("-");
 
-  localStorage.setItem(
-    "wg_count",
-    count
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  return (
+    parts[1] +
+    "/" +
+    parts[2] +
+    "/" +
+    parts[0]
   );
 
-  localStorage.setItem(
-    "wg_total",
-    total
-  );
+}
 
-  localStorage.setItem(
-    "wg_malas",
-    completedMalas
-  );
+/* =====================================
+   V48 TARGET PROGRESS
+===================================== */
 
-  localStorage.setItem(
-    "wg_current_mala_number",
-    currentMalaNumber
-  );
+function updateDailyTargetProgress() {
 
-  localStorage.setItem(
-    "wg_dark",
-    darkMode
-  );
+  const today =
+    todayKey();
 
-  localStorage.setItem(
-    "wg_sound",
-    soundOn
-  );
+  const completedToday =
+    getCompletedMalasForDate(today);
 
-  localStorage.setItem(
-    "wg_vibration",
-    vibrationOn
-  );
+  if (
+    !Number.isFinite(dailyTarget) ||
+    dailyTarget <= 0
+  ) {
 
-  localStorage.setItem(
-    "wg_records",
-    JSON.stringify(records)
-  );
+    targetProgressText.textContent =
+      completedToday + " / —";
 
-  localStorage.setItem(
-    "wg_mala_history",
-    JSON.stringify(malaHistory)
-  );
+    targetProgressFill.style.width =
+      "0%";
 
-  localStorage.setItem(
-    "wg_multi_color",
-    multiColor
-  );
+    targetCompleteText.textContent =
+      "Set a daily target to track your progress.";
 
-  localStorage.setItem(
-    "wg_color_index",
-    colorIndex
-  );
+    return;
+
+  }
+
+  const percentage =
+    Math.min(
+      100,
+      (completedToday / dailyTarget) * 100
+    );
+
+  targetProgressText.textContent =
+    completedToday +
+    " / " +
+    dailyTarget;
+
+  targetProgressFill.style.width =
+    percentage +
+    "%";
+
+  if (
+    completedToday >= dailyTarget
+  ) {
+
+    targetCompleteText.textContent =
+      "🎉 Daily target completed!";
+
+  } else {
+
+    const remaining =
+      dailyTarget -
+      completedToday;
+
+    targetCompleteText.textContent =
+      remaining +
+      " mala" +
+      (remaining === 1 ? "" : "s") +
+      " remaining";
+
+  }
+
+}
+
+function saveTargetSettings() {
 
   localStorage.setItem(
     "wg_daily_target",
@@ -994,158 +2688,1200 @@ function saveData() {
   localStorage.setItem(
     "wg_weekly_reminder_time",
     weeklyReminderTime
+  );
+
 }
 
+function loadTargetSettings() {
 
-/* =========================
-   BEADS
-========================= */
+  dailyTargetInput.value =
+    dailyTarget;
 
-function createBeads() {
+  dailyReminderTimeInput.value =
+    dailyReminderTime;
 
-  mala.innerHTML = "";
+  weeklyReminderDaySelect.value =
+    String(weeklyReminderDay);
 
-  const rect =
-    mala.getBoundingClientRect();
+  weeklyReminderTimeInput.value =
+    weeklyReminderTime;
 
-  const size =
-    Math.min(rect.width, rect.height);
+  updateReminderButtons();
 
-  const radius =
-    size * 0.43;
+  updateNotificationStatus();
 
-  for (let i = 0; i < MALA_SIZE; i++) {
+}
 
-    const bead =
-      document.createElement("div");
+/* =====================================
+   V48 NOTIFICATIONS
+===================================== */
 
-    bead.className = "bead";
+function updateNotificationStatus() {
 
-    const angle =
-      (i / MALA_SIZE) * Math.PI * 2
-      - Math.PI / 2;
+  if (
+    !("Notification" in window)
+  ) {
 
-    const x =
-      50 + Math.cos(angle) * 43;
+    notificationPermissionBtn.textContent =
+      "🔔 Notifications Not Supported";
 
-    const y =
-      50 + Math.sin(angle) * 43;
+    notificationPermissionBtn.disabled =
+      true;
 
-    bead.style.left = x + "%";
-    bead.style.top = y + "%";
+    notificationStatus.textContent =
+      "This browser does not support notifications.";
 
-    mala.appendChild(bead);
+    return;
+
   }
 
-  updateBeads();
+  notificationPermissionBtn.disabled =
+    false;
+
+  if (
+    Notification.permission ===
+    "granted"
+  ) {
+
+    notificationPermissionBtn.textContent =
+      "🔔 Notifications Enabled";
+
+    notificationStatus.textContent =
+      "Notifications are enabled.";
+
+  } else if (
+    Notification.permission ===
+    "denied"
+  ) {
+
+    notificationPermissionBtn.textContent =
+      "🔔 Notifications Blocked";
+
+    notificationStatus.textContent =
+      "Notifications are blocked by the browser.";
+
+  } else {
+
+    notificationPermissionBtn.textContent =
+      "🔔 Enable Notifications";
+
+    notificationStatus.textContent =
+      "Notifications are not enabled.";
+
+  }
+
 }
 
+async function requestNotificationPermission() {
 
-function updateBeads() {
+  if (
+    !("Notification" in window)
+  ) {
+
+    updateNotificationStatus();
+
+    return;
+
+  }
+
+  try {
+
+    const permission =
+      await Notification.requestPermission();
+
+    if (
+      permission === "granted"
+    ) {
+
+      notificationStatus.textContent =
+        "Notifications are enabled.";
+
+    }
+
+  } catch(e) {
+
+    console.log(
+      "Notification permission:",
+      e
+    );
+
+  }
+
+  updateNotificationStatus();
+
+}
+
+function sendNotification(
+  title,
+  body
+) {
+
+  if (
+    !("Notification" in window)
+  ) {
+    return;
+  }
+
+  if (
+    Notification.permission !==
+    "granted"
+  ) {
+    return;
+  }
+
+  try {
+
+    new Notification(
+      title,
+      {
+        body: body
+      }
+    );
+
+  } catch(e) {
+
+    console.log(
+      "Notification:",
+      e
+    );
+
+  }
+
+}
+
+/* =====================================
+   V48 REMINDER BUTTONS
+===================================== */
+
+function updateReminderButtons() {
+
+  dailyReminderBtn.textContent =
+    dailyReminderEnabled
+      ? "ON"
+      : "OFF";
+
+  weeklyReminderBtn.textContent =
+    weeklyReminderEnabled
+      ? "ON"
+      : "OFF";
+
+}
+
+dailyTargetInput.addEventListener(
+  "change",
+  () => {
+
+    let value =
+      Number(
+        dailyTargetInput.value
+      );
+
+    if (
+      !Number.isFinite(value) ||
+      value < 0
+    ) {
+      value = 0;
+    }
+
+    dailyTarget =
+      Math.floor(value);
+
+    dailyTargetInput.value =
+      dailyTarget;
+
+    saveTargetSettings();
+
+    updateDailyTargetProgress();
+
+  }
+);
+
+dailyTargetInput.addEventListener(
+  "input",
+  () => {
+
+    let value =
+      Number(
+        dailyTargetInput.value
+      );
+
+    if (
+      !Number.isFinite(value) ||
+      value < 0
+    ) {
+      value = 0;
+    }
+
+    dailyTarget =
+      Math.floor(value);
+
+    saveTargetSettings();
+
+    updateDailyTargetProgress();
+
+  }
+);
+
+dailyReminderBtn.addEventListener(
+  "click",
+  () => {
+
+    dailyReminderEnabled =
+      !dailyReminderEnabled;
+
+    saveTargetSettings();
+
+    updateReminderButtons();
+
+  }
+);
+
+dailyReminderTimeInput.addEventListener(
+  "change",
+  () => {
+
+    dailyReminderTime =
+      dailyReminderTimeInput.value ||
+      "09:00";
+
+    saveTargetSettings();
+
+  }
+);
+
+weeklyReminderBtn.addEventListener(
+  "click",
+  () => {
+
+    weeklyReminderEnabled =
+      !weeklyReminderEnabled;
+
+    saveTargetSettings();
+
+    updateReminderButtons();
+
+  }
+);
+
+weeklyReminderDaySelect.addEventListener(
+  "change",
+  () => {
+
+    weeklyReminderDay =
+      Number(
+        weeklyReminderDaySelect.value
+      );
+
+    saveTargetSettings();
+
+  }
+);
+
+weeklyReminderTimeInput.addEventListener(
+  "change",
+  () => {
+
+    weeklyReminderTime =
+      weeklyReminderTimeInput.value ||
+      "09:00";
+
+    saveTargetSettings();
+
+  }
+);
+
+notificationPermissionBtn.addEventListener(
+  "click",
+  requestNotificationPermission
+);
+
+/* =====================================
+   V48 REMINDER CHECK
+===================================== */
+
+function reminderTimeReached(
+  targetTime
+) {
+
+  if (!targetTime) {
+    return false;
+  }
+
+  const now =
+    new Date();
+
+  const parts =
+    targetTime.split(":");
+
+  if (parts.length !== 2) {
+    return false;
+  }
+
+  const hour =
+    Number(parts[0]);
+
+  const minute =
+    Number(parts[1]);
+
+  if (
+    !Number.isFinite(hour) ||
+    !Number.isFinite(minute)
+  ) {
+    return false;
+  }
+
+  return (
+    now.getHours() === hour &&
+    now.getMinutes() === minute
+  );
+
+}
+
+function checkReminders() {
+
+  if (
+    !("Notification" in window) ||
+    Notification.permission !== "granted"
+  ) {
+    return;
+  }
+
+  const today =
+    todayKey();
+
+  const now =
+    new Date();
+
+  const completedToday =
+    getCompletedMalasForDate(today);
+
+  /* DAILY REMINDER */
+
+  if (
+    dailyReminderEnabled &&
+    dailyTarget > 0 &&
+    completedToday < dailyTarget &&
+    reminderTimeReached(
+      dailyReminderTime
+    ) &&
+    lastDailyReminderDate !== today
+  ) {
+
+    const remaining =
+      dailyTarget -
+      completedToday;
+
+    sendNotification(
+      "🔔 Waheguru Simran",
+      "You have " +
+      remaining +
+      " mala" +
+      (remaining === 1 ? "" : "s") +
+      " remaining for today's target."
+    );
+
+    lastDailyReminderDate =
+      today;
+
+    localStorage.setItem(
+      "wg_last_daily_reminder_date",
+      today
+    );
+
+  }
+
+  /* WEEKLY REMINDER */
+
+  if (
+    weeklyReminderEnabled &&
+    now.getDay() === weeklyReminderDay &&
+    reminderTimeReached(
+      weeklyReminderTime
+    ) &&
+    lastWeeklyReminderDate !== today
+  ) {
+
+    sendNotification(
+      "📅 Weekly Waheguru Reminder",
+      "This is your weekly reminder to complete your Waheguru Simran."
+    );
+
+    lastWeeklyReminderDate =
+      today;
+
+    localStorage.setItem(
+      "wg_last_weekly_reminder_date",
+      today
+    );
+
+  }
+
+}
+
+/* Check reminders every minute */
+
+setInterval(
+  checkReminders,
+  30000
+);
+
+/* =====================================
+   MULTI COLOUR DATA
+===================================== */
+
+const multiColors = [
+  {
+    color: "#ff2020",
+    dark: "#8d0000",
+    light: "#ff7070",
+    glow: "rgba(255,0,0,.8)",
+    center: "#280000"
+  },
+  {
+    color: "#ff8c00",
+    dark: "#a85500",
+    light: "#ffc266",
+    glow: "rgba(255,140,0,.8)",
+    center: "#281500"
+  },
+  {
+    color: "#ffd700",
+    dark: "#a88a00",
+    light: "#fff099",
+    glow: "rgba(255,215,0,.8)",
+    center: "#282400"
+  },
+  {
+    color: "#00d26a",
+    dark: "#007a3d",
+    light: "#66ffad",
+    glow: "rgba(0,210,106,.8)",
+    center: "#002818"
+  },
+  {
+    color: "#168cff",
+    dark: "#07539c",
+    light: "#75baff",
+    glow: "rgba(22,140,255,.8)",
+    center: "#001b35"
+  },
+  {
+    color: "#a855f7",
+    dark: "#63209c",
+    light: "#d29aff",
+    glow: "rgba(168,85,247,.8)",
+    center: "#210b35"
+  },
+  {
+    color: "#ff3b9d",
+    dark: "#a51760",
+    light: "#ff9dcc",
+    glow: "rgba(255,59,157,.8)",
+    center: "#350018"
+  }
+];
+
+/* =====================================
+   APPLY COLOUR
+===================================== */
+
+function applyColorData(data) {
+
+  document.documentElement.style.setProperty(
+    "--mala-color",
+    data.color
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-dark",
+    data.dark
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-light",
+    data.light
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-glow",
+    data.glow
+  );
+
+  document.documentElement.style.setProperty(
+    "--mala-center",
+    data.center
+  );
+
+}
+
+/* =====================================
+   COLOR
+===================================== */
+
+function setColor(button) {
+
+  if (!button) {
+    return;
+  }
+
+  if (button.dataset.multi === "true") {
+
+    multiColorEnabled = true;
+
+    localStorage.setItem(
+      "wg_multi_color",
+      "true"
+    );
+
+    const multiColor =
+      multiColors[multiColorIndex];
+
+    applyColorData(
+      multiColor
+    );
+
+    document
+      .querySelectorAll(".color-btn")
+      .forEach(btn => {
+        btn.classList.remove("selected");
+      });
+
+    button.classList.add("selected");
+
+    savedColor =
+      multiColor.color;
+
+    localStorage.setItem(
+      "wg_color",
+      savedColor
+    );
+
+    updateDisplay();
+
+    return;
+  }
+
+  multiColorEnabled = false;
+
+  localStorage.setItem(
+    "wg_multi_color",
+    "false"
+  );
+
+  const color =
+    button.dataset.color;
+
+  applyColorData({
+    color: color,
+    dark: button.dataset.dark,
+    light: button.dataset.light,
+    glow: button.dataset.glow,
+    center: button.dataset.center
+  });
+
+  savedColor = color;
+
+  localStorage.setItem(
+    "wg_color",
+    color
+  );
+
+  document
+    .querySelectorAll(".color-btn")
+    .forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+  button.classList.add("selected");
+
+}
+
+document
+  .querySelectorAll(".color-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      function(event) {
+
+        event.stopPropagation();
+
+        setColor(this);
+
+        colorBox.classList.remove("open");
+
+      }
+    );
+
+  });
+
+function loadSavedColor() {
+
+  if (multiColorEnabled) {
+
+    const multiButton =
+      document.querySelector(
+        '.color-btn[data-multi="true"]'
+      );
+
+    if (multiButton) {
+      setColor(multiButton);
+    }
+
+    return;
+  }
+
+  const buttons =
+    document.querySelectorAll(".color-btn");
+
+  let selected = null;
+
+  buttons.forEach(button => {
+
+    if (
+      button.dataset.color === savedColor &&
+      button.dataset.multi !== "true"
+    ) {
+      selected = button;
+    }
+
+  });
+
+  if (!selected) {
+
+    selected =
+      document.querySelector(
+        '.color-btn[data-color="#ff2020"]'
+      );
+
+  }
+
+  if (selected) {
+    setColor(selected);
+  }
+
+}
+
+/* =====================================
+   APPLY MULTI COLOUR
+===================================== */
+
+function applyCurrentMultiColor() {
+
+  if (!multiColorEnabled) {
+    return;
+  }
+
+  const data =
+    multiColors[
+      multiColorIndex
+    ];
+
+  if (!data) {
+    return;
+  }
+
+  applyColorData(data);
+
+  savedColor =
+    data.color;
+
+  localStorage.setItem(
+    "wg_color",
+    savedColor
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
+}
+
+/* =====================================
+   OPEN COLOR PALETTE
+===================================== */
+
+document
+  .getElementById("malaColorBtn")
+  .addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+      colorBox.classList.toggle("open");
+
+      settingsBox.classList.remove("open");
+
+    }
+  );
+
+/* =====================================
+   OPEN SETTINGS
+===================================== */
+
+settingsBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    settingsBox.classList.toggle("open");
+
+    colorBox.classList.remove("open");
+
+  }
+);
+
+colorBox.addEventListener(
+  "click",
+  event => {
+    event.stopPropagation();
+  }
+);
+
+settingsBox.addEventListener(
+  "click",
+  event => {
+    event.stopPropagation();
+  }
+);
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !colorBox.contains(event.target) &&
+      event.target.id !== "malaColorBtn"
+    ) {
+      colorBox.classList.remove("open");
+    }
+
+    if (
+      !settingsBox.contains(event.target) &&
+      event.target.id !== "settingsBtn"
+    ) {
+      settingsBox.classList.remove("open");
+    }
+
+  }
+);
+
+/* =====================================
+   DARK MODE
+===================================== */
+
+function applyDarkMode() {
+
+  document.body.classList.toggle(
+    "light",
+    !savedDarkMode
+  );
+
+  darkModeBtn.textContent =
+    savedDarkMode
+      ? "☀️"
+      : "🌙";
+
+  updateDisplay();
+
+}
+
+darkModeBtn.addEventListener(
+  "click",
+  () => {
+
+    savedDarkMode =
+      !savedDarkMode;
+
+    localStorage.setItem(
+      "wg_dark",
+      savedDarkMode
+    );
+
+    applyDarkMode();
+
+  }
+);
+
+/* =====================================
+   SETTINGS
+===================================== */
+
+function updateSettingsButtons() {
+
+  soundBtn.textContent =
+    soundEnabled
+      ? "ON"
+      : "OFF";
+
+  vibrationBtn.textContent =
+    vibrationEnabled
+      ? "ON"
+      : "OFF";
+
+}
+
+soundBtn.addEventListener(
+  "click",
+  () => {
+
+    soundEnabled =
+      !soundEnabled;
+
+    localStorage.setItem(
+      "wg_sound",
+      soundEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+vibrationBtn.addEventListener(
+  "click",
+  () => {
+
+    vibrationEnabled =
+      !vibrationEnabled;
+
+    localStorage.setItem(
+      "wg_vibration",
+      vibrationEnabled
+    );
+
+    updateSettingsButtons();
+
+  }
+);
+
+updateSettingsButtons();
+
+/* =====================================
+   CREATE 108 BEADS
+===================================== */
+
+for (
+  let i = 0;
+  i < MALA_SIZE;
+  i++
+) {
+
+  const bead =
+    document.createElement("div");
+
+  bead.className =
+    "bead";
+
+  const angle =
+    (i / MALA_SIZE) *
+    Math.PI * 2 -
+    Math.PI / 2;
+
+  const radius = 45;
+
+  const x =
+    50 +
+    Math.cos(angle) *
+    radius;
+
+  const y =
+    50 +
+    Math.sin(angle) *
+    radius;
+
+  bead.style.left =
+    x + "%";
+
+  bead.style.top =
+    y + "%";
+
+  mala.appendChild(bead);
+
+}
+
+/* =====================================
+   SAVE DATA
+===================================== */
+
+function saveData() {
+
+  localStorage.setItem(
+    "wg_count",
+    count
+  );
+
+  localStorage.setItem(
+    "wg_total",
+    total
+  );
+
+  localStorage.setItem(
+    "wg_malas",
+    completedMalas
+  );
+
+  localStorage.setItem(
+    "wg_current_mala_number",
+    currentMalaNumber
+  );
+
+  localStorage.setItem(
+    "wg_records",
+    JSON.stringify(records)
+  );
+
+  localStorage.setItem(
+    "wg_mala_history",
+    JSON.stringify(malaHistory)
+  );
+
+  localStorage.setItem(
+    "wg_current_date",
+    todayKey()
+  );
+
+  localStorage.setItem(
+    "wg_multi_color",
+    multiColorEnabled
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    multiColorIndex
+  );
+
+  saveTargetSettings();
+
+}
+
+/* =====================================
+   CALENDAR STATISTICS
+===================================== */
+
+function getDateFromKey(key) {
+
+  const parts =
+    key.split("-");
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  return new Date(
+    Number(parts[0]),
+    Number(parts[1]) - 1,
+    Number(parts[2])
+  );
+
+}
+
+function getCompletedMalasForPeriod(
+  period
+) {
+
+  const now =
+    new Date();
+
+  return malaHistory.filter(
+    entry => {
+
+      if (
+        !entry ||
+        !entry.date
+      ) {
+        return false;
+      }
+
+      const d =
+        getDateFromKey(
+          entry.date
+        );
+
+      if (!d) {
+        return false;
+      }
+
+      if (
+        period === "year"
+      ) {
+
+        return (
+          d.getFullYear() ===
+          now.getFullYear()
+        );
+
+      }
+
+      if (
+        period === "month"
+      ) {
+
+        return (
+          d.getFullYear() ===
+            now.getFullYear() &&
+          d.getMonth() ===
+            now.getMonth()
+        );
+
+      }
+
+      if (
+        period === "week"
+      ) {
+
+        const weekStart =
+          new Date(now);
+
+        weekStart.setHours(
+          0, 0, 0, 0
+        );
+
+        weekStart.setDate(
+          now.getDate() -
+          now.getDay()
+        );
+
+        const weekEnd =
+          new Date(weekStart);
+
+        weekEnd.setDate(
+          weekStart.getDate() + 7
+        );
+
+        d.setHours(
+          0, 0, 0, 0
+        );
+
+        return (
+          d >= weekStart &&
+          d < weekEnd
+        );
+
+      }
+
+      return false;
+
+    }
+  ).length;
+
+}
+
+function updateCalendarStats() {
+
+  calendarStatTotal.textContent =
+    total;
+
+  calendarStatMalas.textContent =
+    completedMalas;
+
+  calendarStatWeek.textContent =
+    getCompletedMalasForPeriod("week");
+
+  calendarStatMonth.textContent =
+    getCompletedMalasForPeriod("month");
+
+  calendarStatYear.textContent =
+    getCompletedMalasForPeriod("year");
+
+}
+
+/* =====================================
+   DISPLAY
+===================================== */
+
+function updateDisplay() {
+
+  countEl.textContent =
+    count;
+
+  malaNumberEl.textContent =
+    "Mala #" +
+    currentMalaNumber;
+
+  if (multiColorEnabled) {
+    applyCurrentMultiColor();
+  }
 
   const beads =
     document.querySelectorAll(".bead");
 
-  beads.forEach((bead, index) => {
+  beads.forEach(
+    (bead, i) => {
 
-    bead.classList.toggle(
-      "active",
-      index < count
-    );
+      bead.classList.remove("active");
+      bead.classList.remove("current");
 
-    if (multiColor) {
+      if (i < count) {
+        bead.classList.add("active");
+      }
 
-      bead.style.filter =
-        `hue-rotate(${(index * 360 / MALA_SIZE)}deg)`;
+      if (
+        i === count &&
+        count < MALA_SIZE
+      ) {
+        bead.classList.add("current");
+      }
 
-    } else {
-
-      bead.style.filter = "";
     }
-
-  });
-}
-
-
-/* =========================
-   DISPLAY
-========================= */
-
-function updateDisplay() {
-
-  countDisplay.textContent =
-    count;
-
-  malaDisplay.textContent =
-    "Mala #" + currentMalaNumber;
-
-  updateBeads();
-
-  updateTargetDisplay();
-
-  updateTodayStats();
+  );
 
   saveData();
-}
 
+  updateCalendarStats();
 
-/* =========================
-   TARGET DISPLAY
-========================= */
+  updateDailyTargetProgress();
 
-function getCompletedMalasForDate(dateKey) {
+  updateSelectedDateDisplay();
 
-  return malaHistory.filter(
-    item => item.date === dateKey
-  ).length;
-}
-
-
-function updateTargetDisplay() {
-
-  const completedToday =
-    getCompletedMalasForDate(todayKey());
-
-  const remaining =
-    Math.max(
-      0,
-      dailyTarget - completedToday
-    );
-
-  if (completedToday >= dailyTarget) {
-
-    targetProgress.textContent =
-      `🎉 Target complete — ${completedToday}/${dailyTarget} malas`;
-
-  } else {
-
-    targetProgress.textContent =
-      `${completedToday} / ${dailyTarget} malas • ${remaining} remaining`;
-
+  if (
+    calendarModal.classList.contains("open")
+  ) {
+    renderCalendar();
   }
 
-  targetInput.value =
-    dailyTarget;
 }
 
-
-/* =========================
+/* =====================================
    ADD COUNT
-========================= */
+===================================== */
 
-function addCount(amount = 1) {
+function addCount(amount) {
 
-  count += amount;
+  amount =
+    Number(amount);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+    return;
+  }
+
+  amount =
+    Math.floor(amount);
+
+  if (amount <= 0) {
+    return;
+  }
 
   total += amount;
 
-  const key =
+  const day =
     todayKey();
 
-  records[key] =
-    (records[key] || 0) + amount;
+  records[day] =
+    (records[day] || 0) +
+    amount;
 
-  while (count >= MALA_SIZE) {
+  count += amount;
+
+  while (
+    count >= MALA_SIZE
+  ) {
 
     count -= MALA_SIZE;
 
@@ -1154,1135 +3890,1371 @@ function addCount(amount = 1) {
     currentMalaNumber++;
 
     malaHistory.push({
-      date: key,
+      date: todayKey(),
       timestamp: Date.now()
     });
 
-    playCompletionSound();
+    if (multiColorEnabled) {
 
-    vibrate();
+      multiColorIndex =
+        (
+          multiColorIndex + 1
+        ) %
+        multiColors.length;
 
-    electric.classList.add("on");
+      localStorage.setItem(
+        "wg_multi_color_index",
+        multiColorIndex
+      );
 
-    setTimeout(() => {
-      electric.classList.remove("on");
-    }, 1500);
+      applyCurrentMultiColor();
+
+    }
+
+    malaComplete();
+
   }
 
   updateDisplay();
+
 }
 
+/* =====================================
+   MALA COMPLETE
+===================================== */
 
-/* =========================
-   COMPLETION SOUND
-========================= */
+function malaComplete() {
 
-function playCompletionSound() {
+  triggerCompletionGlow();
 
-  if (!soundOn) return;
+  if (
+    vibrationEnabled &&
+    "vibrate" in navigator
+  ) {
+
+    try {
+      navigator.vibrate(120);
+    } catch(e) {}
+
+  }
+
+  if (soundEnabled) {
+    completionChime();
+  }
+
+}
+
+/* =====================================
+   COMPLETION GLOW
+===================================== */
+
+function triggerCompletionGlow() {
+
+  const center =
+    document.querySelector(".center");
+
+  if (!center) {
+    return;
+  }
+
+  center.classList.remove(
+    "completion-pulse"
+  );
+
+  void center.offsetWidth;
+
+  center.classList.add(
+    "completion-pulse"
+  );
+
+}
+
+/* =====================================
+   SOFT COMPLETION CHIME
+===================================== */
+
+function completionChime() {
+
+  if (!soundEnabled) {
+    return;
+  }
 
   try {
 
-    const AudioContext =
+    const AudioCtx =
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!AudioContext) return;
+    if (!AudioCtx) {
+      return;
+    }
 
     const ctx =
-      new AudioContext();
+      new AudioCtx();
 
-    const osc =
+    const now =
+      ctx.currentTime;
+
+    const gain =
+      ctx.createGain();
+
+    gain.gain.setValueAtTime(
+      0.001,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.12,
+      now + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      now + 0.45
+    );
+
+    const oscillator1 =
+      ctx.createOscillator();
+
+    const oscillator2 =
+      ctx.createOscillator();
+
+    oscillator1.type =
+      "sine";
+
+    oscillator2.type =
+      "sine";
+
+    oscillator1.frequency.value =
+      660;
+
+    oscillator2.frequency.value =
+      990;
+
+    oscillator1.connect(gain);
+    oscillator2.connect(gain);
+
+    gain.connect(ctx.destination);
+
+    oscillator1.start(now);
+
+    oscillator2.start(
+      now + 0.04
+    );
+
+    oscillator1.stop(
+      now + 0.45
+    );
+
+    oscillator2.stop(
+      now + 0.40
+    );
+
+    setTimeout(
+      () => {
+
+        try {
+          ctx.close();
+        } catch(e) {}
+
+      },
+      600
+    );
+
+  } catch(e) {}
+
+}
+
+/* =====================================
+   NORMALIZE SPEECH
+===================================== */
+
+function normalizeText(text) {
+
+  return String(text)
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[.,!?;:()[\]{}"'`]/g, " ")
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+/* =====================================
+   COUNT GURMUKHI
+===================================== */
+
+function countGurmukhi(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  const normalized =
+    String(text)
+      .normalize("NFKC")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const pattern =
+    /ਵਾਹੇ?\s*ਗੁਰੂ|ਵਾਹੇ?\s*ਗੁਰੁ/g;
+
+  const matches =
+    normalized.match(pattern);
+
+  return matches
+    ? matches.length
+    : 0;
+
+}
+
+/* =====================================
+   COUNT ENGLISH
+===================================== */
+
+function countEnglish(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  const normalized =
+    normalizeText(text);
+
+  const englishPattern =
+    /waheguru|waheguroo|waheguro|waheguruu|waheguruji|wahe\s+guru\s+ji|wahe\s+guru|vaheguru|vahiguru|wahi\s+guru|vah\s+guru|wah\s+guru|way\s+guru|wahe\s+gooru|wahe\s+gooro|wahegoru/gi;
+
+  const matches =
+    normalized.match(
+      englishPattern
+    );
+
+  return matches
+    ? matches.length
+    : 0;
+
+}
+
+/* =====================================
+   COUNT WAHEGURU MATCHES
+===================================== */
+
+function countWaheguruMatches(text) {
+
+  if (!text) {
+    return 0;
+  }
+
+  return (
+    countGurmukhi(text) +
+    countEnglish(text)
+  );
+
+}
+
+/* =====================================
+   BEEP
+===================================== */
+
+function beep() {
+
+  if (!soundEnabled) {
+    return;
+  }
+
+  try {
+
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioCtx) {
+      return;
+    }
+
+    const ctx =
+      new AudioCtx();
+
+    const oscillator =
       ctx.createOscillator();
 
     const gain =
       ctx.createGain();
 
-    osc.frequency.value = 660;
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      880;
 
     gain.gain.setValueAtTime(
-      0.15,
+      0.001,
       ctx.currentTime
     );
 
     gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      ctx.currentTime + 0.5
+      0.25,
+      ctx.currentTime + 0.02
     );
 
-    osc.connect(gain);
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      ctx.currentTime + 0.35
+    );
 
+    oscillator.connect(gain);
     gain.connect(ctx.destination);
 
-    osc.start();
+    oscillator.start();
 
-    osc.stop(
-      ctx.currentTime + 0.5
+    oscillator.stop(
+      ctx.currentTime + 0.35
     );
 
-  } catch (e) {}
+    setTimeout(
+      () => {
+
+        try {
+          ctx.close();
+        } catch(e) {}
+
+      },
+      500
+    );
+
+  } catch(e) {}
 
 }
 
+/* =====================================
+   AUDIO MONITOR
+===================================== */
 
-/* =========================
-   VIBRATION
-========================= */
+async function startAudioMonitor() {
 
-function vibrate() {
+  try {
 
-  if (
-    vibrationOn &&
-    navigator.vibrate
-  ) {
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
+      return;
+    }
 
-    navigator.vibrate([
-      100,
-      60,
-      160
-    ]);
+    if (micStream) {
+      return;
+    }
+
+    micStream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      });
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+    const source =
+      audioContext.createMediaStreamSource(
+        micStream
+      );
+
+    analyser =
+      audioContext.createAnalyser();
+
+    analyser.fftSize =
+      512;
+
+    audioData =
+      new Uint8Array(
+        analyser.fftSize
+      );
+
+    source.connect(
+      analyser
+    );
+
+    if (audioMonitor) {
+      cancelAnimationFrame(
+        audioMonitor
+      );
+    }
+
+    monitorAudio();
+
+  } catch(e) {
+
+    console.log(
+      "Audio monitor:",
+      e
+    );
 
   }
+
 }
 
+/* =====================================
+   MONITOR MICROPHONE ACTIVITY
+===================================== */
 
-/* =========================
-   TODAY STATS
-========================= */
+function monitorAudio() {
 
-function updateTodayStats() {
+  if (!listening) {
+    return;
+  }
 
-  const today =
-    getCompletedMalasForDate(todayKey());
+  if (
+    !analyser ||
+    !audioData
+  ) {
+    return;
+  }
 
-  document.getElementById(
-    "todayStats"
-  ).textContent =
-    today + (today === 1 ? " mala" : " malas");
+  analyser.getByteTimeDomainData(
+    audioData
+  );
+
+  let sum = 0;
+
+  for (
+    let i = 0;
+    i < audioData.length;
+    i++
+  ) {
+
+    const value =
+      (
+        audioData[i] - 128
+      ) / 128;
+
+    sum +=
+      value * value;
+
+  }
+
+  const rms =
+    Math.sqrt(
+      sum /
+      audioData.length
+    );
+
+  const now =
+    performance.now();
+
+  if (
+    rms >= AUDIO_THRESHOLD
+  ) {
+    lastActivityAt =
+      now;
+  }
+
+  const elapsed =
+    now -
+    lastActivityAt;
+
+  const remaining =
+    Math.max(
+      0,
+      SILENCE_TIME -
+      elapsed
+    );
+
+  timerText.textContent =
+    "Auto mic-off in " +
+    Math.ceil(
+      remaining / 1000
+    ) +
+    " seconds";
+
+  if (
+    remaining <= 0
+  ) {
+
+    autoPause();
+
+    return;
+
+  }
+
+  audioMonitor =
+    requestAnimationFrame(
+      monitorAudio
+    );
+
 }
 
+/* =====================================
+   STOP AUDIO MONITOR
+===================================== */
 
-/* =========================
+function stopAudioMonitor() {
+
+  if (audioMonitor) {
+
+    cancelAnimationFrame(
+      audioMonitor
+    );
+
+    audioMonitor =
+      null;
+
+  }
+
+  if (micStream) {
+
+    micStream
+      .getTracks()
+      .forEach(
+        track => {
+
+          try {
+            track.stop();
+          } catch(e) {}
+
+        }
+      );
+
+    micStream =
+      null;
+
+  }
+
+  if (audioContext) {
+
+    try {
+      audioContext.close();
+    } catch(e) {}
+
+    audioContext =
+      null;
+
+  }
+
+  analyser =
+    null;
+
+  audioData =
+    null;
+
+}
+
+/* =====================================
+   CLEAR TIMERS
+===================================== */
+
+function clearTimers() {
+
+  if (recognitionRestartTimer) {
+
+    clearTimeout(
+      recognitionRestartTimer
+    );
+
+    recognitionRestartTimer =
+      null;
+
+  }
+
+  if (audioMonitor) {
+
+    cancelAnimationFrame(
+      audioMonitor
+    );
+
+    audioMonitor =
+      null;
+
+  }
+
+}
+
+/* =====================================
+   AUTO PAUSE
+===================================== */
+
+function autoPause() {
+
+  if (!listening) {
+    return;
+  }
+
+  listening = false;
+
+  clearTimers();
+
+  stopAudioMonitor();
+
+  if (recognition) {
+
+    try {
+      recognition.stop();
+    } catch(e) {}
+
+  }
+
+  recognitionRunning =
+    false;
+
+  recognitionStarting =
+    false;
+
+  processedMatchCounts.clear();
+
+  lastDisplayedTranscript =
+    "";
+
+  beep();
+
+  setPausedStatus(
+    "Mic paused — 45 seconds silent"
+  );
+
+}
+
+/* =====================================
+   STATUS
+===================================== */
+
+function setListeningStatus() {
+
+  status.classList.add(
+    "active"
+  );
+
+  statusText.textContent =
+    "Listening… Say Waheguru";
+
+  startBtn.textContent =
+    "🎙️ Listening";
+
+}
+
+function setPausedStatus(
+  message = "Mic paused"
+) {
+
+  status.classList.remove(
+    "active"
+  );
+
+  statusText.textContent =
+    message;
+
+  startBtn.textContent =
+    "🎙️ Start";
+
+  timerText.textContent =
+    "Timer starts when listening begins.";
+
+}
+
+/* =====================================
+   SPEECH RECOGNITION
+===================================== */
+
+function setupRecognition() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Speech recognition is not supported by this browser. Please use Google Chrome or Microsoft Edge."
+    );
+
+    return null;
+
+  }
+
+  const r =
+    new SpeechRecognition();
+
+  r.continuous =
+    true;
+
+  r.interimResults =
+    true;
+
+  r.maxAlternatives =
+    1;
+
+  r.lang =
+    recognitionLanguage;
+
+  r.onstart = () => {
+
+    recognitionRunning =
+      true;
+
+    recognitionStarting =
+      false;
+
+    if (!listening) {
+
+      try {
+        r.stop();
+      } catch(e) {}
+
+      return;
+
+    }
+
+    processedMatchCounts.clear();
+
+    lastActivityAt =
+      performance.now();
+
+    setListeningStatus();
+
+  };
+
+  r.onspeechstart = () => {
+
+    if (listening) {
+      lastActivityAt =
+        performance.now();
+    }
+
+  };
+
+  r.onaudiostart = () => {
+
+    if (listening) {
+      lastActivityAt =
+        performance.now();
+    }
+
+  };
+
+  r.onresult = event => {
+
+    if (!listening) {
+      return;
+    }
+
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+
+      const result =
+        event.results[i];
+
+      if (
+        !result ||
+        !result[0]
+      ) {
+        continue;
+      }
+
+      const transcript =
+        result[0].transcript.trim();
+
+      if (!transcript) {
+        continue;
+      }
+
+      if (
+        transcript !==
+        lastDisplayedTranscript
+      ) {
+
+        heardText.textContent =
+          "Heard: " +
+          transcript;
+
+        lastDisplayedTranscript =
+          transcript;
+
+      }
+
+      console.log(
+        "V36 Recognized:",
+        transcript,
+        "Final:",
+        result.isFinal
+      );
+
+      const currentMatches =
+        countWaheguruMatches(
+          transcript
+        );
+
+      const previousMatches =
+        processedMatchCounts.get(i) || 0;
+
+      if (
+        currentMatches >
+        previousMatches
+      ) {
+
+        const newMatches =
+          currentMatches -
+          previousMatches;
+
+        addCount(
+          newMatches
+        );
+
+        processedMatchCounts.set(
+          i,
+          currentMatches
+        );
+
+        heardCountSinceReset +=
+          newMatches;
+
+        if (
+          heardCountSinceReset >= 5
+        ) {
+
+          heardCountSinceReset =
+            heardCountSinceReset % 5;
+
+          heardText.textContent =
+            "";
+
+          lastDisplayedTranscript =
+            "";
+
+        }
+
+        lastActivityAt =
+          performance.now();
+
+        console.log(
+          "V36 NEW COUNT:",
+          newMatches,
+          "Current result matches:",
+          currentMatches
+        );
+
+      }
+
+    }
+
+  };
+
+  r.onerror = event => {
+
+    const error =
+      event && event.error
+        ? event.error
+        : "unknown";
+
+    console.log(
+      "V36 Speech recognition:",
+      error
+    );
+
+    if (
+      error === "not-allowed" ||
+      error === "service-not-allowed"
+    ) {
+
+      listening =
+        false;
+
+      clearTimers();
+
+      stopAudioMonitor();
+
+      recognitionRunning =
+        false;
+
+      recognitionStarting =
+        false;
+
+      processedMatchCounts.clear();
+
+      lastDisplayedTranscript =
+        "";
+
+      setPausedStatus(
+        "Microphone permission needed"
+      );
+
+      return;
+
+    }
+
+    if (
+      error === "aborted" ||
+      error === "no-speech"
+    ) {
+      return;
+    }
+
+    if (listening) {
+      scheduleRecognitionRestart();
+    }
+
+  };
+
+  r.onend = () => {
+
+    recognitionRunning =
+      false;
+
+    recognitionStarting =
+      false;
+
+    if (!listening) {
+      return;
+    }
+
+    processedMatchCounts.clear();
+
+    lastDisplayedTranscript =
+      "";
+
+    try {
+      r.lang =
+        recognitionLanguage;
+    } catch(e) {}
+
+    scheduleRecognitionRestart();
+
+  };
+
+  return r;
+
+}
+
+/* =====================================
+   SAFE RESTART
+===================================== */
+
+function scheduleRecognitionRestart() {
+
+  if (!listening) {
+    return;
+  }
+
+  if (recognitionRestartTimer) {
+    return;
+  }
+
+  recognitionRestartTimer =
+    setTimeout(
+      () => {
+
+        recognitionRestartTimer =
+          null;
+
+        startRecognitionSafely();
+
+      },
+      RECOGNITION_RESTART_DELAY
+    );
+
+}
+
+/* =====================================
+   START RECOGNITION SAFELY
+===================================== */
+
+function startRecognitionSafely() {
+
+  if (!listening) {
+    return;
+  }
+
+  if (
+    recognitionRunning ||
+    recognitionStarting
+  ) {
+    return;
+  }
+
+  if (!recognition) {
+    return;
+  }
+
+  recognitionStarting =
+    true;
+
+  try {
+
+    recognition.lang =
+      recognitionLanguage;
+
+    recognition.continuous =
+      true;
+
+    recognition.interimResults =
+      true;
+
+    recognition.maxAlternatives =
+      1;
+
+    recognition.start();
+
+  } catch(e) {
+
+    recognitionStarting =
+      false;
+
+    console.log(
+      "V36 Recognition start error:",
+      e
+    );
+
+    if (
+      e &&
+      e.name ===
+        "InvalidStateError"
+    ) {
+      return;
+    }
+
+    if (listening) {
+      scheduleRecognitionRestart();
+    }
+
+  }
+
+}
+
+/* =====================================
+   START LISTENING
+===================================== */
+
+async function startListening() {
+
+  if (listening) {
+    return;
+  }
+
+  if (!recognition) {
+
+    recognition =
+      setupRecognition();
+
+    if (!recognition) {
+      return;
+    }
+
+  }
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  listening =
+    true;
+
+  lastActivityAt =
+    performance.now();
+
+  heardText.textContent =
+    "";
+
+  setListeningStatus();
+
+  startRecognitionSafely();
+
+  await startAudioMonitor();
+
+}
+
+/* =====================================
+   PAUSE
+===================================== */
+
+function pauseListening() {
+
+  listening =
+    false;
+
+  clearTimers();
+
+  stopAudioMonitor();
+
+  if (recognition) {
+
+    try {
+      recognition.stop();
+    } catch(e) {}
+
+  }
+
+  recognitionRunning =
+    false;
+
+  recognitionStarting =
+    false;
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  setPausedStatus();
+
+}
+
+/* =====================================
    RESET CURRENT MALA
-========================= */
+===================================== */
 
 function resetCurrentMala() {
 
   count = 0;
 
-  currentMalaNumber = 1;
+  currentMalaNumber = 0;
+
+  if (multiColorEnabled) {
+
+    multiColorIndex = 0;
+
+    localStorage.setItem(
+      "wg_multi_color_index",
+      "0"
+    );
+
+    applyCurrentMultiColor();
+
+  }
+
+  localStorage.setItem(
+    "wg_count",
+    "0"
+  );
+
+  localStorage.setItem(
+    "wg_current_mala_number",
+    "0"
+  );
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  heardText.textContent =
+    "";
 
   updateDisplay();
+
 }
 
-
-/* =========================
-   RESET ALL HISTORY
-========================= */
+/* =====================================
+   RESET ALL MALA HISTORY
+===================================== */
 
 function resetAllMalaHistory() {
 
   const confirmed =
     confirm(
-      "Reset all mala history and counts?"
+      "⚠️ WARNING\n\n" +
+      "This will permanently delete ALL Mala history.\n\n" +
+      "It will clear:\n" +
+      "• Calendar history\n" +
+      "• Completed Malas\n" +
+      "• Total Waheguru count\n" +
+      "• Daily records\n" +
+      "• Saved Mala history\n\n" +
+      "This cannot be undone.\n\n" +
+      "Do you want to continue?"
     );
 
-  if (!confirmed) return;
+  if (!confirmed) {
+    return;
+  }
 
   count = 0;
-
   total = 0;
-
   completedMalas = 0;
-
-  currentMalaNumber = 1;
-
+  currentMalaNumber = 0;
   records = {};
-
   malaHistory = [];
+  multiColorIndex = 0;
+
+  localStorage.removeItem("wg_count");
+  localStorage.removeItem("wg_total");
+  localStorage.removeItem("wg_malas");
+  localStorage.removeItem("wg_current_mala_number");
+  localStorage.removeItem("wg_records");
+  localStorage.removeItem("wg_mala_history");
+
+  localStorage.setItem(
+    "wg_current_date",
+    todayKey()
+  );
+
+  localStorage.setItem(
+    "wg_multi_color_index",
+    "0"
+  );
+
+  processedMatchCounts.clear();
+
+  heardCountSinceReset = 0;
+
+  lastDisplayedTranscript =
+    "";
+
+  heardText.textContent =
+    "";
+
+  selectedCalendarDate =
+    todayKey();
+
+  calendarViewDate =
+    new Date();
 
   updateDisplay();
-}
-
-
-/* =========================
-   MIDNIGHT RESET
-========================= */
-
-let lastDate =
-  todayKey();
-
-function checkMidnightReset() {
-
-  const now =
-    todayKey();
-
-  if (now !== lastDate) {
-
-    count = 0;
-
-    currentMalaNumber = 1;
-
-    lastDate = now;
-
-    updateDisplay();
-  }
-}
-
-
-/* =========================
-   DARK MODE
-========================= */
-
-function applyDarkMode() {
-
-  document.body.classList.toggle(
-    "light",
-    !darkMode
-  );
-
-  document.getElementById(
-    "darkBtn"
-  ).textContent =
-    darkMode
-      ? "☀️ Light Mode"
-      : "🌙 Dark Mode";
-}
-
-
-/* =========================
-   COLOR
-========================= */
-
-function applyColor() {
-
-  const color =
-    colors[colorIndex % colors.length];
-
-  document.documentElement.style
-    .setProperty(
-      "--mala-color",
-      color
-    );
-
-  const dark =
-    shadeColor(color, -45);
-
-  const light =
-    shadeColor(color, 45);
-
-  document.documentElement.style
-    .setProperty(
-      "--mala-dark",
-      dark
-    );
-
-  document.documentElement.style
-    .setProperty(
-      "--mala-light",
-      light
-    );
-}
-
-
-function shadeColor(color, percent) {
-
-  let f =
-    parseInt(
-      color.slice(1),
-      16
-    );
-
-  let r =
-    (f >> 16) + percent;
-
-  let g =
-    ((f >> 8) & 0x00FF) + percent;
-
-  let b =
-    (f & 0x0000FF) + percent;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return "#" +
-    (
-      0x1000000 +
-      (r << 16) +
-      (g << 8) +
-      b
-    )
-      .toString(16)
-      .slice(1);
-}
-
-
-/* =========================
-   SETTINGS
-========================= */
-
-document.getElementById(
-  "settingsBtn"
-).addEventListener(
-  "click",
-  () => {
-
-    document.getElementById(
-      "settingsPanel"
-    ).classList.toggle("show");
-
-  }
-);
-
-
-/* =========================
-   SOUND BUTTON
-========================= */
-
-document.getElementById(
-  "soundBtn"
-).addEventListener(
-  "click",
-  function() {
-
-    soundOn = !soundOn;
-
-    this.textContent =
-      soundOn ? "ON" : "OFF";
-
-    saveData();
-
-  }
-);
-
-
-/* =========================
-   VIBRATION BUTTON
-========================= */
-
-document.getElementById(
-  "vibrationBtn"
-).addEventListener(
-  "click",
-  function() {
-
-    vibrationOn = !vibrationOn;
-
-    this.textContent =
-      vibrationOn ? "ON" : "OFF";
-
-    saveData();
-
-  }
-);
-
-
-/* =========================
-   SET TARGET
-========================= */
-
-document.getElementById(
-  "setTargetBtn"
-).addEventListener(
-  "click",
-  () => {
-
-    let value =
-      parseInt(
-        targetInput.value
-      );
-
-    if (
-      !Number.isFinite(value) ||
-      value < 1
-    ) {
-
-      value = 1;
-
-    }
-
-    dailyTarget = value;
-
-    targetInput.value =
-      dailyTarget;
-
-    saveData();
-
-    updateTargetDisplay();
-
-  }
-);
-
-
-/* =========================
-   DAILY REMINDER
-========================= */
-
-dailyReminderBtn.addEventListener(
-  "click",
-  async function() {
-
-    dailyReminderEnabled =
-      !dailyReminderEnabled;
-
-    if (
-      dailyReminderEnabled &&
-      "Notification" in window &&
-      Notification.permission === "default"
-    ) {
-
-      try {
-
-        await Notification.requestPermission();
-
-      } catch (e) {}
-
-    }
-
-    this.textContent =
-      dailyReminderEnabled
-        ? "ON"
-        : "OFF";
-
-    saveData();
-
-  }
-);
-
-
-dailyReminderTimeInput.addEventListener(
-  "change",
-  function() {
-
-    dailyReminderTime =
-      this.value || "07:00";
-
-    saveData();
-
-  }
-);
-
-
-/* =========================
-   WEEKLY REMINDER
-========================= */
-
-weeklyReminderBtn.addEventListener(
-  "click",
-  async function() {
-
-    weeklyReminderEnabled =
-      !weeklyReminderEnabled;
-
-    if (
-      weeklyReminderEnabled &&
-      "Notification" in window &&
-      Notification.permission === "default"
-    ) {
-
-      try {
-
-        await Notification.requestPermission();
-
-      } catch (e) {}
-
-    }
-
-    this.textContent =
-      weeklyReminderEnabled
-        ? "ON"
-        : "OFF";
-
-    saveData();
-
-  }
-);
-
-
-weeklyReminderDayInput.addEventListener(
-  "change",
-  function() {
-
-    weeklyReminderDay =
-      parseInt(
-        this.value
-      );
-
-    saveData();
-
-  }
-);
-
-
-weeklyReminderTimeInput.addEventListener(
-  "change",
-  function() {
-
-    weeklyReminderTime =
-      this.value || "07:00";
-
-    saveData();
-
-  }
-);
-
-
-/* =========================
-   NOTIFICATION PERMISSION
-========================= */
-
-notificationBtn.addEventListener(
-  "click",
-  async () => {
-
-    if (!("Notification" in window)) {
-
-      alert(
-        "Notifications are not supported by this browser."
-      );
-
-      return;
-    }
-
-    try {
-
-      const permission =
-        await Notification.requestPermission();
-
-      if (
-        permission === "granted"
-      ) {
-
-        notificationBtn.textContent =
-          "✅ Notifications Enabled";
-
-      } else {
-
-        notificationBtn.textContent =
-          "🔔 Enable Notifications";
-
-      }
-
-    } catch (e) {
-
-      notificationBtn.textContent =
-        "🔔 Enable Notifications";
-
-    }
-
-  }
-);
-
-
-/* =========================
-   REMINDER SYSTEM
-========================= */
-
-function currentTimeHHMM() {
-
-  const d =
-    new Date();
-
-  return String(
-    d.getHours()
-  ).padStart(2, "0") +
-    ":" +
-    String(
-      d.getMinutes()
-    ).padStart(2, "0");
-}
-
-
-function sendReminder(
-  type,
-  message,
-  key
-) {
-
-  const storageKey =
-    "wg_reminder_" + type;
-
-  const last =
-    localStorage.getItem(
-      storageKey
-    );
-
-  if (last === key) return;
 
   if (
-    "Notification" in window &&
-    Notification.permission === "granted"
+    calendarModal.classList.contains("open")
   ) {
-
-    try {
-
-      new Notification(
-        "🙏 Waheguru Simran",
-        {
-          body: message
-        }
-      );
-
-      localStorage.setItem(
-        storageKey,
-        key
-      );
-
-      return;
-
-    } catch (e) {}
-  }
-
-  /*
-    If browser notification is unavailable,
-    don't repeatedly show intrusive alerts.
-  */
-
-}
-
-
-function checkReminders() {
-
-  const now =
-    new Date();
-
-  const time =
-    currentTimeHHMM();
-
-  const date =
-    todayKey();
-
-  if (
-    dailyReminderEnabled &&
-    time === dailyReminderTime
-  ) {
-
-    sendReminder(
-      "daily",
-      `Daily target: ${dailyTarget} malas. 🙏`,
-      date
-    );
-
-  }
-
-  if (
-    weeklyReminderEnabled &&
-    now.getDay() === weeklyReminderDay &&
-    time === weeklyReminderTime
-  ) {
-
-    const year =
-      now.getFullYear();
-
-    const weekKey =
-      year +
-      "-W" +
-      getWeekNumber(now);
-
-    sendReminder(
-      "weekly",
-      `Weekly Waheguru Simran reminder. Daily target: ${dailyTarget} malas. 🙏`,
-      weekKey
-    );
-
+    renderCalendar();
   }
 
 }
 
-
-function getWeekNumber(date) {
-
-  const d =
-    new Date(
-      Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      )
-    );
-
-  const dayNum =
-    d.getUTCDay() || 7;
-
-  d.setUTCDate(
-    d.getUTCDate() +
-    4 -
-    dayNum
-  );
-
-  const yearStart =
-    new Date(
-      Date.UTC(
-        d.getUTCFullYear(),
-        0,
-        1
-      )
-    );
-
-  return Math.ceil(
-    (
-      (
-        (d - yearStart) /
-        86400000
-      ) + 1
-    ) / 7
-  );
-
-}
-
-
-setInterval(
-  checkReminders,
-  1000
-);
-
-
-/* =========================
-   COLOR BUTTON
-========================= */
-
-document.getElementById(
-  "colorBtn"
-).addEventListener(
+resetHistoryBtn.addEventListener(
   "click",
-  () => {
+  event => {
 
-    multiColor = !multiColor;
+    event.stopPropagation();
 
-    if (!multiColor) {
-
-      colorIndex =
-        (colorIndex + 1) %
-        colors.length;
-
-      applyColor();
-
-    }
-
-    saveData();
-
-    updateBeads();
+    resetAllMalaHistory();
 
   }
 );
 
+/* =====================================
+   BUTTONS
+===================================== */
 
-/* =========================
-   DARK BUTTON
-========================= */
-
-document.getElementById(
-  "darkBtn"
-).addEventListener(
+startBtn.addEventListener(
   "click",
-  () => {
-
-    darkMode = !darkMode;
-
-    applyDarkMode();
-
-    saveData();
-
-  }
+  startListening
 );
 
-
-/* =========================
-   START / PAUSE
-========================= */
-
-let recognition = null;
-
-let recognizing = false;
-
-let silenceTimer = null;
-
-let heardCountSinceReset = 0;
-
-const MAX_HEARD_BEFORE_CLEAR = 5;
-
-let processedMatchCounts =
-  new Map();
-
-
-/* =========================
-   SPEECH RECOGNITION
-========================= */
-
-const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
-const recognitionLanguage =
-  "en-IN";
-
-
-if (SpeechRecognition) {
-
-  recognition =
-    new SpeechRecognition();
-
-  recognition.continuous = true;
-
-  recognition.interimResults = true;
-
-  recognition.lang =
-    recognitionLanguage;
-
-
-  recognition.onstart = () => {
-
-    recognizing = true;
-
-    document.getElementById(
-      "startBtn"
-    ).textContent =
-      "🎙️ Listening...";
-
-    resetSilenceTimer();
-
-  };
-
-
-  recognition.onend = () => {
-
-    recognizing = false;
-
-    document.getElementById(
-      "startBtn"
-    ).textContent =
-      "🎙️ Start";
-
-  };
-
-
-  recognition.onerror = () => {
-
-    recognizing = false;
-
-  };
-
-
-  recognition.onresult =
-    function(event) {
-
-      resetSilenceTimer();
-
-      let heard = "";
-
-      for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
-      ) {
-
-        const result =
-          event.results[i];
-
-        const text =
-          result[0].transcript;
-
-        heard +=
-          " " + text;
-
-        if (!result.isFinal)
-          continue;
-
-        processSpeechResult(
-          text,
-          i
-        );
-      }
-
-      if (heard.trim()) {
-
-        heardText.textContent =
-          heard.trim();
-
-      }
-
-    };
-
-}
-
-
-/* =========================
-   SPEECH MATCHING
-========================= */
-
-function processSpeechResult(
-  text,
-  resultIndex
-) {
-
-  const normalized =
-    text
-      .toLowerCase()
-      .replace(/[^a-z\u0a00-\u0a7f\s]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-  if (!normalized) return;
-
-  const matches =
-    normalized.match(
-      /waheguru/g
-    ) || [];
-
-  const gurmukhiMatches =
-    normalized.match(
-      /ਵਾਹਿਗੁਰੂ/g
-    ) || [];
-
-  const totalMatches =
-    matches.length +
-    gurmukhiMatches.length;
-
-  const alreadyProcessed =
-    processedMatchCounts.get(
-      resultIndex
-    ) || 0;
-
-  const newMatches =
-    Math.max(
-      0,
-      totalMatches -
-      alreadyProcessed
-    );
-
-  if (newMatches > 0) {
-
-    addCount(newMatches);
-
-    heardCountSinceReset +=
-      newMatches;
-
-    processedMatchCounts.set(
-      resultIndex,
-      totalMatches
-    );
-
-    if (
-      heardCountSinceReset >=
-      MAX_HEARD_BEFORE_CLEAR
-    ) {
-
-      heardText.textContent =
-        "";
-
-      heardCountSinceReset = 0;
-
-    }
-
-  }
-
-}
-
-
-/* =========================
-   SILENCE TIMER
-========================= */
-
-function resetSilenceTimer() {
-
-  clearTimeout(
-    silenceTimer
-  );
-
-  silenceTimer =
-    setTimeout(
-      () => {
-
-        if (
-          recognition &&
-          recognizing
-        ) {
-
-          recognition.stop();
-
-        }
-
-      },
-      SILENCE_TIME
-    );
-
-}
-
-
-/* =========================
-   START BUTTON
-========================= */
-
-document.getElementById(
-  "startBtn"
-).addEventListener(
+pauseBtn.addEventListener(
   "click",
-  async () => {
-
-    if (!recognition) {
-
-      alert(
-        "Speech recognition is not supported in this browser."
-      );
-
-      return;
-
-    }
-
-    try {
-
-      if (!recognizing) {
-
-        processedMatchCounts.clear();
-
-        heardCountSinceReset = 0;
-
-        heardText.textContent =
-          "Listening...";
-
-        recognition.start();
-
-      }
-
-    } catch (e) {}
-
-  }
+  pauseListening
 );
 
-
-/* =========================
-   PAUSE BUTTON
-========================= */
-
-document.getElementById(
-  "pauseBtn"
-).addEventListener(
+resetBtn.addEventListener(
   "click",
-  () => {
-
-    if (
-      recognition &&
-      recognizing
-    ) {
-
-      recognition.stop();
-
-    }
-
-    clearTimeout(
-      silenceTimer
-    );
-
-  }
+  resetCurrentMala
 );
 
-
-/* =========================
-   RESET BUTTON
-========================= */
-
-document.getElementById(
-  "resetBtn"
-).addEventListener(
-  "click",
-  () => {
-
-    if (
-      recognition &&
-      recognizing
-    ) {
-
-      recognition.stop();
-
-    }
-
-    clearTimeout(
-      silenceTimer
-    );
-
-    resetCurrentMala();
-
-    heardText.textContent =
-      "—";
-
-  }
-);
-
-
-/* =========================
-   RESET HISTORY BUTTON
-========================= */
-
-document.getElementById(
-  "resetHistoryBtn"
-).addEventListener(
-  "click",
-  resetAllMalaHistory
-);
-
-
-/* =========================
+/* =====================================
    CALENDAR
-========================= */
+===================================== */
 
-let calendarDate =
+function dateKeyFromParts(
+  year,
+  month,
+  day
+) {
+
+  return (
+    year +
+    "-" +
+    String(month + 1).padStart(2, "0") +
+    "-" +
+    String(day).padStart(2, "0")
+  );
+
+}
+
+function getCompletedMalasForDate(
+  dateKey
+) {
+
+  return malaHistory.filter(
+    entry =>
+      entry &&
+      entry.date === dateKey
+  ).length;
+
+}
+
+function formatLongDate(
+  dateString
+) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  const d =
+    new Date(
+      Number(parts[0]),
+      Number(parts[1]) - 1,
+      Number(parts[2])
+    );
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
+
+}
+
+let calendarViewDate =
   new Date();
 
+let selectedCalendarDate =
+  todayKey();
 
 function renderCalendar() {
 
   const year =
-    calendarDate.getFullYear();
+    calendarViewDate.getFullYear();
 
   const month =
-    calendarDate.getMonth();
+    calendarViewDate.getMonth();
 
-  document.getElementById(
-    "calendarTitle"
-  ).textContent =
-    calendarDate.toLocaleString(
-      "default",
+  const monthName =
+    calendarViewDate.toLocaleDateString(
+      undefined,
       {
         month: "long",
         year: "numeric"
       }
     );
 
-  const grid =
-    document.getElementById(
-      "calendarGrid"
-    );
+  calendarMonth.textContent =
+    monthName;
 
-  grid.innerHTML = "";
-
-  const days =
-    [
-      "Sun",
-      "Mon",
-      "Tue",
-      "Wed",
-      "Thu",
-      "Fri",
-      "Sat"
-    ];
-
-  days.forEach(day => {
-
-    const el =
-      document.createElement(
-        "div"
-      );
-
-    el.className =
-      "calendar-day-name";
-
-    el.textContent =
-      day;
-
-    grid.appendChild(el);
-
-  });
+  calendarGrid.innerHTML =
+    "";
 
   const firstDay =
     new Date(
@@ -2304,10 +5276,16 @@ function renderCalendar() {
     i++
   ) {
 
-    grid.appendChild(
+    const empty =
       document.createElement(
         "div"
-      )
+      );
+
+    empty.className =
+      "calendar-day empty";
+
+    calendarGrid.appendChild(
+      empty
     );
 
   }
@@ -2318,81 +5296,223 @@ function renderCalendar() {
     day++
   ) {
 
-    const el =
+    const key =
+      dateKeyFromParts(
+        year,
+        month,
+        day
+      );
+
+    const dayBox =
       document.createElement(
         "div"
       );
 
-    el.className =
+    dayBox.className =
       "calendar-day";
-
-    const key =
-      `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 
     if (
       key === todayKey()
     ) {
+      dayBox.classList.add("today");
+    }
 
-      el.classList.add(
-        "today"
+    if (
+      key === selectedCalendarDate
+    ) {
+      dayBox.classList.add("selected");
+    }
+
+    const number =
+      document.createElement(
+        "div"
       );
+
+    number.className =
+      "day-number";
+
+    number.textContent =
+      day;
+
+    const waheguru =
+      document.createElement(
+        "div"
+      );
+
+    waheguru.className =
+      "day-waheguru";
+
+    const dayCount =
+      records[key] || 0;
+
+    if (dayCount > 0) {
+
+      waheguru.textContent =
+        "🙏 " +
+        dayCount;
+
+    } else {
+
+      waheguru.textContent =
+        "";
 
     }
 
-    const malas =
+    const malaCount =
       getCompletedMalasForDate(
         key
       );
 
-    el.innerHTML =
-      `<div class="calendar-day-number">${day}</div>
-       <div class="calendar-malas">${malas} ${malas === 1 ? "mala" : "malas"}</div>`;
+    const mala =
+      document.createElement(
+        "div"
+      );
 
-    grid.appendChild(el);
+    mala.className =
+      "day-mala";
+
+    if (malaCount > 0) {
+
+      mala.textContent =
+        "📿 " +
+        malaCount;
+
+    } else {
+
+      mala.textContent =
+        "";
+
+    }
+
+    dayBox.appendChild(number);
+    dayBox.appendChild(waheguru);
+    dayBox.appendChild(mala);
+
+    dayBox.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        selectedCalendarDate =
+          key;
+
+        updateCalendarDetails();
+
+        updateSelectedDateDisplay();
+
+        renderCalendar();
+
+      }
+    );
+
+    calendarGrid.appendChild(
+      dayBox
+    );
+
+  }
+
+  updateCalendarDetails();
+
+}
+
+function updateCalendarDetails() {
+
+  const selected =
+    selectedCalendarDate;
+
+  calendarDetailsDate.textContent =
+    formatLongDate(selected);
+
+  calendarDetailsCount.textContent =
+    records[selected] || 0;
+
+  calendarDetailsMalas.textContent =
+    getCompletedMalasForDate(
+      selected
+    );
+
+}
+
+function updateSelectedDateDisplay() {
+
+  if (
+    selectedCalendarDate ===
+    todayKey()
+  ) {
+
+    selectedDateLabel.textContent =
+      "Today — " +
+      formatDate(
+        selectedCalendarDate
+      );
+
+  } else {
+
+    selectedDateLabel.textContent =
+      formatDate(
+        selectedCalendarDate
+      );
 
   }
 
 }
 
+function openCalendar() {
 
-document.getElementById(
-  "calendarBtn"
-).addEventListener(
+  calendarViewDate =
+    new Date(
+      Number(
+        selectedCalendarDate.split("-")[0]
+      ),
+      Number(
+        selectedCalendarDate.split("-")[1]
+      ) - 1,
+      Number(
+        selectedCalendarDate.split("-")[2]
+      )
+    );
+
+  renderCalendar();
+
+  calendarModal.classList.add(
+    "open"
+  );
+
+}
+
+function closeCalendar() {
+
+  calendarModal.classList.remove(
+    "open"
+  );
+
+}
+
+openCalendarBtn.addEventListener(
   "click",
-  () => {
+  event => {
 
-    renderCalendar();
+    event.stopPropagation();
 
-    document.getElementById(
-      "calendarModal"
-    ).classList.add("show");
+    openCalendar();
 
   }
 );
 
-
-document.getElementById(
-  "closeCalendarBtn"
-).addEventListener(
+closeCalendarBtn.addEventListener(
   "click",
-  () => {
-
-    document.getElementById(
-      "calendarModal"
-    ).classList.remove("show");
-
-  }
+  closeCalendar
 );
 
-
-document.getElementById(
-  "prevMonthBtn"
-).addEventListener(
+previousMonthBtn.addEventListener(
   "click",
-  () => {
+  event => {
 
-    calendarDate.setMonth(
-      calendarDate.getMonth() - 1
+    event.stopPropagation();
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() - 1
     );
 
     renderCalendar();
@@ -2400,15 +5520,14 @@ document.getElementById(
   }
 );
 
-
-document.getElementById(
-  "nextMonthBtn"
-).addEventListener(
+nextMonthBtn.addEventListener(
   "click",
-  () => {
+  event => {
 
-    calendarDate.setMonth(
-      calendarDate.getMonth() + 1
+    event.stopPropagation();
+
+    calendarViewDate.setMonth(
+      calendarViewDate.getMonth() + 1
     );
 
     renderCalendar();
@@ -2416,70 +5535,135 @@ document.getElementById(
   }
 );
 
+calendarModal.addEventListener(
+  "click",
+  event => {
 
-/* =========================
-   INITIALIZE
-========================= */
+    if (
+      event.target ===
+      calendarModal
+    ) {
+      closeCalendar();
+    }
 
-targetInput.value =
-  dailyTarget;
+  }
+);
 
-dailyReminderTimeInput.value =
-  dailyReminderTime;
+document.addEventListener(
+  "keydown",
+  event => {
 
-weeklyReminderTimeInput.value =
-  weeklyReminderTime;
+    if (
+      event.key === "Escape" &&
+      calendarModal.classList.contains("open")
+    ) {
+      closeCalendar();
+    }
 
-weeklyReminderDayInput.value =
-  weeklyReminderDay;
+  }
+);
 
-dailyReminderBtn.textContent =
-  dailyReminderEnabled
-    ? "ON"
-    : "OFF";
+/* =====================================
+   MIDNIGHT RESET
+===================================== */
 
-weeklyReminderBtn.textContent =
-  weeklyReminderEnabled
-    ? "ON"
-    : "OFF";
+function checkMidnightReset() {
 
-document.getElementById(
-  "soundBtn"
-).textContent =
-  soundOn ? "ON" : "OFF";
+  const currentDate =
+    todayKey();
 
-document.getElementById(
-  "vibrationBtn"
-).textContent =
-  vibrationOn ? "ON" : "OFF";
+  const savedDate =
+    localStorage.getItem(
+      "wg_current_date"
+    );
 
-applyDarkMode();
+  if (!savedDate) {
 
-applyColor();
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
 
-createBeads();
+    return;
 
-updateDisplay();
+  }
 
-if (
-  "Notification" in window &&
-  Notification.permission === "granted"
-) {
+  if (
+    savedDate !== currentDate
+  ) {
 
-  notificationBtn.textContent =
-    "✅ Notifications Enabled";
+    count = 0;
+
+    currentMalaNumber = 0;
+
+    if (multiColorEnabled) {
+
+      multiColorIndex = 0;
+
+      localStorage.setItem(
+        "wg_multi_color_index",
+        "0"
+      );
+
+      applyCurrentMultiColor();
+
+    }
+
+    localStorage.setItem(
+      "wg_current_date",
+      currentDate
+    );
+
+    localStorage.setItem(
+      "wg_current_mala_number",
+      "0"
+    );
+
+    lastDailyReminderDate =
+      "";
+
+    updateDisplay();
+
+  }
 
 }
+
+/* =====================================
+   MIDNIGHT CHECK
+===================================== */
 
 setInterval(
   checkMidnightReset,
-  10000
+  1000
 );
 
-window.addEventListener(
-  "resize",
-  createBeads
-);
+/* =====================================
+   INITIALIZE
+===================================== */
+
+checkMidnightReset();
+
+loadSavedColor();
+
+if (multiColorEnabled) {
+  applyCurrentMultiColor();
+}
+
+applyDarkMode();
+
+updateDisplay();
+
+setPausedStatus();
+
+updateSettingsButtons();
+
+loadTargetSettings();
+
+updateDailyTargetProgress();
+
+updateSelectedDateDisplay();
+
+updateNotificationStatus();
 
 </script>
 
